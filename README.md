@@ -23,3 +23,6 @@ cd SABU
 # Run the installation script
 ./install.sh
 ```
+
+## 📄 Documentation
+Soon...
