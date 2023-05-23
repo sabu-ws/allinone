@@ -1,23 +1,25 @@
 #!/bin/bash
 
-# Create new partition
-echo "n
-p
-1
-"
+# Identifier of the USB key
+device='/dev/sd[a-z]'
 
-# Change the partition to NTFS
-echo "t
-1
-7
-"
+# Delete all partitions on the USB key
+echo 'yes' | parted -s $device mklabel msdos
 
-# Save changes and exit
-echo "w
-" | fdisk /dev/sd[a-z]
+# Write zeros to USB key
+dd if=/dev/zero of="$device" bs=4M status=progress
 
-# Format partition to NTFS (use package mkntfs) // Force : With zeroes
-mkntfs -F /dev/sd[a-z]1
+# Create a new primary partition occupying all available space
+echo 'yes' | parted -s -a optimal $device mkpart primary ntfs 0% 100%
+
+# Update partition table
+partprobe $device
+
+# Wait for changes to take effect
+sleep 1
+
+# Format partition to NTFS
+mkfs.ntfs -f ${device}1
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
