@@ -41,6 +41,6 @@ iptables-save > /etc/iptables/rules.v4
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [Network][Iptables] rule 'iptables-maintenance' enabled" >> /sabu/logs/network.log
+echo "$date [NETWORK][Iptables] Rule 'iptables-maintenance' enabled" >> /sabu/logs/network.log
 
 # --- Script By SABU --- #
