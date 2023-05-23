@@ -39,4 +39,8 @@ iptables -A OUTPUT --src $address --dst 0.0.0.0/0 -j DROP
 # SAVE 
 iptables-save > /etc/iptables/rules.v4
 
+# LOG ACTION
+date=$(date +"[%Y-%m-%d %H:%M:%S]")
+echo "$date [Network] rule 'iptables-maintenance' enabled" >> /sabu/logs/network.log
+
 # --- Script By SABU --- #
