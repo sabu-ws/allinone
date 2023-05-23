@@ -20,4 +20,8 @@ sed -i "2c\nameserver $5" /etc/resolv.conf
 # Restart the network configuration
 systemctl restart networking.service
 
+# LOG ACTION
+date=$(date +"[%Y-%m-%d %H:%M:%S]")
+echo "$date [Network][Interface] the network interface has been configured" >> /sabu/logs/network.log
+
 # --- Script By SABU --- #
