@@ -25,4 +25,4 @@ cd SABU
 ```
 
 ## 📄 Documentation
-Soon...
+[Read the wiki](https://github.com/SABU-WS/SABU/wiki)
