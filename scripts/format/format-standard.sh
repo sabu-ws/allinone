@@ -16,7 +16,7 @@ echo "t
 echo "w
 " | fdisk /dev/sd[a-z]
 
-# Format partition to NTFS (Use mkntfs)
+# Format partition to NTFS (use package mkntfs)
 mkntfs -Q /dev/sd[a-z]1
 
 # LOG ACTION
