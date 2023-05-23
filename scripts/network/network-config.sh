@@ -22,6 +22,6 @@ systemctl restart networking.service
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [Network][Interface] the network interface has been configured" >> /sabu/logs/network.log
+echo "$date [NETWORK][Interface] The network interface has been configured" >> /sabu/logs/network.log
 
 # --- Script By SABU --- #
