@@ -1,2 +1,2 @@
 # DETECT USB STICK PLUG
-ACTION=="add",KERNEL="sd[a-z]",RUN+="/sabu/usb-detect.sh"
+ACTION=="add",KERNEL="sd[a-z]",RUN+="/sabu/scripts/usb/usb-detect.sh"
