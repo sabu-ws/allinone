@@ -37,6 +37,6 @@ iptables-save > /etc/iptables/rules.v4
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [Network] rule 'iptables-prod' enabled" >> /sabu/logs/network.log
+echo "$date [Network][Iptables] rule 'iptables-prod' enabled" >> /sabu/logs/network.log
 
 # --- Script By SABU --- #
