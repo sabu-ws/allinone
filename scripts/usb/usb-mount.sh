@@ -3,10 +3,6 @@
 # UNMOUNT OLD USB STICK
 sudo umount /mnt/usb
 
-# LOG ACTION
-date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date USB Unmount" >> /sabu/usb.log
-
 # CHECK USB STICK IS PARTITIONNED
 partitioned=1
 
@@ -31,4 +27,6 @@ fi;
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date USB Mount" >> /sabu/usb.log
+echo "$date [USB][Mount] USB key mounted in '/mnt/usb'" >> /sabu/logs/usb.log
+
+# --- Script By SABU --- #
