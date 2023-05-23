@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#     Script By SABU     #
-# Last edit : 08/03/2023 #
-
 # Arguments
 ## $1 = address
 ## $2 = netmask
@@ -22,3 +19,5 @@ sed -i "2c\nameserver $5" /etc/resolv.conf
 
 # Restart the network configuration
 systemctl restart networking.service
+
+# --- Script By SABU --- #
