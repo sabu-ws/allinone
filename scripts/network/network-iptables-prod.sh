@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#     Script By SABU     #
-# Last edit : 28/03/2023 #
-
 # RETRIEVE NETWORK INFORMATION
 address=$(grep address /etc/network/interfaces | cut -d ' ' -f2)
 netmask=$(grep netmask /etc/network/interfaces | cut -d ' ' -f2)
@@ -37,3 +34,5 @@ iptables -A OUTPUT --src $address --dst 0.0.0.0/0 -j DROP
 
 # SAVE 
 iptables-save > /etc/iptables/rules.v4
+
+# --- Script By SABU --- #
