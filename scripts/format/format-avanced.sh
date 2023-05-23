@@ -7,7 +7,7 @@ device='/dev/sd[a-z]'
 echo 'yes' | parted -s $device mklabel msdos
 
 # Write zeros to USB key
-dd if=/dev/zero of="$device" bs=4M status=progress
+dd if=/dev/zero of=$device bs=4M status=progress
 
 # Create a new primary partition occupying all available space
 echo 'yes' | parted -s -a optimal $device mkpart primary ntfs 0% 100%
