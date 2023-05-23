@@ -4,10 +4,10 @@
 device='/dev/sd[a-z]'
 
 # Delete all partitions on the USB key
-yes | parted $device mklabel msdos
+echo 'yes' | parted -s $device mklabel msdos
 
 # Create a new primary partition occupying all available space
-yes | parted -a optimal $device mkpart primary ntfs 0% 100%
+echo 'yes' | parted -s -a optimal $device mkpart primary ntfs 0% 100%
 
 # Update partition table
 partprobe $device
