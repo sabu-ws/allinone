@@ -11,7 +11,7 @@ Prepare your environnement
 sudo apt update
 
 # Install git
-sudo apt install git
+sudo apt install git -y
 ```
 
 Start SABU Installation
