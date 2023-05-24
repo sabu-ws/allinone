@@ -1,0 +1,94 @@
+{% extends 'base_mainpage.html' %}
+{% block menu %}
+	<a class="button_for_listing_mainbox" href="/">Home</a>
+	<a class="button_for_listing_mainbox" href="/admin">Admin pannel</a>
+	<a class="button_for_listing_mainbox" href="/logout">Logout</a>
+{% endblock %}
+{% block main_base %}
+	<div class="net_param">
+		<fieldset class="admin_section">
+			<legend>Network parameters</legend>
+			<form method="POST">
+				<table>
+					<tr>
+						<td>
+							<p>Interface : </p>
+						</td>
+						<td>
+							<input type="text" name="interface" placeholder="{{ interface }}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>IP Address : </p>
+						</td>
+						<td>
+							<input type="text" name="ip" placeholder="{{ ip }}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>Netmask : </p>
+						</td>
+						<td>	
+							<input type="text" name="netmask" placeholder="{{ netmask }}">
+						</td>
+					</tr>
+					<tr>
+						<td>			
+							<p>Gateway :</p> 
+						</td>
+						<td>	
+							<input type="text" name="gateway" placeholder="{{ gateway }}">		
+						</td>	
+					</tr>
+					<tr>
+						<td>			
+							<p>DNS 1 :</p> 
+						</td>
+						<td>	
+							<input type="text" name="dns1" placeholder="{{ dns1 }}">		
+						</td>	
+					</tr>
+					<tr>
+						<td>			
+							<p>DNS 2 :</p> 
+						</td>
+						<td>	
+							<input type="text" name="dns2" placeholder="{{ dns2 }}">		
+						</td>	
+					</tr>	
+					<tr>
+						<td></td>
+						<td>
+							<input type="submit" name="submit" value="Submit">
+						</td>
+					<tr>
+				</table>
+			</form>
+		</fieldset>				
+	</div>
+	<div class="sw_pwd">
+		<fieldset class="admin_section">
+			<legend>Password setting</legend> 
+			<form method="POST">
+				<table>
+					<tr>
+						<td>
+							<p>New password : </p>
+						</td>
+						<td>	
+							<input type="text" name="password" placeholder="Password">
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<input type="submit" name="submit" value="Submit">
+						</td>
+					<tr>
+				</table>
+			</form>
+		</fieldset>
+	</div>
+{% endblock %}

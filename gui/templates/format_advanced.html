@@ -1,0 +1,63 @@
+{% extends 'base_mainpage.html' %}
+{% block styles %}
+<style type="text/css">
+.main_format{
+	margin-top: 5%;		
+}
+
+.fieldset_format{
+	padding: 5em;
+	border-radius: 10px;
+}
+
+.butt_format{
+	border: 2px solid gray;
+	color: gray;
+	background-color: white;
+	padding: 8px 20px;
+	border-radius: 10px;
+	font-size: 1em;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#span_format{
+	color:red;
+}
+
+</style>
+{% endblock %}
+{% block menu %}
+	<a class="button_for_listing_mainbox" href="/">Home</a>
+	{% if g.log %}
+	<a class="button_for_listing_mainbox" href="/admin">Admin pannel</a>
+	{% endif %}
+	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
+{% endblock %}
+{% block browser %}
+<div class="main_format">
+	<fieldset class="fieldset_format">
+		<legend>Format key</legend>
+		<p>La clé est branché !</p><br>
+		<button id="butt_format" class="butt_format">Démarré le formattage</button><br><br>
+		<span id="span_format"></span>
+	</fieldset>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static',filename='script/socket.io.min.js')}}"></script>
+<script src="{{ url_for('static',filename='script/jquery-3.5.1.min.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#butt_format').click(function(){
+		console.log("enter")
+		var socket = io.connect(location.protocol'//' + document.domain + ':' + location.port);
+		socket.emit("formating_advanced");
+		$("#span_format").text("Le formatage est en cours...<br>Ce formatage va prendre plus de temps.")
+		socket.on('end',function(){
+			$("#span_format").text("Le formatage de la clé est terminé !!")
+		  });
+	});
+});
+</script>
+{% endblock %}

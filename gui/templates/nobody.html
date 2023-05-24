@@ -1,0 +1,10 @@
+{% extends 'base_mainpage.html' %}
+{% block menu %}
+<a class="button_for_listing_mainbox" href="/">Home</a>
+{% if g.log %}
+<a class="button_for_listing_mainbox" href="/admin/config">Admin pannel</a>
+{% endif %}
+{% endblock %}
+{% block main_base %}
+<h1>{{ value }}</h1>
+{% endblock %}

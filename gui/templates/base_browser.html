@@ -1,0 +1,19 @@
+{% extends "base_mainpage.html" %}
+{% block menu %}
+	<a class="button_for_listing_mainbox" href="/">Home</a>
+	{% if g.log %}
+	<a class="button_for_listing_mainbox" href="/admin/config">Admin pannel</a>
+	{% endif %}
+	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
+{% endblock %}
+{% block browser %}
+<div id="listAll" class="listAll">
+	<div class="btn_top_browser">
+		<div class="btn-wrapper btwr-arrow">
+			<button class="btn btn-arrow cc" onclick="ret"><img src="{{ url_for('static',filename='fleche-gauche.png') }}" class="img_arrow" height="30px" width="30px"></button>
+		</div>
+	{% block inbro %}{% endblock %}
+</div>
+<script src="{{ url_for('static',filename='jquery-3.5.1.min.js') }}"></script>
+<script src="{{ url_for('static',filename='script.js') }}"></script>
+{% endblock %}

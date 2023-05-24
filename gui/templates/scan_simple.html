@@ -1,0 +1,63 @@
+{% extends 'base_mainpage.html' %}
+{% block styles %}
+<style type="text/css">
+.main_simple_scan{
+	margin-top: 5%;		
+/*	background-color: red;*/
+}
+
+.fieldset_simple_scan{
+	padding: 5em;
+	border-radius: 10px;
+}
+
+.butt_simple_scan{
+	border: 2px solid gray;
+	color: gray;
+	background-color: white;
+	padding: 8px 20px;
+	border-radius: 10px;
+	font-size: 1em;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#span_simple_scan{
+	color:red;
+}
+
+</style>
+{% endblock %}
+{% block menu %}
+	<a class="button_for_listing_mainbox" href="/">Home</a>
+	{% if g.log %}
+	<a class="button_for_listing_mainbox" href="/admin">Admin pannel</a>
+	{% endif %}
+	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
+{% endblock %}
+{% block browser %}
+<div class="main_simple_scan">
+	<fieldset class="fieldset_simple_scan">
+		<legend>Scan simple</legend>
+		<p>La clé est branché !</p><br>
+		<button id="butt_simple_scan" class="butt_simple_scan">Démarré le scan simple</button><br><br>
+		<span id="span_simple_scan"></span>
+	</fieldset>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static',filename='script/socket.io.min.js')}}"></script>
+<script src="{{ url_for('static',filename='script/jquery-3.5.1.min.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#butt_simple_scan').click(function(){
+		var socket = io.connect('http://' + document.domain + ':' + location.port);
+		socket.emit("simple_scan");
+		$("#span_simple_scan").text("Le scanning est en cours...")
+		socket.on('simple_scan_end',function(){
+			$("#span_simple_scan").text("Le scannaing de la clé est terminé !!")
+		});
+	});
+});
+</script>
+{% endblock %}

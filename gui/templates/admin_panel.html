@@ -1,0 +1,22 @@
+{% extends 'base_mainpage.html' %}
+{% block menu %}
+	<a class="button_for_listing_mainbox" href="/">Home</a>
+	{% if g.log %}
+		<a class="button_for_listing_mainbox" href="admin/config">Config</a>
+		<a class="button_for_listing_mainbox" href="logout">Logout</a>
+	{% endif %}
+{% endblock %}
+{% block main_base %}
+	{% if g.log %}
+		<p>some data</p>
+	{% else %}
+		<fieldset class="admin_section">
+			<legend>Password</legend>
+			<form method="POST" action="/admin">
+				<p>Enter your password:</p>
+				<input type="text" name="mdp" placeholder="password">
+				<input type="submit" name="submit">
+			</form>
+		</fieldset>	
+	{% endif %}
+{% endblock %}
