@@ -4,25 +4,5 @@
 ## ⭐ About the project
 Soon...
 
-## 🔧 How to install
-Prepare your environnement
-```bash
-# Update
-sudo apt update
-
-# Install git
-sudo apt install git -y
-```
-
-Start SABU Installation
-```bash
-# Clone the repositorie
-git clone https://github.com/SABU-BSI/SABU.git
-cd SABU
-
-# Run the installation script
-./install.sh
-```
-
 ## 📄 Documentation
 [Read the wiki](https://github.com/SABU-WS/SABU/wiki)
