@@ -1,0 +1,262 @@
+/*====================Default value====================*/
+*, *:after, *:before {
+  margin: 0;
+  padding: 0;
+}
+
+a{
+	text-decoration: none;
+	color:black;
+}
+
+.content{
+	width: 100vw;
+	height: 100vh;
+}
+/*========================================*/
+
+/* ====================listing files==================== */
+.listing_file{
+	border: 1px solid black;
+	border-collapse: collapse;
+	width: 60em;
+/*	background-color: blue;*/
+}
+
+.listAll{
+/*	margin-top: 1em;*/
+/*	width: 50em;*/
+
+/*	background-color: purple;*/
+}
+
+
+
+.main_items_directory{
+	background-color: #cccccc;
+	border-bottom: 1px solid black;
+}
+
+.items_directory td{
+	padding:10px;
+}
+
+.items_directory:nth-child(odd){
+	background-color: #f2f2f2;
+	transition: 0.8s;
+}
+
+.items_directory:hover{
+	background-color: #4c4c4c;
+	cursor:pointer;
+}
+
+.link_file:hover{
+/*	background-color: black;*/
+	border: 1px solid black;
+	border-radius: 50px;
+	padding:3px;
+	transition: 1s;
+}
+
+.btn_top_browser {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+/*  height: 1em;*/
+}
+
+.btn {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.cc:hover{
+	cursor: pointer;
+}
+
+.submit_menu_browser{
+	background-color: white;
+	padding: 0.2em;
+/*	padding: 2.5px 40px;*/
+	border-radius: 10px;
+/*	display: flex;*/
+/*	font-size: 0;*/
+/*	align-items: center;*/
+}
+
+.btn-arrow {
+/*	background-color: red;*/
+	display: flex;
+	font-size: 0;
+	padding: 2.5px 40px;
+	align-items: center;
+}
+
+.btn-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+
+.actiona:hover{
+	transition: 0.3s;
+	color:white;
+}
+
+.div_ef{
+	width: 60em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid black;
+	visibility: hidden;
+/*	background-color: green;*/
+}
+
+.empty_folder{
+/*	background-color: red;*/
+}
+
+/* ====================scan page/main====================  */
+
+@-webkit-keyframes slide {
+  0%   { transform: translate(0px,30px); opacity: 0.2;}
+  100% { transform: translate(0px,0px); opacity: 1;}
+}
+@-moz-keyframes slide {
+  0%   { transform: translate(0px,30px); opacity: 0.2;}
+  100% { transform: translate(0px,0px); opacity: 1;}
+}
+@-o-keyframes slide {
+  0%   { transform: translate(0px,30px); opacity: 0.2;}
+  100% { transform: translate(0px,0px); opacity: 1;}
+}
+@keyframes slide {
+  0%   { transform: translate(0px,30px); opacity: 0.2;}
+  100% { transform: translate(0px,0px); opacity: 1;}
+}
+
+/*====================Main templater====================*/
+.content .master_mainbox{
+	width: 100%;
+	height: 100%;
+/*	background-color: red;*/
+	display: flex;
+	flex-wrap: wrap;
+	align-content: flex-start;
+}
+
+/*=======headers=======*/
+.content .master_mainbox .main_headers{
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.content .master_mainbox .main_title_sabu{
+	width: 100%;
+	height: 5em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(#bdbdbd,#eeddff 50%) ;
+}
+
+.content .master_mainbox .button_listing_mainbox{
+	width: 100%;
+	height: 2.3em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color:#eeddff ;
+}
+
+.content .master_mainbox .scan_mainbox{
+	margin-top: 10%;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+}
+
+.content .master_mainbox .admin_section{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 13em;
+	width: 25em;
+}
+
+.browser_mainbox{
+	margin-top: 1em;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+
+
+/*====================button listing menu====================*/
+.button_for_listing_mainbox{
+	padding: 0.5em;
+	transition: all 1s ease-out;
+	border-bottom: 1px solid black;
+	border-radius: 10px;
+}
+
+.button_for_listing_mainbox:hover, .button_for_listing_mainbox:focus{
+	background-color: #bdbbbf;
+}
+
+/*====================main round button====================*/
+.main_button{
+	animation-name: slide;
+ 	animation-duration: 2s; 
+ 	animation-fill-mode: forwards; 
+ 	transition: all 1s ease-out;
+	/* fg */
+	text-justify: center;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 11em;
+	font-size: 1em;
+
+	/* bg	*/
+	background-color: #eeddff;
+	height: 12em;
+	width: 12em;
+	min-width: 150px;
+	border-radius: 50%;
+}
+
+.main_button:hover, .main_button:focus{
+	background-color: #bdbbbf;
+	border: 1px solid black;
+}
+
+/*====================Sandbox button====================*/
+.sandbox{
+	background-color: grey;
+}
+.sandbox:hover{
+	background-color: grey;
+	border:none;
+	cursor:not-allowed;
+}
+
+
+

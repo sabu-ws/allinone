@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="master_mainbox">
+	<div class="main_headers">
+		<div class="main_title_sabu">
+			<h1>SABU</h1>
+		</div>
+		<div class="button_listing_mainbox">
+			{% block menu %}{% endblock %}
+		</div>
+	</div>
+	<div class="browser_mainbox">
+		{% block browser %}{% endblock %}
+	</div>
+	<div class="scan_mainbox">
+		{% block main_base %}{% endblock %}
+	</div>
+</div>
+{% endblock %}

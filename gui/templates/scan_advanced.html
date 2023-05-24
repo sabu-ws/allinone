@@ -1,0 +1,83 @@
+{% extends 'base_mainpage.html' %}
+{% block styles %}
+<style type="text/css">
+.main_advanced_scan{
+	margin-top: 5%;		
+/*	background-color: red;*/
+}
+
+.fieldset_advanced_scan{
+	padding: 5em;
+	border-radius: 10px;
+}
+
+.butt_advanced_scan{
+	border: 2px solid gray;
+	color: gray;
+	background-color: white;
+	padding: 8px 20px;
+	border-radius: 10px;
+	font-size: 1em;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#span_advanced_scan{
+	color:red;
+}
+
+.has_not_end{
+	color:red;
+}
+
+.has_end{
+	color:green;
+}
+
+.info_scan{
+	color:red;
+}
+</style>
+{% endblock %}
+{% block menu %}
+	<a class="button_for_listing_mainbox" href="/">Home</a>
+	{% if g.log %}
+	<a class="button_for_listing_mainbox" href="/admin">Admin pannel</a>
+	{% endif %}
+	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
+{% endblock %}
+{% block browser %}
+<div class="main_advanced_scan">
+	<fieldset class="fieldset_advanced_scan">
+		<legend>Scan avancé</legend>
+		<p>La clé est branché !</p><br>
+		<button id="butt_advanced_scan" class="butt_advanced_scan">Démarré le scan avancé</button><br><br>
+		<div id="time_wait" hidden>
+			<p class="info_scan">Le scanning est en cours...</p>
+			<p class="info_scan">Ceci peut prendre un peu de temps...</p><br>
+			<p id="col_validate_clamav"  class="has_not_end">clamav : <span id="validate_clamav">x<span></p>
+			<p id="col_validate_olefile" class="has_not_end">olefile : <span id="validate_olefile">x<span></p>
+		</div>
+	</fieldset>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static',filename='script/socket.io.min.js')}}"></script>
+<script src="{{ url_for('static',filename='script/jquery-3.5.1.min.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#butt_advanced_scan').click(function(){
+		$('#time_wait').prop('hidden', false);
+		var socket = io.connect('http://' + document.domain + ':' + location.port);
+		socket.emit("advanced_scan_clamav");
+		socket.emit("advanced_scan_olefile");
+		socket.on('advanced_scan_end',function(data){
+			var build_id = "validate_"+data;
+			$("#"+build_id).text("v");
+			var build_col_p = "col_"+build_id
+			document.getElementById(build_col_p).className = " has_end";
+		});
+	});
+});
+</script>
+{% endblock %}

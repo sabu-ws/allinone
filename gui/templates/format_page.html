@@ -1,0 +1,12 @@
+{% extends 'base_mainpage.html' %}
+{% block menu %}
+	<a class="button_for_listing_mainbox" href="/">Home</a>
+	{% if g.log %}
+	<a class="button_for_listing_mainbox" href="/admin">Admin pannel</a>
+	{% endif %}
+	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
+{% endblock %}
+{% block main_base %}
+<a href="format/simple" id="basic_scan" class="main_button">SIMPLE FORMAT</a>
+<a href="format/advanced" id="advanced_scan" class="main_button">ADVANCED FORMAT</a>
+{% endblock %}
