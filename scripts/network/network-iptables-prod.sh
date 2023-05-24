@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# RETRIEVE NETWORK INTERFACE
+interface=$(ip -br a | awk '{print $1}' | grep -wv lo)
+
 # RETRIEVE NETWORK INFORMATION
 address=$(grep address /etc/network/interfaces | cut -d ' ' -f2)
 netmask=$(grep netmask /etc/network/interfaces | cut -d ' ' -f2)
@@ -14,13 +17,13 @@ iptables -F
 
 # INPUT RULES
 ## acces_ssh
-iptables -A INPUT -p tcp -i enp0s3 --src $network --dst $address --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 22 -j ACCEPT
 ## connexion_http
-iptables -A INPUT -p tcp -i enp0s3 --src $network --dst $address --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 80 -j ACCEPT
 ## connexion_https
-iptables -A INPUT -p tcp -i enp0s3 --src $network --dst $address --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 443 -j ACCEPT
 ## drop_all
-iptables -A INPUT -i enp0s3 --src 0.0.0.0/0 --dst $address -j DROP
+iptables -A INPUT -i $interface --src 0.0.0.0/0 --dst $address -j DROP
 
 # OUTPUT RULES
 ## acces_ssh
