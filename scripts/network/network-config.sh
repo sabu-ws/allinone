@@ -7,8 +7,11 @@
 ## $4 = domain-server1
 ## $5 = domain-server2
 
+# RETRIEVE NETWORK INTERFACE
+interface=$(ip -br a | awk '{print $1}' | grep -wv lo)
+
 # Retrieve the line number of the network interface
-lignes=$(grep -n eth0 /etc/network/interfaces | tail -n +2 | cut -d ':' -f1)
+lignes=$(grep -n $interface /etc/network/interfaces | tail -n +2 | cut -d ':' -f1)
 
 # Change the network information in relation to the arguments
 sed -i "$(($lignes+1))c\address $1" /etc/network/interfaces
