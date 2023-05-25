@@ -1,0 +1,15 @@
+[Unit]
+Description=uWSGI instance tu up SABU-GUI
+After=network.target
+
+[Service]
+User=sabu
+Group=sabu
+WorkingDirectory=/sabu/gui/
+#Environment="PATH=/sabu/gui/venv/bin"
+ExecStart=/sabu/gui/venv/bin/python3 server.py
+#ExecStart=/sabu/GUI/venv/bin/uwsgi --http 0.0.0.0:8888 --gevent 1000 --http-websockets --master --wsgi-file server.py --callable app
+#ExecStart=/sabu/GUI/venv/bin/uwsgi sabu.ini
+
+[Install]
+WantedBy=multi-user.target
