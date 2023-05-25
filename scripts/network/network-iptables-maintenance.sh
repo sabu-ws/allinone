@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# RETRIEVE NETWORK INTERFACE
-interface=$(ip -br a | awk '{print $1}' | grep -wv lo)
+path=$(pwd)
 
 # RETRIEVE NETWORK INFORMATION
-address=$(grep address /etc/network/interfaces | cut -d ' ' -f2)
-netmask=$(grep netmask /etc/network/interfaces | cut -d ' ' -f2)
-nameserver1=$(grep nameserver /etc/resolv.conf | head -n1 | cut -d ' ' -f2)
-nameserver2=$(grep nameserver /etc/resolv.conf | sed -n '2p' | cut -d ' ' -f2)
+interface=$(jq '.network | .interface' $path/../../config/config.json  | tr -d '"')
+address=$(jq '.network | .ip' $path/../../config/config.json  | tr -d '"')
+netmask=$(jq '.network | .netmask' $path/../../config/config.json  | tr -d '"')
+nameserver1=$(jq '.network | .dns1' $path/../../config/config.json  | tr -d '"')
+nameserver2=$(jq '.network | .dns2' $path/../../config/config.json  | tr -d '"')
 
 # CALCULATE NETWORK
 network=$(ipcalc $address/$netmask | grep "Network" | cut -d' ' -f4)
@@ -44,6 +44,6 @@ iptables-save > /etc/iptables/rules.v4
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [NETWORK][Iptables] Rule 'iptables-maintenance' enabled" >> /sabu/logs/network.log
+echo "$date [NETWORK][Iptables] Rule 'iptables-maintenance' enabled" >> $path/../../logs/network.log
 
 # --- Script By SABU --- #

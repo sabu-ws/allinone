@@ -3,6 +3,7 @@
 from flask import Flask, jsonify, render_template, request, url_for , g , flash, redirect ,session ,send_file
 from werkzeug.utils import secure_filename
 from flask_socketio import SocketIO, emit
+import eventlet
 #import pandas as pd
 import hashlib
 import re
@@ -17,13 +18,17 @@ from functools import wraps
 import re
 import random
 import string
+import json
 
+
+eventlet.monkey_patch()
 app = Flask(__name__)
 # socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading', logger=True, engineio_logger=True, http_compression=True, cookie='auth', cookie_secure=True)
 socketio = SocketIO(app)
 # APP Config
 ROOT_PATH="/mnt/usb/"
 SCRIPT_PATH = "../scripts"
+CONFIG_PATH = "../config"
 app.config['SECRET_KEY'] = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
 app.config['UPLOAD_FOLDER'] = ROOT_PATH
 hasScan = False
@@ -133,7 +138,7 @@ def format_simple():
 
 @socketio.on('formating')
 def rec():
-	# proc = subprocess.Popen(f"{SCRIPT_PATH}/script_formatUSB_standard.sh".split(),stdout=subprocess.PIPE)
+	# proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
 	proc = subprocess.Popen("sleep 5".split(),stdout=subprocess.PIPE)
 	print(f"\n{proc.communicate()[0].decode()}\n")
 	while 1:
@@ -150,7 +155,7 @@ def format_advanced():
 
 @socketio.on('formating_advanced')
 def rec():
-	# proc = subprocess.Popen(f"{SCRIPT_PATH}/script_formatUSB_standard.sh".split(),stdout=subprocess.PIPE)
+	# proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-avanced.sh".split(),stdout=subprocess.PIPE)
 	proc = subprocess.Popen("sleep 5".split(),stdout=subprocess.PIPE)
 	print(f"\n{proc.communicate()[0].decode()}\n")
 	while 1:
@@ -327,7 +332,7 @@ def admin():
 @login_required
 def admin_config():
 	if session.get('loggedin') == True:
-		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/script_read_network.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
+		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
 		print(info_ip)
 		if request.method=="POST":
 			if "interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" not in request.form:
@@ -340,7 +345,12 @@ def admin_config():
 					dns2 = request.form["dns2"]
 				else:
 					dns2 = "9.9.9.9"
-				subprocess.Popen(f"{SCRIPT_PATH}/script_config_network.sh {ip} {netmask} {gateway} {dns1} {dns2}".split())
+				dico_network = {"interface": interface, "ip": ip, "netmask": netmask, "gateway": gateway, "dns1": dns1, "dns2": dns2}
+				dico_category_network = {"network": dico_network}
+				json_config = open(CONFIG_PATH+"/config.json", "w")
+				json.dump(dico_category_network, json_config)
+				subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
+				
 			elif "password" in request.form:
 				file_r=open("static/config.json","r")
 				js = json.load(file_r)
@@ -352,6 +362,7 @@ def admin_config():
 				json.dump(js, file_w)
 				return redirect(url_for("admin_config"))
 			else:
+				error = "Veuillez entrez " 
 				return redirect(url_for("index"))
 		elif request.method=="GET":
 			interface=info_ip[0]
@@ -364,7 +375,7 @@ def admin_config():
 			return "404"
 		return render_template("config.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2)
 	else:
-		return redirect(url_for('admin'))
+		return redirect(url_for('admin_config'))
 
 @app.route("/logout")
 @login_required
@@ -400,3 +411,4 @@ def page_not_found(error):
 if __name__ == '__main__':
 	socketio.run(app,host='0.0.0.0', port=8888, debug=True)
 	# socketio.run(app,host='127.0.0.1', port=8888, debug=True)
+	# wsgi.server(eventlet.listen(('0.0.0.0', 8888)), app)
