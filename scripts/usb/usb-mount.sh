@@ -1,5 +1,7 @@
 #!/bin/bash
 
+path=$(pwd)
+
 # UNMOUNT OLD USB STICK
 sudo umount /mnt/usb
 
@@ -27,6 +29,6 @@ fi;
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [USB][Mount] USB key mounted in '/mnt/usb'" >> /sabu/logs/usb.log
+echo "$date [USB][Mount] USB key mounted in '/mnt/usb'" >> $path/../../logs/usb.log
 
 # --- Script By SABU --- #
