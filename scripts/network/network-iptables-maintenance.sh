@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # RETRIEVE NETWORK INFORMATION
-interface=$(jq '.network | .interface' config.json  | tr -d '"')
-address=$(jq '.network | .ip' config.json  | tr -d '"')
-netmask=$(jq '.network | .netmask' config.json  | tr -d '"')
-nameserver1=$(jq '.network | .dns1' config.json  | tr -d '"')
-nameserver2=$(jq '.network | .dns2' config.json  | tr -d '"')
+interface=$(jq '.network | .interface' /SABU/config/config.json  | tr -d '"')
+address=$(jq '.network | .ip' /SABU/config/config.json  | tr -d '"')
+netmask=$(jq '.network | .netmask' /SABU/config/config.json  | tr -d '"')
+nameserver1=$(jq '.network | .dns1' /SABU/config/config.json  | tr -d '"')
+nameserver2=$(jq '.network | .dns2' /SABU/config/config.json  | tr -d '"')
 
 # CALCULATE NETWORK
 network=$(ipcalc $address/$netmask | grep "Network" | cut -d' ' -f4)
