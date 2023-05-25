@@ -347,8 +347,9 @@ def admin_config():
 					dns2 = "9.9.9.9"
 				subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh {ip} {netmask} {gateway} {dns1} {dns2}".split())
 				dico_network = {"interface": interface, "ip": ip, "netmask": netmask, "gateway": gateway, "dns1": dns1, "dns2": dns2}
+				dico_category_network = {"network": dico_network}
 				json_config = open(CONFIG_PATH+"/config.json", "w")
-				json.dump(dico_network, json_config)
+				json.dump(dico_category_network, json_config)
 				
 			elif "password" in request.form:
 				file_r=open("static/config.json","r")
@@ -374,7 +375,7 @@ def admin_config():
 			return "404"
 		return render_template("config.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2)
 	else:
-		return redirect(url_for('admin'))
+		return redirect(url_for('admin_config'))
 
 @app.route("/logout")
 @login_required
@@ -410,3 +411,4 @@ def page_not_found(error):
 if __name__ == '__main__':
 	socketio.run(app,host='0.0.0.0', port=8888, debug=True)
 	# socketio.run(app,host='127.0.0.1', port=8888, debug=True)
+	# wsgi.server(eventlet.listen(('0.0.0.0', 8888)), app)
