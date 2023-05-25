@@ -345,11 +345,11 @@ def admin_config():
 					dns2 = request.form["dns2"]
 				else:
 					dns2 = "9.9.9.9"
-				subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh {ip} {netmask} {gateway} {dns1} {dns2}".split())
 				dico_network = {"interface": interface, "ip": ip, "netmask": netmask, "gateway": gateway, "dns1": dns1, "dns2": dns2}
 				dico_category_network = {"network": dico_network}
 				json_config = open(CONFIG_PATH+"/config.json", "w")
 				json.dump(dico_category_network, json_config)
+				subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
 				
 			elif "password" in request.form:
 				file_r=open("static/config.json","r")
