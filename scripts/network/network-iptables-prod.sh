@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# RETRIEVE NETWORK INTERFACE
-interface=$(ip -br a | awk '{print $1}' | grep -wv lo)
-
 # RETRIEVE NETWORK INFORMATION
-address=$(grep address /etc/network/interfaces | cut -d ' ' -f2)
-netmask=$(grep netmask /etc/network/interfaces | cut -d ' ' -f2)
-nameserver1=$(grep nameserver /etc/resolv.conf | head -n1 | cut -d ' ' -f2)
-nameserver2=$(grep nameserver /etc/resolv.conf | sed -n '2p' | cut -d ' ' -f2)
+interface=$(jq '.network | .interface' /SABU/config/config.json  | tr -d '"')
+address=$(jq '.network | .ip' /SABU/config/config.json  | tr -d '"')
+netmask=$(jq '.network | .netmask' /SABU/config/config.json  | tr -d '"')
+nameserver1=$(jq '.network | .dns1' /SABU/config/config.json  | tr -d '"')
+nameserver2=$(jq '.network | .dns2' /SABU/config/config.json  | tr -d '"')
 
 # CALCULATE NETWORK
 network=$(ipcalc $address/$netmask | grep "Network" | cut -d' ' -f4)
