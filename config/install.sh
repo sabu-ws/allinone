@@ -1,13 +1,16 @@
 #!/bin/bash
 
-# crontab script update at 2 AM
+# Crontab script update at 2 AM
  echo "0 2 * * * sh /sabu/config/update.sh" >> crontab -e 
 
-# install package
+# Install package
 apt install parted mkfs ntfs-3g dd yara clamav exiftools ipcalc iptables -y
+echo iptables-persistent iptables-persistent/autosave_v4 boolean false | debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean false | debconf-set-selections
+apt install iptables-persistent -y
 
-# start script iptables prod
+# Start script iptables prod
 sh /sabu/scripts/network/network-iptables-prod.sh
 
-# Reboot SABU
+# Reboot
 reboot
