@@ -15,8 +15,8 @@ sleep 3
 # Adduser/permission SABU
 adduser sabu --shell=/bin/false --no-create-home
 echo "sabu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-chown sabu:sabu /sabu
-chmod +x -R /sabu/scripts
+chown -R sabu:sabu /sabu
+chmod -R +x /sabu/scripts
 
 # Install python requirements
 pip3 install -r ./gui/requirements.txt
@@ -24,6 +24,8 @@ pip3 install -r ./gui/requirements.txt
 sleep 3
 
 # Start gui
+mv ./service/sabu.service /etc/systemd/system/
+rm -r /sabu/service
 systemctl start sabu.service
 
 # End
