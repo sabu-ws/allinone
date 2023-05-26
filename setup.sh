@@ -5,10 +5,10 @@ ipaddress=$(ip -br a | tail -n 1 | awk '{print $3}' | cut -d '/' -f 1)
 
 # Setup workspace
 mkdir /sabu
-cp * /sabu
+cp -r * /sabu
 
 # Install packages 
-apt install sudo python3 python3-pip ipcalc iptables iptables-persistent 
+apt install sudo python3 python3-pip ipcalc iptables iptables-persistent -y
 
 sleep 3
 
