@@ -36,3 +36,5 @@ echo "Password : P4\$\$w0rdF0r54Bu5t4t10N"
 
 # Remove tmp folder
 rm -rf ../SABU
+
+# --- Script By SABU --- #
