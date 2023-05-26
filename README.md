@@ -9,7 +9,7 @@ SABU is a student project. We offer a whitestation for USB key with several opti
 - Simple scan (with devirusing)
 - Advanced scan (with devirusing)
 
-To access the white station, simply connect to the web page. From this interface you can see files, download and delete them if needed. There is also an administration page, allowing you to configure the white station and see the different logs.
+To access the whitestation, simply connect to the web page. From this interface you can see files, download and delete them if needed. There is also an administration page, allowing you to configure the whitestation and see the different logs.
 
 ## 📄 Documentation
 To install the whitestation on your system, please [read the documentation](https://github.com/SABU-WS/SABU/wiki).
