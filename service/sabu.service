@@ -7,7 +7,11 @@ User=sabu
 Group=sabu
 WorkingDirectory=/sabu/gui/
 #Environment="PATH=/sabu/gui/venv/bin"
+<<<<<<< HEAD
 ExecStart=python3 server.py
+=======
+ExecStart=/usr/bin/python3 server.py
+>>>>>>> 58e2c904be68ef267ca50239b2a6f46c4c2807ed
 #ExecStart=/sabu/GUI/venv/bin/uwsgi --http 0.0.0.0:8888 --gevent 1000 --http-websockets --master --wsgi-file server.py --callable app
 #ExecStart=/sabu/GUI/venv/bin/uwsgi sabu.ini
 
