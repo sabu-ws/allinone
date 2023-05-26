@@ -9,6 +9,13 @@ echo iptables-persistent iptables-persistent/autosave_v4 boolean false | debconf
 echo iptables-persistent iptables-persistent/autosave_v6 boolean false | debconf-set-selections
 apt install iptables-persistent -y
 
+# Install oletools
+git clone https://github.com/decalage2/oletools.git
+cd oletools
+python3 setup.py install
+cd ..
+rm -rf oletools/
+
 # Start script iptables prod
 sh /sabu/scripts/network/network-iptables-prod.sh
 
