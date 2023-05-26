@@ -9,9 +9,6 @@ cp -r * /sabu
 
 # Install packages 
 apt install sudo python3 python3-pip jq debconf-utils -y
-echo iptables-persistent iptables-persistent/autosave_v4 boolean false | debconf-set-selections
-echo iptables-persistent iptables-persistent/autosave_v6 boolean false | debconf-set-selections
-apt install iptables-persistent -y
 
 sleep 3
 
