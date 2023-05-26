@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Create mountrypoint
+mkdir /mnt/usb
+
 # Crontab script update at 2 AM
  echo "0 2 * * * sh /sabu/config/update.sh" >> crontab -e 
 
