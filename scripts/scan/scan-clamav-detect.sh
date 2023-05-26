@@ -10,3 +10,5 @@ clamscan -r $SCAN_PATH > "$LOG_PATH/clamscan-detect-$DATE.log"
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
 echo "$date [Scan][Clamav] New scan available clamscan-detect-$DATE.log" >> $LOG_PATH/../scan.log
 echo "$date [Scan][Clamav] New scan available clamscan-detect-$DATE.log" > $LOG_PATH/../last-scan.log
+
+# --- Script By SABU --- #
