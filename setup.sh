@@ -8,7 +8,7 @@ mkdir /sabu
 cp -r * /sabu
 
 # Install packages 
-apt install sudo python3 python3-pip ipcalc iptables iptables-persistent -y
+apt install sudo python3 python3-pip jq ipcalc iptables iptables-persistent -y
 
 sleep 3
 
