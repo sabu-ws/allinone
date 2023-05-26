@@ -1,7 +1,5 @@
 #!/bin/bash
 
-path=$(pwd)
-
 # Identifier of the USB key
 device='/dev/sd[a-z]'
 
@@ -25,6 +23,6 @@ mkfs.ntfs -f ${device}1
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [FORMAT][Avanced] USB key formatted in NTFS with zeroes" >> $path/../../logs/format.log
+echo "$date [FORMAT][Avanced] USB key formatted in NTFS with zeroes" >> /sabu/logs/format.log
 
 # --- Script By SABU --- #

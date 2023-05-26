@@ -1,7 +1,5 @@
 #!/bin/bash
 
-path=$(pwd)
-
 # Identifier of the USB key
 device='/dev/sd[a-z]'
 
@@ -22,6 +20,6 @@ mkfs.ntfs -f ${device}1
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [FORMAT][Standard] USB key formatted in NTFS" >> $path/../../logs/format.log
+echo "$date [FORMAT][Standard] USB key formatted in NTFS" >> /sabu/logs/format.log
 
 # --- Script By SABU --- #

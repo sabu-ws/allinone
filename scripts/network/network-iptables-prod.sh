@@ -3,11 +3,11 @@
 path=$(pwd)
 
 # RETRIEVE NETWORK INFORMATION
-interface=$(jq '.network | .interface' $path/../../config/config.json  | tr -d '"')
-address=$(jq '.network | .ip' $path/../../config/config.json  | tr -d '"')
-netmask=$(jq '.network | .netmask' $path/../../config/config.json  | tr -d '"')
-nameserver1=$(jq '.network | .dns1' $path/../../config/config.json  | tr -d '"')
-nameserver2=$(jq '.network | .dns2' $path/../../config/config.json  | tr -d '"')
+interface=$(jq '.network | .interface' /sabu/config/config.json  | tr -d '"')
+address=$(jq '.network | .ip' /sabu/config/config.json  | tr -d '"')
+netmask=$(jq '.network | .netmask' /sabu/config/config.json  | tr -d '"')
+nameserver1=$(jq '.network | .dns1' /sabu/config/config.json  | tr -d '"')
+nameserver2=$(jq '.network | .dns2' /sabu/config/config.json  | tr -d '"')
 
 # CALCULATE NETWORK
 network=$(ipcalc $address/$netmask | grep "Network" | cut -d' ' -f4)
@@ -40,6 +40,6 @@ iptables-save > /etc/iptables/rules.v4
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [NETWORK][Iptables] Rule 'iptables-prod' enabled" >> $path/../../logs/network.log
+echo "$date [NETWORK][Iptables] Rule 'iptables-prod' enabled" >> /sabu/logs/network.log
 
 # --- Script By SABU --- #
