@@ -8,7 +8,10 @@ mkdir /sabu
 cp -r * /sabu
 
 # Install packages 
-apt install sudo python3 python3-pip jq ipcalc iptables iptables-persistent -y
+apt install sudo python3 python3-pip jq debconf-utils - y
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+apt install iptables-persistent -y
 
 sleep 3
 
@@ -31,7 +34,8 @@ systemctl start sabu.service
 
 # End
 echo "Setup completed !"
-echo "Open browser and visit : https://$ipaddress/admin"
+echo "Open browser and visit : http://$ipaddress:8888/admin"
+echo "Password : P4\$\$w0rdF0r54Bu5t4t10N"
 
 # Remove tmp folder
 rm -rf ../SABU
