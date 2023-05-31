@@ -4,9 +4,9 @@
 mkdir /mnt/usb
 
 # Crontab script update at 2 AM
- echo "0 2 * * * sh /sabu/config/update.sh" >> crontab -e 
+echo "0 2 * * * sh /sabu/config/update.sh" >> crontab -e 
 
-# Install package
+# Install other package
 apt install parted mkfs ntfs-3g dd yara clamav exiftools ipcalc iptables -y
 echo iptables-persistent iptables-persistent/autosave_v4 boolean false | debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean false | debconf-set-selections
