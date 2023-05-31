@@ -23,6 +23,10 @@ rm -rf oletools/
 # Start script iptables prod
 sh /sabu/scripts/network/network-iptables-prod.sh
 
+# LOG ACTION
+date=$(date +"[%Y-%m-%d %H:%M:%S]")
+echo "$date [SABU] The installation script has been executed successfully" >> /sabu/logs/sabu.log
+
 # Reboot
 reboot
 
