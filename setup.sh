@@ -33,10 +33,14 @@ systemctl enable sabu.service
 
 # End
 echo "Setup completed !"
-echo "Open browser and visit : http://$ipaddress:8888/admin"
+echo "Open browser and visit : http://$ipaddress:8888/setup"
 echo "Password : P4\$\$w0rdF0r54Bu5t4t10N"
 
 # Remove tmp folder
 rm -rf ../SABU
+
+# LOG ACTION
+date=$(date +"[%Y-%m-%d %H:%M:%S]")
+echo "$date [SABU] The setup script has been executed successfully" >> /sabu/logs/sabu.log
 
 # --- Script By SABU --- #
