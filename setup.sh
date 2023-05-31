@@ -17,6 +17,7 @@ adduser sabu --shell=/bin/false --no-create-home
 echo "sabu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 chown -R sabu:sabu /sabu
 chmod -R +x /sabu/scripts
+chmod -R +x /sabu/config
 
 # Install python requirements
 pip3 install -r ./gui/requirements.txt
