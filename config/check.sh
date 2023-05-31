@@ -9,9 +9,9 @@ status=$(systemctl status sabu.service | grep Active | awk '{ print $3}' | tr -d
 
 if [ $status="running" ]
 then
-  echo "[SABU] The sabu service has running" >> /test/sabu.log
+  echo "[SABU] The sabu service has running" >> /sabu/logs/sabu.log
 else
-  echo "[SABU] The sabu service has down" >> /test/sabu.log
+  echo "[SABU] The sabu service has down" >> /sabu/logs/sabu.log
 fi
 
 # --- Script By SABU --- #
