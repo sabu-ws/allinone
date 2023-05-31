@@ -1,7 +1,5 @@
 #!/bin/bash
 
-path=$(pwd)
-
 # RETRIEVE NETWORK INFORMATION
 interface=$(jq '.network | .interface' /sabu/config/config.json  | tr -d '"')
 address=$(jq '.network | .ip' /sabu/config/config.json  | tr -d '"')
