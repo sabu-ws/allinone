@@ -361,34 +361,51 @@ def admin_config():
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
 		print(info_ip)
 		if request.method=="POST":
+			must_match_ip = r"^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
+			# Min 12 char, 1 number, 1 uppercase, 1 lowercase,1 spécial char
+			must_match_pwd = r"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.!@$%^\&\(\)\{\}\[\]:;<>,\.\?\/~_\+-=\|]).{12,}$"
 			if "interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" not in request.form:
-				interface = request.form["interface"]
-				ip = request.form["ip"]
-				netmask = request.form["netmask"]
-				gateway = request.form["gateway"]
-				dns1 = request.form["dns1"]
 				if request.form["dns2"] != "":
 					dns2 = request.form["dns2"]
 				else:
 					dns2 = "9.9.9.9"
-				dico_network = {"interface": interface, "ip": ip, "netmask": netmask, "gateway": gateway, "dns1": dns1, "dns2": dns2}
-				dico_category_network = {"network": dico_network}
-				json_config = open(CONFIG_PATH+"/config.json", "w")
-				json.dump(dico_category_network, json_config)
-				subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
-				
+				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2):
+					interface = request.form["interface"]
+					ip = request.form["ip"]
+					netmask = request.form["netmask"]
+					gateway = request.form["gateway"]
+					dns1 = request.form["dns1"]
+					dico_network = {"interface": interface, "ip": ip, "netmask": netmask, "gateway": gateway, "dns1": dns1, "dns2": dns2}
+					dico_category_network = {"network": dico_network}
+					json_config = open(CONFIG_PATH+"/config.json", "w")
+					json.dump(dico_category_network, json_config)
+					subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
+					flash("net_adm")
+					flash("The network was configure !")
+					return redirect(url_for("admin_config"))
+				else:
+					flash("net_adm")
+					flash("Some informations was incorrect")
+					return redirect(url_for("admin_config"))
 			elif "password" in request.form:
-				file_r=open("static/config.json","r")
-				js = json.load(file_r)
-				file_r.close()
-				file_w=open("static/config.json","w")
-				mdp=request.form['password']
-				encrypt=hashlib.sha512(mdp.encode()).hexdigest()
-				js['mdp']=encrypt
-				json.dump(js, file_w)
-				return redirect(url_for("admin_config"))
+				if re.search(must_match_pwd, request.form["password"]):
+					file_r=open("static/config.json","r")
+					js = json.load(file_r)
+					file_r.close()
+					file_w=open("static/config.json","w")
+					mdp=request.form['password']
+					encrypt=hashlib.sha512(mdp.encode()).hexdigest()
+					js['mdp']=encrypt
+					json.dump(js, file_w)
+					flash("password")
+					flash("Password was change")
+					return redirect(url_for("admin_config"))
+				else:
+					flash("password")
+					flash("Bad padding password")
+					return redirect(url_for("admin_config"))	
 			else:
-				error = "Veuillez entrez " 
+				g.log = 0
 				return redirect(url_for("index"))
 		elif request.method=="GET":
 			interface=info_ip[0]
@@ -421,7 +438,7 @@ def first_connection():
 					dns2 = request.form["dns2"]
 				else:
 					dns2 = "9.9.9.9"
-				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, request.form["dns2"]) and re.search(must_match_pwd, request.form["password"]):
+				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]):
 					interface = request.form["interface"]
 					ip = request.form["ip"]
 					netmask = request.form["netmask"]
