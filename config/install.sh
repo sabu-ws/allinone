@@ -3,8 +3,9 @@
 # Create mountrypoint
 mkdir /mnt/usb
 
-# Crontab script update at 2 AM
-echo "0 2 * * * sh /sabu/config/update.sh" >> crontab -e 
+# Crontab script
+echo "@reboot sh /sabu/config/check.sh" >> crontab -e 
+echo "0 2 * * * sh /sabu/config/update.sh" >> crontab -e
 
 # Install other package
 apt install parted mkfs ntfs-3g dd yara clamav exiftools ipcalc iptables -y
