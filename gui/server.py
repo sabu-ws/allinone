@@ -421,7 +421,7 @@ def admin_config():
 		return redirect(url_for('admin_config'))
 
 
-@app.route("/first",methods=["POST","GET"])
+@app.route("/setup",methods=["POST","GET"])
 def first_connection():
 	global first_con
 	if first_con == True:
@@ -474,7 +474,7 @@ def first_connection():
 			dns2=info_ip[5]
 		else:
 			return "404"
-		return render_template("first.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2)
+		return render_template("setup.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2)
 	elif first_con == False:
 		return redirect("/")
 	else:
