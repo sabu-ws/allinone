@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Stand by, process network restart after config in setup page
+sleep 5
+
 # Create mountrypoint
 mkdir /mnt/usb
 
