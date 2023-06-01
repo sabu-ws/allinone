@@ -33,8 +33,7 @@ systemctl enable sabu.service
 
 # End
 echo "Setup completed !"
-echo "Open browser and visit : http://$ipaddress:8888/setup"
-echo "Password : P4\$\$w0rdF0r54Bu5t4t10N"
+echo "Open browser and visit : http://$ipaddress:8888/"
 
 # Remove tmp folder
 rm -rf ../SABU
