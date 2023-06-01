@@ -6,10 +6,10 @@ outfile=$(date +%s)
 
 for i in $(find $pathUSB -type f)
 do
-        format=$(python3 /home/debian/oletest/oletools/oleid.py $i | grep "Container format" | cut -d'|' -f2 | tr -d ' ')
+        format=$(oleid $i | grep "Container format" | cut -d'|' -f2 | tr -d ' ')
         if [ "$format" = "OLE" ];
         then
-                macro=$(python3 /home/debian/oletest/oletools/oleid.py $i | grep -E "VBA Macros|XML Macros" | cut -d'|' -f2 | tr -d ' ')
+                macro=$(oleid $i | grep -E "VBA Macros|XML Macros" | cut -d'|' -f2 | tr -d ' ')
                 if [ "$macro" = "Yes,suspicious" ];
                 then
                         echo "$i is suspicious" >> $LOG_PATH/ole-$DATE.log
