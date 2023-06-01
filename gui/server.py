@@ -6,8 +6,9 @@ from flask_socketio import SocketIO, emit
 import eventlet
 
 import hashlib
+import random
+import string
 import re
-import json
 import subprocess
 import os
 from datetime import datetime
@@ -16,10 +17,8 @@ from io import BytesIO
 import zipfile
 from functools import wraps
 import re
-import random
-import string
 import json
-
+import logging
 
 eventlet.monkey_patch()
 app = Flask(__name__)
@@ -33,7 +32,7 @@ app.config['SECRET_KEY'] = ''.join(random.choices(string.ascii_letters + string.
 app.config['UPLOAD_FOLDER'] = ROOT_PATH
 hasScan = False
 first_con = True
-
+# logging.LogRecord("gui", 20, "/sabu/logs/gui.log", msg="%(asctime)s [GUI]")
 
 def login_required(f):
 	@wraps(f)
@@ -352,7 +351,22 @@ def admin():
 	return render_template("admin_panel.html")
 
 
-
+@app.route("/admin/download_logs")
+@first
+@login_required
+def admin_downloadLogs():
+	if session.get("loggedin") == True:
+		last = "/sabu/logs/"
+		timestr = time.strftime("%Y%m%d-%H%M%S")
+		fileName = f"logs_{timestr}.zip"
+		memory_file = BytesIO()
+		with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+			for root, dirs, files in os.walk(last):
+				for file in files:
+					zipf.write(os.path.join(root, file))
+		memory_file.seek(0)
+		return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
+	return "error"
 @app.route("/admin/config",methods=['GET', 'POST'])
 @first
 @login_required
@@ -421,7 +435,7 @@ def admin_config():
 		return redirect(url_for('admin_config'))
 
 
-@app.route("/setup",methods=["POST","GET"])
+@app.route("/first",methods=["POST","GET"])
 def first_connection():
 	global first_con
 	if first_con == True:
@@ -474,7 +488,7 @@ def first_connection():
 			dns2=info_ip[5]
 		else:
 			return "404"
-		return render_template("setup.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2)
+		return render_template("first.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2)
 	elif first_con == False:
 		return redirect("/")
 	else:
