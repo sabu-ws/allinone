@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pathUSB='/mnt/usb'
-LOG_PATH='/sabu/logs/'
+LOG_PATH='/sabu/logs/scan/ole'
 outfile=$(date +%s)
 
 for i in $(find $pathUSB -type f)
@@ -17,7 +17,7 @@ do
         fi;
 done
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [Scan][OLE] New scan available ole-$DATE.log" >> $LOG_PATH/scan.log
-echo "ole-$DATE.log"
+echo "$date [Scan][OLE] New scan available ole-$DATE.log" >> $LOG_PATH/../../scan.log
+echo "ole-$DATE.log" > $LOG_PATH/last-scan.log
 
 # --- Script By SABU --- #
