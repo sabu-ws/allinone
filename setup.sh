@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Disable IPV6
+cp sysctl/70-disable-ipv6.conf /etc/sysctl.d/70-disable-ipv6.conf
+sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
+
 # RETRIEVE NETWORK IP
 ipaddress=$(ip -br a | tail -n 1 | awk '{print $3}' | cut -d '/' -f 1)
 
