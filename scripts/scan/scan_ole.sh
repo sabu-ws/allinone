@@ -2,7 +2,7 @@
 
 pathUSB='/mnt/usb'
 LOG_PATH='/sabu/logs/scan/ole'
-outfile=$(date +%s)
+DATESTART=$(date +%s)
 
 for i in $(find $pathUSB -type f)
 do
@@ -12,12 +12,12 @@ do
                 macro=$(oleid $i | grep -E "VBA Macros|XML Macros" | cut -d'|' -f2 | tr -d ' ')
                 if [ "$macro" = "Yes,suspicious" ];
                 then
-                        echo "$i is suspicious" >> $LOG_PATH/ole-$DATE.log
+                        echo "$i is suspicious" >> $LOG_PATH/ole-$DATESTART.log
                 fi;
         fi;
 done
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [Scan][OLE] New scan available ole-$DATE.log" >> $LOG_PATH/../../scan.log
-echo "ole-$DATE.log" > $LOG_PATH/last-scan.log
+echo "$date [Scan][OLE] New scan available ole-$DATESTART.log" >> $LOG_PATH/../../scan.log
+echo "ole-$DATESTART.log" > $LOG_PATH/last-scan.log
 
 # --- Script By SABU --- #
