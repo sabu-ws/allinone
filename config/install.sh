@@ -11,7 +11,7 @@ echo "@reboot sh /sabu/config/check.sh" >> crontab -e
 echo "0 2 * * * sh /sabu/config/update.sh" >> crontab -e
 
 # Install other package
-apt install parted mkfs ntfs-3g dd yara clamav exiftools ipcalc iptables -y
+apt install parted ntfs-3g yara clamav exiftool ipcalc iptables -y
 echo iptables-persistent iptables-persistent/autosave_v4 boolean false | debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean false | debconf-set-selections
 apt install iptables-persistent -y
