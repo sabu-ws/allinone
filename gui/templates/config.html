@@ -103,7 +103,7 @@
 			</form>
 		</fieldset>
 	</div>
-	<div class="sw_pwd">
+	<div class="dl_logs">
 		<fieldset class="admin_section">
 			<legend>Logs</legend> 
 			<table>
@@ -113,12 +113,6 @@
 					</td>
 				</tr>
 			</table>
-			{% if get_flashed_messages()[0] == "password" %}
-			<div>
-				<meta charset="utf-8">
-				<b style="color: red;">{{ get_flashed_messages()[1] }}</b>
-			</div>
-			{% endif %}
 		</fieldset>
 	</div>
 {% endblock %}
