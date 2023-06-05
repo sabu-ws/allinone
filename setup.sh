@@ -2,38 +2,38 @@
 
 # Disable IPV6
 cp sysctl/70-disable-ipv6.conf /etc/sysctl.d/70-disable-ipv6.conf
-sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
+sudo sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 
 # RETRIEVE NETWORK IP
 ipaddress=$(ip -br a | tail -n 1 | awk '{print $3}' | cut -d '/' -f 1)
 
 # Setup workspace
-mkdir /sabu
-cp -r * /sabu
+sudo mkdir /sabu
+sudo cp -r * /sabu
 
 # Install packages 
-apt install sudo python3 python3-pip jq debconf-utils -y
+sudo apt install sudo python3 python3-pip jq debconf-utils -y
 
 sleep 3
 
 # Adduser/permission SABU
-adduser sabu --shell=/bin/false --no-create-home
+sudo adduser sabu --shell=/bin/false --no-create-home
 echo "sabu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-chown -R sabu:sabu /sabu
-chmod -R +x /sabu/scripts
-chmod -R +x /sabu/config
+sudo chown -R sabu:sabu /sabu
+sudo chmod -R +x /sabu/scripts
+sudo chmod -R +x /sabu/config
 
 # Install python requirements
-pip3 install -r ./gui/requirements.txt
+sudo pip3 install -r ./gui/requirements.txt
 
 sleep 3
 
 # Start gui
-mv ./service/sabu.service /etc/systemd/system/
-rm -r /sabu/service
-systemctl daemon-reload
-systemctl start sabu.service
-systemctl enable sabu.service
+sudo mv ./service/sabu.service /etc/systemd/system/
+sudo rm -r /sabu/service
+sudo systemctl daemon-reload
+sudo systemctl start sabu.service
+sudo systemctl enable sabu.service
 
 # End
 echo "=====================   [  SABU  ]   ====================="
@@ -42,7 +42,7 @@ echo "   Open browser and visit : http://$ipaddress:8888/    "
 echo "=========================================================="
 
 # Remove tmp folder
-rm -rf ../SABU
+sudo rm -rf ../SABU
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
