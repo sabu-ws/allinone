@@ -12,7 +12,7 @@ mkdir /sabu
 cp -r * /sabu
 
 # Install packages 
-apt install sudo python3 python3-pip jq debconf-utils -y
+apt install sudo python3 python3-pip jq -y
 
 sleep 3
 

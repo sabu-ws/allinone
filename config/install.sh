@@ -11,10 +11,11 @@ sudo sh -c "echo '@reboot sh /sabu/config/check.sh' >> /etc/crontab"
 sudo sh -c "echo '0 2 * * * sh /sabu/config/update.sh' >> /etc/crontab"
 
 # Install other package
-sudo apt install parted ntfs-3g yara clamav exiftool ipcalc iptables -y
-echo iptables-persistent iptables-persistent/autosave_v4 boolean false | sudo debconf-set-selections
-echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo debconf-set-selections
-sudo apt install iptables-persistent -y
+sudo apt install parted ntfs-3g yara clamav exiftool ipcalc nftables -y
+
+# Start and Enable nftables service
+sudo systemctl start nftables.service
+sudo systemctl enable nftables.service
 
 # Install oletools
 git clone https://github.com/decalage2/oletools.git
@@ -24,7 +25,7 @@ cd ..
 sudo rm -rf oletools/
 
 # Start script iptables prod
-sudo sh /sabu/scripts/network/network-iptables-prod.sh
+sudo sh /sabu/scripts/network/network-nftables-prod.sh
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
