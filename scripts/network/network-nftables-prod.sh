@@ -27,6 +27,8 @@ sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $a
 sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 80 accept
 ## Allow HTTPS
 sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 443 accept
+## Allow port temp GUI
+sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 8888 accept
 ## DROP ALL
 sudo nft add rule inet filter input iif $interface ip saddr 0.0.0.0/0 ip daddr $address drop
 
@@ -34,9 +36,11 @@ sudo nft add rule inet filter input iif $interface ip saddr 0.0.0.0/0 ip daddr $
 ## Allow SSH
 sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 22 ip daddr $network accept
 ## Allow HTTP
-sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 80 accept
+sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 80 ip daddr 0.0.0.0/0 accept
 ## Allow HTTPS
-sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 443 accept
+sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 443 ip daddr 0.0.0.0/0 accept
+## Allow port temp GUI
+sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 8888 ip daddr $network accept
 ## DROP ALL
 sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 drop
 
