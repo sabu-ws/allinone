@@ -19,7 +19,7 @@ sed -i "1c\nameserver $nameserver1" /etc/resolv.conf
 sed -i "2c\nameserver $nameserver2" /etc/resolv.conf
 
 # Restart the network configuration
-systemctl restart networking.service
+sudo systemctl restart networking.service
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
