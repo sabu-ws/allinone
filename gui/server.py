@@ -109,8 +109,7 @@ def scan_simple():
 
 @socketio.on('simple_scan')
 def rec():
-	proc = subprocess.Popen("sleep 2".split())
-	# proc = subprocess.Popen(SCRIPT_PATH+"clamav_scan_detect.sh".split())
+	proc = subprocess.Popen(SCRIPT_PATH+"clamav_scan_detect.sh".split())
 	global hasScan
 	while 1:
 		poll = proc.poll()
@@ -130,7 +129,7 @@ def scan_advanced():
 
 @socketio.on('advanced_scan_clamav')
 def rec():
-	proc = subprocess.Popen("sleep 2".split(),stdout=subprocess.PIPE)
+	proc = subprocess.Popen(SCRIPT_PATH+"scan_clamav_detect.sh".split())
 	global hasScan
 	global nb_advanced_scan
 	while 1:
@@ -146,7 +145,7 @@ def rec():
 
 @socketio.on('advanced_scan_olefile')
 def rec():
-	proc = subprocess.Popen("sleep 5".split(),stdout=subprocess.PIPE)
+	proc = subprocess.Popen(SCRIPT_PATH+"scan_ole.sh".split())
 	while 1:
 		poll2 = proc.poll()
 		if poll2 is not None:
