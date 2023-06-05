@@ -1,4 +1,4 @@
-	# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # --------------------Import module-------------------------
 from flask import Flask, jsonify, render_template, request, url_for , g , flash, redirect ,session ,send_file
 from werkzeug.utils import secure_filename
@@ -26,13 +26,15 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 # APP Config
 ROOT_PATH="/mnt/usb/"
-SCRIPT_PATH = "../scripts"
-CONFIG_PATH = "../config"
+SCRIPT_PATH = "/sabu/scripts"
+CONFIG_PATH = "/sabu/config"
+LOG_PATH = "/sabu/logs"
 app.config['SECRET_KEY'] = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
 app.config['UPLOAD_FOLDER'] = ROOT_PATH
 hasScan = False
 first_con = True
-# logging.LogRecord("gui", 20, "/sabu/logs/gui.log", msg="%(asctime)s [GUI]")
+nb_advanced_scan = 2
+is_scan=0
 
 def login_required(f):
 	@wraps(f)
@@ -50,6 +52,8 @@ def detectUSB(f):
 		for filepath in os.listdir(dir):
 			if pattern.match(filepath):
 				return f(*args, **kwargs)
+		global hasScan
+		hasScan = False
 		return redirect(url_for('nobody', next=request.url))
 	return decorated_function
 
@@ -58,7 +62,7 @@ def ifscan(f):
 	def decorated_function(*args, **kwargs):
 		global hasScan
 		if hasScan == False:
-			return redirect(url_for('scan'))
+			return redirect(url_for('scan_page'))
 		return f(*args, **kwargs)
 	return decorated_function
 
@@ -93,23 +97,27 @@ def index():
 @first
 @detectUSB
 def scan_page():
-	return render_template("scan_page.html")
+	global hasScan
+	return render_template("scan_page.html",hasScan=hasScan)
 
 @app.route("/scan/simple")
 @first
 @detectUSB
 def scan_simple():
-	return render_template("scan_simple.html")
+	global hasScan
+	return render_template("scan_simple.html",hasScan=hasScan)
 
 @socketio.on('simple_scan')
 def rec():
-	proc = subprocess.Popen("sleep 5".split())
+	proc = subprocess.Popen("sleep 2".split())
+	# proc = subprocess.Popen(SCRIPT_PATH+"clamav_scan_detect.sh".split())
 	global hasScan
 	while 1:
 		poll = proc.poll()
 		if poll is not None:
 			emit("simple_scan_end")
 			hasScan = True
+			emit("end")
 			print("end simple scan")
 			break
 
@@ -117,17 +125,22 @@ def rec():
 @first
 @detectUSB
 def scan_advanced():
-	return render_template("scan_advanced.html")
+	global hasScan
+	return render_template("scan_advanced.html",hasScan=hasScan)
 
 @socketio.on('advanced_scan_clamav')
 def rec():
 	proc = subprocess.Popen("sleep 2".split(),stdout=subprocess.PIPE)
 	global hasScan
+	global nb_advanced_scan
 	while 1:
 		poll2 = proc.poll()
 		if poll2 is not None:
 			emit("advanced_scan_end","clamav")
 			hasScan = True
+			is_scan+=1
+			if is_scan == nb_advanced_scan:
+				emit("end")
 			print("end clamav")
 			break
 
@@ -138,8 +151,34 @@ def rec():
 		poll2 = proc.poll()
 		if poll2 is not None:
 			emit("advanced_scan_end","olefile")
+			is_scan+=1
+			if is_scan == nb_advanced_scan:
+				emit("end")
 			print("end olefile")
 			break
+
+@app.route("/scan/result",methods=["POST","GET"])
+@detectUSB
+@ifscan
+@first
+def resultat():
+	if request.method == "GET":
+		clam_av = [i[0][:-1] for i in [i.split() for i in open("/sabu/logs/scan/clamav/"+open("/sabu/logs/scan/clamav/last-scan.log").read().replace("\n","")).read().split("\n")] if len(i) > 0 if i[-1] == "FOUND" ]
+		ole = [i.split()[0] for i in open("/sabu/logs/scan/ole/"+open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","")).readlines()]
+		scan = ole+clam_av
+		resultat = list(set(scan))
+		resultat = [i for i in resultat if os.path.isfile(i)]
+		lenght = len(resultat)
+		return render_template("result.html",files=resultat,lenght=lenght)
+	elif request.method == "POST":
+		if request.form["validate_res"] == "Delete":
+			files = request.form.to_dict()
+			del files["validate_res"]
+			for file in files.keys():
+				if os.path.isfile(file):
+					os.remove(file)
+		return redirect(url_for("resultat"))
+	return redirect(url_for("nobody"))
 
 @app.route("/format")
 @first
@@ -155,8 +194,7 @@ def format_simple():
 
 @socketio.on('formating')
 def rec():
-	# proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
-	proc = subprocess.Popen("sleep 5".split(),stdout=subprocess.PIPE)
+	proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
 	print(f"\n{proc.communicate()[0].decode()}\n")
 	while 1:
 		poll = proc.poll()
@@ -173,8 +211,7 @@ def format_advanced():
 
 @socketio.on('formating_advanced')
 def rec():
-	# proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-avanced.sh".split(),stdout=subprocess.PIPE)
-	proc = subprocess.Popen("sleep 5".split(),stdout=subprocess.PIPE)
+	proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-avanced.sh".split(),stdout=subprocess.PIPE)
 	print(f"\n{proc.communicate()[0].decode()}\n")
 	while 1:
 		poll = proc.poll()
@@ -367,6 +404,7 @@ def admin_downloadLogs():
 		memory_file.seek(0)
 		return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
 	return "error"
+
 @app.route("/admin/config",methods=['GET', 'POST'])
 @first
 @login_required
@@ -473,6 +511,7 @@ def first_connection():
 					json.dump(js, file_w)
 					file_w.close()
 					first_con = False
+					subprocess.Popen("/sabu/config/install.sh")
 				else:
 					flash("Some informations was incorrect")
 					return redirect(url_for("first_connection"))
