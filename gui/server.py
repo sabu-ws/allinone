@@ -144,6 +144,7 @@ def rec():
 	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh".split())
 	global hasScan
 	global nb_advanced_scan
+	global is_scan
 	while 1:
 		poll2 = proc.poll()
 		if poll2 is not None:
@@ -159,6 +160,8 @@ def rec():
 def rec():
 	logging("Advanced scan(ole) start")
 	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan_ole.sh".split())
+	global is_scan
+	global nb_advanced_scan
 	while 1:
 		poll2 = proc.poll()
 		if poll2 is not None:
@@ -177,7 +180,9 @@ def rec():
 def resultat():
 	if request.method == "GET":
 		clam_av = [i[0][:-1] for i in [i.split() for i in open("/sabu/logs/scan/clamav/"+open("/sabu/logs/scan/clamav/last-scan.log").read().replace("\n","")).read().split("\n")] if len(i) > 0 if i[-1] == "FOUND" ]
-		ole = [i.split()[0] for i in open("/sabu/logs/scan/ole/"+open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","")).readlines()]
+		ole = []
+		if open("/sabu/logs/scan/ole/last-scan.log").read() != "":
+			ole = [i.split()[0] for i in open("/sabu/logs/scan/ole/"+open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","")).readlines()]
 		scan = ole+clam_av
 		resultat = list(set(scan))
 		resultat = [i for i in resultat if os.path.isfile(i)]
