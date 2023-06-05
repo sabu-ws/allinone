@@ -120,7 +120,7 @@ def scan_simple():
 @socketio.on('simple_scan')
 def rec():
 	logging("simple scan start")
-	proc = subprocess.Popen(SCRIPT_PATH+"/clamav_scan_detect.sh".split())
+	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh".split())
 	global hasScan
 	while 1:
 		poll = proc.poll()
@@ -141,9 +141,10 @@ def scan_advanced():
 @socketio.on('advanced_scan_clamav')
 def rec():
 	logging("Advanced scan(clamav) start")
-	proc = subprocess.Popen(SCRIPT_PATH+"/scan_clamav_detect.sh".split())
+	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh".split())
 	global hasScan
 	global nb_advanced_scan
+	global is_scan
 	while 1:
 		poll2 = proc.poll()
 		if poll2 is not None:
@@ -158,7 +159,9 @@ def rec():
 @socketio.on('advanced_scan_olefile')
 def rec():
 	logging("Advanced scan(ole) start")
-	proc = subprocess.Popen(SCRIPT_PATH+"/scan_ole.sh".split())
+	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan_ole.sh".split())
+	global is_scan
+	global nb_advanced_scan
 	while 1:
 		poll2 = proc.poll()
 		if poll2 is not None:
@@ -177,7 +180,9 @@ def rec():
 def resultat():
 	if request.method == "GET":
 		clam_av = [i[0][:-1] for i in [i.split() for i in open("/sabu/logs/scan/clamav/"+open("/sabu/logs/scan/clamav/last-scan.log").read().replace("\n","")).read().split("\n")] if len(i) > 0 if i[-1] == "FOUND" ]
-		ole = [i.split()[0] for i in open("/sabu/logs/scan/ole/"+open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","")).readlines()]
+		ole = []
+		if open("/sabu/logs/scan/ole/last-scan.log").read() != "":
+			ole = [i.split()[0] for i in open("/sabu/logs/scan/ole/"+open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","")).readlines()]
 		scan = ole+clam_av
 		resultat = list(set(scan))
 		resultat = [i for i in resultat if os.path.isfile(i)]
