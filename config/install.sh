@@ -7,8 +7,7 @@ sleep 5
 sudo mkdir /mnt/usb
 
 # Crontab script
-sudo sh -c "echo '@reboot sh /sabu/config/check.sh' >> /etc/crontab"
-sudo sh -c "echo '0 2 * * * sh /sabu/config/update.sh' >> /etc/crontab"
+sudo sh /sabu/config/cron.sh
 
 # Install other package
 sudo apt install parted ntfs-3g yara clamav exiftool ipcalc nftables -y
