@@ -18,7 +18,6 @@ import zipfile
 from functools import wraps
 import re
 import json
-import logging
 
 eventlet.monkey_patch()
 app = Flask(__name__)
@@ -74,6 +73,8 @@ def first(f):
 		if "mdp" in js:
 			if js["mdp"] == "":
 				return redirect(url_for('first_connection'))
+		global first_con
+		first_con = False
 		return f(*args, **kwargs)
 	return decorated_function
 
@@ -87,6 +88,15 @@ def sizeof_fmt(num, suffix="B"):
         num /= 1024.0
     return f"{num:.1f}Yi{suffix}"
 
+
+def logging(message):
+	file = open("/sabu/logs/gui.log","a")
+	date_format = datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
+	prefetch = f"{date_format} [GUI] {message}\n"
+	file.write(prefetch)
+	file.close()
+
+logging("GUI of SABU is start")
 
 @app.route("/")
 @first
@@ -109,6 +119,7 @@ def scan_simple():
 
 @socketio.on('simple_scan')
 def rec():
+	logging("simple scan start")
 	proc = subprocess.Popen(SCRIPT_PATH+"clamav_scan_detect.sh".split())
 	global hasScan
 	while 1:
@@ -117,7 +128,7 @@ def rec():
 			emit("simple_scan_end")
 			hasScan = True
 			emit("end")
-			print("end simple scan")
+			logging("simple scan end")
 			break
 
 @app.route("/scan/advanced")
@@ -129,6 +140,7 @@ def scan_advanced():
 
 @socketio.on('advanced_scan_clamav')
 def rec():
+	logging("Advanced scan(clamav) start")
 	proc = subprocess.Popen(SCRIPT_PATH+"scan_clamav_detect.sh".split())
 	global hasScan
 	global nb_advanced_scan
@@ -139,12 +151,13 @@ def rec():
 			hasScan = True
 			is_scan+=1
 			if is_scan == nb_advanced_scan:
+				logging("Advanced scan(clamav) end")
 				emit("end")
-			print("end clamav")
 			break
 
 @socketio.on('advanced_scan_olefile')
 def rec():
+	logging("Advanced scan(ole) start")
 	proc = subprocess.Popen(SCRIPT_PATH+"scan_ole.sh".split())
 	while 1:
 		poll2 = proc.poll()
@@ -153,6 +166,7 @@ def rec():
 			is_scan+=1
 			if is_scan == nb_advanced_scan:
 				emit("end")
+				logging("Advanced scan(ole) end")
 			print("end olefile")
 			break
 
@@ -175,6 +189,7 @@ def resultat():
 			del files["validate_res"]
 			for file in files.keys():
 				if os.path.isfile(file):
+					logging(f"[{file}] has been delete")
 					os.remove(file)
 		return redirect(url_for("resultat"))
 	return redirect(url_for("nobody"))
@@ -194,10 +209,11 @@ def format_simple():
 @socketio.on('formating')
 def rec():
 	proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
-	print(f"\n{proc.communicate()[0].decode()}\n")
+	logging("standard format start")	
 	while 1:
 		poll = proc.poll()
 		if poll is not None:
+			logging("standard format end")	
 			emit("end")
 			break
 
@@ -211,11 +227,12 @@ def format_advanced():
 @socketio.on('formating_advanced')
 def rec():
 	proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-avanced.sh".split(),stdout=subprocess.PIPE)
-	print(f"\n{proc.communicate()[0].decode()}\n")
+	logging("standard format start")	
 	while 1:
 		poll = proc.poll()
 		if poll is not None:
 			emit("end")
+			logging("standard format end")	
 			break
 
 @app.route("/browser/<path:MasterListDir>")
@@ -225,6 +242,7 @@ def rec():
 @detectUSB
 def browser(MasterListDir=""):
 	joining = os.path.join(ROOT_PATH,MasterListDir)
+	logging(f"accessing to {joining}")
 	cur_dir = MasterListDir+"/"
 	if os.path.isdir(joining):
 		new_path = os.listdir(joining)
@@ -277,8 +295,10 @@ def download(MasterListDir=""):
 					for file in files:
 						zipf.write(os.path.join(root, file))
 			memory_file.seek(0)
+			logging(f"downloading folder of [{path}]")
 			return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
 		elif os.path.isfile(path): 
+			logging(f"downloading file of [{path}]")
 			return send_file(path,as_attachment=True)
 	else:
 		return redirect(url_for("page_not_found")), 305
@@ -301,9 +321,11 @@ def delete(MasterListDir=""):
 				for name in dirs:
 					os.rmdir(os.path.join(root, name))
 			os.rmdir(last)
+			logging(f"deleting folder of [{path}]")
 			return redirect(to_return,code=305)
 		elif os.path.isfile(path):
 			os.remove(last) 
+			logging(f"deleting file of [{path}]")
 			return redirect(to_return,code=305)
 	else:
 		return redirect(url_for("page_not_found"),code=305)
@@ -317,6 +339,7 @@ def info(MasterListDir=""):
 	master_path="/".join(path.split("/")[:-1])
 	last=MasterListDir.split("/")[-1]
 	sub = subprocess.Popen(f"exiftool {path}".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
+	logging(f"get info of [{path}]")
 	return render_template("sh_file.html",info=sub)
 
 @app.route("/sendd",methods=['POST'])
@@ -328,7 +351,6 @@ def sendd():
 	master_path = ROOT_PATH+last
 	if os.path.exists(master_path):
 		if request.method == "POST" and "up_f" in request.files and request.files['up_d'].filename == "":
-			print("files")
 			if "up_f" not in request.files:
 				flash('No file part')
 				return redirect(url_for("browser"))
@@ -339,9 +361,9 @@ def sendd():
 			if file:
 				filename = secure_filename(file.filename)
 				file.save(os.path.join(master_path, filename))
+				logging(f"file [{master_path}] is upload")
 				return redirect(url_for("browser"))
 		if request.method == "POST" and "up_d" in request.files and request.files['up_f'].filename == "":
-			print("folder")
 			if "up_d" not in request.files:
 				return 'No folder part'
 			file = request.files['up_d']
@@ -357,6 +379,7 @@ def sendd():
 					if ret == None:
 						the_zip_file.extractall(master_path)
 						os.remove(path)
+						logging(f"folder [{path}] is upload")
 						return redirect(url_for("browser"))
 				except:
 					flash("Error file")
@@ -380,7 +403,7 @@ def admin():
 		encrypt=hashlib.sha512(req.encode()).hexdigest()
 		if encrypt == mdp:
 			session['loggedin'] = True
-			print("admin has logged ")
+			logging("admin has logged")
 			return redirect(url_for('admin_config'))
 		else:
 			return "bad password"
@@ -401,6 +424,7 @@ def admin_downloadLogs():
 				for file in files:
 					zipf.write(os.path.join(root, file))
 		memory_file.seek(0)
+		logging("admin downloading log")
 		return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
 	return "error"
 
@@ -410,7 +434,6 @@ def admin_downloadLogs():
 def admin_config():
 	if session.get('loggedin') == True:
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
-		print(info_ip)
 		if request.method=="POST":
 			must_match_ip = r"^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
 			# Min 12 char, 1 number, 1 uppercase, 1 lowercase,1 spécial char
@@ -433,8 +456,10 @@ def admin_config():
 					subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
 					flash("net_adm")
 					flash("The network was configure !")
+					loggin(f"admin has change network config [{dico_network}]")
 					return redirect(url_for("admin_config"))
 				else:
+					logging(f"admin try tro change network [{request.form.to_dict()}]")
 					flash("net_adm")
 					flash("Some informations was incorrect")
 					return redirect(url_for("admin_config"))
@@ -450,10 +475,12 @@ def admin_config():
 					json.dump(js, file_w)
 					flash("password")
 					flash("Password was change")
+					logging("adming has change password")
 					return redirect(url_for("admin_config"))
 				else:
 					flash("password")
 					flash("Bad padding password")
+					logging(f"admin try tro change password [{request.form.to_dict()}]")
 					return redirect(url_for("admin_config"))	
 			else:
 				g.log = 0
@@ -510,7 +537,11 @@ def first_connection():
 					json.dump(js, file_w)
 					file_w.close()
 					first_con = False
-					subprocess.Popen("/sabu/config/install.sh")
+					installing = subprocess.Popen("/sabu/config/install.sh")
+					while 1:
+						end_install = installing.poll()
+						if end_install is not None:
+							return redirect(url_for("index"))
 				else:
 					flash("Some informations was incorrect")
 					return redirect(url_for("first_connection"))
@@ -539,12 +570,14 @@ def first_connection():
 @login_required
 def logout():
 	session["loggedin"]=False
+	logging("admin was log out")
 	return redirect(url_for('index'))
 
 @app.route("/nobody")
 @first
 def nobody():
 	value = "No key found"
+	logging(f"someone access {request.url}")
 	return render_template("nobody.html",value=value)		
 
 @app.before_request
@@ -563,11 +596,11 @@ def load_logged_in_user():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template("error/404.html")
+	logging(f"someone access {request.url}")
+	return render_template("error/404.html")
 
 
 
 if __name__ == '__main__':
 	socketio.run(app,host='0.0.0.0', port=8888, debug=True)
 	# socketio.run(app,host='127.0.0.1', port=8888, debug=True)
-	# wsgi.server(eventlet.listen(('0.0.0.0', 8888)), app)
