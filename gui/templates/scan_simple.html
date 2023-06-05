@@ -34,6 +34,9 @@
 	<a class="button_for_listing_mainbox" href="/admin">Admin pannel</a>
 	{% endif %}
 	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
+	{% if hasScan %}
+	<a class="button_for_listing_mainbox" href="/scan/result">Result scan</a>
+	{% endif %}
 {% endblock %}
 {% block browser %}
 <div class="main_simple_scan">
@@ -50,13 +53,17 @@
 <script src="{{ url_for('static',filename='script/jquery-3.5.1.min.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+	var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
 	$('#butt_simple_scan').click(function(){
-		var socket = io.connect('http://' + document.domain + ':' + location.port);
+		// var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
 		socket.emit("simple_scan");
 		$("#span_simple_scan").text("Le scanning est en cours...")
 		socket.on('simple_scan_end',function(){
 			$("#span_simple_scan").text("Le scannaing de la clé est terminé !!")
 		});
+	});
+	socket.on("end",function(){
+		window.location = location.protocol+"//"+document.domain+":"+location.port+"/scan/result"
 	});
 });
 </script>

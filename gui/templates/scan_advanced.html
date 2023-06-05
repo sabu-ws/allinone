@@ -77,6 +77,9 @@ $(document).ready(function(){
 			document.getElementById(build_col_p).className = " has_end";
 		});
 	});
+	socket.on("end",function(){
+		window.location = location.protocol+"//"+document.domain+":"+location.port+"/result"
+	});
 });
 </script>
 {% endblock %}
