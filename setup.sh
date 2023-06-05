@@ -36,10 +36,10 @@ systemctl start sabu.service
 systemctl enable sabu.service
 
 # End
-echo "======================================================"
-echo "===============   Setup completed !   ================"
-echo "== Open browser and visit : http://$ipaddress:8888/ =="
-echo "======================================================"
+echo "=====================   [  SABU  ]   ====================="
+echo "-----------------   Setup completed !   ------------------"
+echo "   Open browser and visit : http://$ipaddress:8888/    "
+echo "=========================================================="
 
 # Remove tmp folder
 rm -rf ../SABU
