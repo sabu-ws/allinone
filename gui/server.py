@@ -577,7 +577,7 @@ def logout():
 @first
 def nobody():
 	value = "No key found"
-	logging(f"someone access {request.url}")
+	logging(f"someone access {request.url}, no key found")
 	return render_template("nobody.html",value=value)		
 
 @app.before_request
