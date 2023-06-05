@@ -11,27 +11,27 @@ nameserver2=$(jq '.network | .dns2' /sabu/config/config.json  | tr -d '"')
 network=$(ipcalc $address/$netmask | grep "Network" | cut -d' ' -f4)
 
 # FLUSH TABLE
-iptables -F
+sudo iptables -F
 
 # INPUT RULES
 ## acces_ssh
-iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 22 -j ACCEPT
+sudo iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 22 -j ACCEPT
 ## connexion_http
-iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 80 -j ACCEPT
+sudo iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 80 -j ACCEPT
 ## connexion_https
-iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 443 -j ACCEPT
+sudo iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 443 -j ACCEPT
 ## drop_all
-iptables -A INPUT -i $interface --src 0.0.0.0/0 --dst $address -j DROP
+sudo iptables -A INPUT -i $interface --src 0.0.0.0/0 --dst $address -j DROP
 
 # OUTPUT RULES
 ## acces_ssh
-iptables -A OUTPUT -p tcp --src $address --dst $network -j ACCEPT
+sudo iptables -A OUTPUT -p tcp --src $address --dst $network -j ACCEPT
 ## connexion_http
-iptables -A OUTPUT -p tcp --src $address --dst 0.0.0.0/0 --dport 80 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp --src $address --dst 0.0.0.0/0 --dport 80 -j ACCEPT
 ## connexion_https
-iptables -A OUTPUT -p tcp --src $address --dst 0.0.0.0/0 --dport 443 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp --src $address --dst 0.0.0.0/0 --dport 443 -j ACCEPT
 ## drop_all
-iptables -A OUTPUT --src $address --dst 0.0.0.0/0 -j DROP
+sudo iptables -A OUTPUT --src $address --dst 0.0.0.0/0 -j DROP
 
 # SAVE 
 sudo iptables-save > /etc/iptables/rules.v4
