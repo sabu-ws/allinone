@@ -181,7 +181,7 @@ def resultat():
 	if request.method == "GET":
 		clam_av = [i[0][:-1] for i in [i.split() for i in open("/sabu/logs/scan/clamav/"+open("/sabu/logs/scan/clamav/last-scan.log").read().replace("\n","")).read().split("\n")] if len(i) > 0 if i[-1] == "FOUND" ]
 		ole = []
-		if open("/sabu/logs/scan/ole/last-scan.log").read() != "":
+		if open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","") != "":
 			ole = [i.split()[0] for i in open("/sabu/logs/scan/ole/"+open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","")).readlines()]
 		scan = ole+clam_av
 		resultat = list(set(scan))

@@ -67,7 +67,7 @@
 $(document).ready(function(){
 	$('#butt_advanced_scan').click(function(){
 		$('#time_wait').prop('hidden', false);
-		var socket = io.connect('http://' + document.domain + ':' + location.port);
+		var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
 		socket.emit("advanced_scan_clamav");
 		socket.emit("advanced_scan_olefile");
 		socket.on('advanced_scan_end',function(data){
