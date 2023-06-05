@@ -12,8 +12,8 @@ echo "0 2 * * * sh /sabu/config/update.sh" >> sudo crontab -e
 
 # Install other package
 sudo apt install parted ntfs-3g yara clamav exiftool ipcalc iptables -y
-echo iptables-persistent iptables-persistent/autosave_v4 boolean false | debconf-set-selections
-echo iptables-persistent iptables-persistent/autosave_v6 boolean false | debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v4 boolean false | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo debconf-set-selections
 sudo apt install iptables-persistent -y
 
 # Install oletools
