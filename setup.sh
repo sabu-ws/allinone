@@ -24,7 +24,7 @@ sudo chmod -R +x /sabu/scripts
 sudo chmod -R +x /sabu/config
 
 # Install python requirements
-sudo pip3 install -r ./gui/requirements.txt
+sudo pip3 install -r ./gui/requirements.txt --break-system-packages
 
 sleep 3
 
