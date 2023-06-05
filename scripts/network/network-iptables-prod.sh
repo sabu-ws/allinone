@@ -34,7 +34,7 @@ iptables -A OUTPUT -p tcp --src $address --dst 0.0.0.0/0 --dport 443 -j ACCEPT
 iptables -A OUTPUT --src $address --dst 0.0.0.0/0 -j DROP
 
 # SAVE 
-iptables-save > /etc/iptables/rules.v4
+sudo iptables-save > /etc/iptables/rules.v4
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
