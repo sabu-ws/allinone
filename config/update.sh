@@ -6,6 +6,12 @@ sh /sabu/scripts/network/network-iptables-maintenance.sh
 # update sabu
 apt update && apt upgrade -y
 
+# update clamav databases
+systemctl stop clamav-freshclam.service
+freshclam -d
+sleep 3
+systemctl start clamav-freshclam.service
+
 # iptables prod
 sh /sabu/scripts/network/network-iptables-prod.sh
 
