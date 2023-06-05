@@ -52,6 +52,6 @@ sudo systemctl restart nftables.service
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [NETWORK][Iptables] Rule 'iptables-maintenance' enabled" >> /sabu/logs/network.log
+echo "$date [NETWORK][nftables] Policy 'nftables-maintenance' enabled" >> /sabu/logs/network.log
 
 # --- Script By SABU --- #
