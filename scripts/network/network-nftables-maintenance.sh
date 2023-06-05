@@ -11,34 +11,44 @@ nameserver2=$(jq '.network | .dns2' /sabu/config/config.json  | tr -d '"')
 network=$(ipcalc $address/$netmask | grep "Network" | cut -d' ' -f4)
 
 # FLUSH TABLE
-sudo iptables -F
+sudo nft flush ruleset
+
+# ADD TABLE
+sudo nft add table inet filter
+
+# ADD CHAIN (INPUT/OUTPUT) IN TABLE
+sudo nft add chain inet filter input { type filter hook input priority 0\; }
+sudo nft add chain inet filter output { type filter hook output priority 0\; }
 
 # INPUT RULES
 ## acces_ssh
-sudo iptables -A INPUT -p tcp -i $interface --src $network --dst $address --dport 22 -j ACCEPT
+sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 22 accept
 ## connexion_dns
-sudo iptables -A INPUT -p udp -i $interface --src $nameserver1 --dst $address -j ACCEPT
-sudo iptables -A INPUT -p udp -i $interface --src $nameserver2 --dst $address -j ACCEPT
+sudo nft add rule inet filter input iif $interface ip saddr $nameserver1 ip daddr $address udp dport 53 accept
+sudo nft add rule inet filter input iif $interface ip saddr $nameserver2 ip daddr $address udp dport 53 accept
 ## connexion_tcp_established
-sudo iptables -A INPUT -p tcp -i $interface --src 0.0.0.0/0 --dst $address -m conntrack --ctstate ESTABLISHED -j ACCEPT
+sudo nft add rule inet filter input iif $interface ip saddr 0.0.0.0/0 ip daddr $address ct state established accept
 ## drop_all
-sudo iptables -A INPUT -i $interface --src 0.0.0.0/0 --dst $address -j DROP
+sudo nft add rule inet filter input iif $interface ip saddr 0.0.0.0/0 ip daddr $address drop
 
 # OUTPUT RULES
 ## acces_ssh
-sudo iptables -A OUTPUT -p tcp --src $address --dst $network -j ACCEPT
+sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 22 ip daddr $network accept
 ## connexion_dns
-sudo iptables -A OUTPUT -p udp --src $address --dst $nameserver1 --dport 53 -j ACCEPT
-sudo iptables -A OUTPUT -p udp --src $address --dst $nameserver2 --dport 53 -j ACCEPT
+sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr $nameserver1 udp dport 53 accept
+sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr $nameserver2 udp dport 53 accept
 ## connexion_http
-sudo iptables -A OUTPUT -p tcp --src $address --dst 0.0.0.0/0 --dport 80 -j ACCEPT
+sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 80 accept
 ## connexion_https
-sudo iptables -A OUTPUT -p tcp --src $address --dst 0.0.0.0/0 --dport 443 -j ACCEPT
+sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 443 accept
 ## drop_all
-sudo iptables -A OUTPUT --src $address --dst 0.0.0.0/0 -j DROP
+sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 drop
 
-# SAVE 
-sudo iptables-save > /etc/iptables/rules.v4
+# SAVE POLICY
+sudo nft list ruleset > /etc/nftables.conf
+
+# RESTART SERVICE NFTABLES
+sudo systemctl restart nftables.service
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
