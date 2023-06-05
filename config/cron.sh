@@ -11,7 +11,7 @@ USER="sabu"
 crontab -u "$USER" -l > /tmp/crontab_tmp
 
 # Add new cron job to crontab content
-echo "@reboot sh $SCRIPT_CHECK" >> /tmp/crontab_tmp
+echo "@reboot sh $SCRIPT_CHECK" > /tmp/crontab_tmp
 echo "0 2 * * * sh $SCRIPT_UPDATE" >> /tmp/crontab_tmp
 
 # Update user crontab with changed content
