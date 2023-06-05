@@ -435,7 +435,7 @@ def admin_config():
 		return redirect(url_for('admin_config'))
 
 
-@app.route("/first",methods=["POST","GET"])
+@app.route("/setup",methods=["POST","GET"])
 def first_connection():
 	global first_con
 	if first_con == True:
