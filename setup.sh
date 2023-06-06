@@ -17,7 +17,7 @@ apt install sudo python3 python3-pip jq -y
 sleep 3
 
 # Adduser/permission SABU
-adduser sabu --shell=/bin/false --no-create-home
+adduser --disabled-password --shell=/bin/false --no-create-home --gecos "" sabu
 echo "sabu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 chown -R sabu:sabu /sabu
 chmod -R +x /sabu/scripts
