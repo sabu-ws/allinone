@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Check OS
+os=$(lsb_release -i | awk '{print $3}')
+if [ $os != "Debian" ]
+then
+  echo "==========================="
+  echo "ERROR, please use Debian OS"
+  echo "==========================="
+  exit 1
+fi
+
 # Disable IPV6
 cp sysctl/70-disable-ipv6.conf /etc/sysctl.d/70-disable-ipv6.conf
 sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
@@ -24,7 +34,19 @@ chmod -R +x /sabu/scripts
 chmod -R +x /sabu/config
 
 # Install python requirements
-pip3 install -r ./gui/requirements.txt --break-system-packages
+version=$(lsb_release -r | awk '{print $2}')
+if [ $version="11" ]
+then
+  pip3 install -r ./gui/requirements.txt
+elif [ $version="12"]
+then
+  pip3 install -r ./gui/requirements.txt --break-system-packages
+else
+  echo "================================="
+  echo "ERROR, please use Debian 11 or 12"
+  echo "================================="
+  exit 1
+fi
 
 sleep 3
 
