@@ -547,7 +547,7 @@ def first_connection():
 					while 1:
 						end_install = installing.poll()
 						if end_install is not None:
-							subprocess.Popen("sleep 5 && sudo reboot".split())
+							os.popen("sleep 5 && sudo reboot")
 							return redirect(url_for("index"))
 				else:
 					flash("Some informations was incorrect")
