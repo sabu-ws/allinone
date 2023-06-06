@@ -461,7 +461,7 @@ def admin_config():
 					subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
 					flash("net_adm")
 					flash("The network was configure !")
-					loggin(f"admin has change network config [{dico_network}]")
+					logging(f"admin has change network config [{dico_network}]")
 					return redirect(url_for("admin_config"))
 				else:
 					logging(f"admin try tro change network [{request.form.to_dict()}]")
