@@ -1,0 +1,8 @@
+[Unit]
+Description=Automount USB Key
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/sabu/scripts/usb/usb-automount.sh add %i
+ExecStop=/sabu/scripts/usb/usb-automount.sh remove %i
