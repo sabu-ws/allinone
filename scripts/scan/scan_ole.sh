@@ -17,7 +17,7 @@ do
         fi;
 done
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [Scan][OLE] New scan available ole-$DATESTART.log" >> $LOG_PATH/../../scan.log
+echo "$date [SCAN][OLE] New scan available ole-$DATESTART.log" >> $LOG_PATH/../../scan.log
 echo "ole-$DATESTART.log" > $LOG_PATH/last-scan.log
 
 # --- Script By SABU --- #
