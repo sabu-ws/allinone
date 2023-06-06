@@ -541,6 +541,7 @@ def first_connection():
 					js['mdp']=encrypt
 					json.dump(js, file_w)
 					file_w.close()
+					json_config.close()
 					first_con = False
 					installing = subprocess.Popen("/sabu/config/install.sh")
 					while 1:
