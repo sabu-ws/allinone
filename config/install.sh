@@ -3,6 +3,17 @@
 # Stand by, process network restart after config in setup page
 sleep 5
 
+# Set up automount
+sudo cp /sabu/udev/01-automount-usb-key.rules /etc/udev/rules.d/01-automount-usb-key.rules
+sudo cp /sabu/service/usb-automount@.service /etc/systemd/system/usb-automount@.service
+
+sudo systemctl daemon-reload
+sudo systemctl start usb-automount@.service
+sudo systemctl enable usb-automount@.service
+
+sudo udevadm control --reload-rules
+
+
 # Create mountrypoint
 sudo mkdir /mnt/usb
 
