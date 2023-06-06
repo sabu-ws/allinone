@@ -4,9 +4,10 @@
 os=$(lsb_release -i | awk '{print $3}')
 if [ $os != "Debian" ]
 then
-  echo "==========================="
-  echo "ERROR, please use Debian OS"
-  echo "==========================="
+  clear
+  echo "=====================   [  SABU  ]   ====================="
+  echo "------------   ERROR, please use Debian OS   -------------"
+  echo "=========================================================="
   exit 1
 fi
 
@@ -42,9 +43,10 @@ elif [ $version="12"]
 then
   pip3 install -r ./gui/requirements.txt --break-system-packages
 else
-  echo "================================="
-  echo "ERROR, please use Debian 11 or 12"
-  echo "================================="
+  clear
+  echo "=====================   [  SABU  ]   ====================="
+  echo "---------   ERROR, please use Debian 11 or 12   ----------"
+  echo "=========================================================="
   exit 1
 fi
 
@@ -58,6 +60,7 @@ systemctl start sabu.service
 systemctl enable sabu.service
 
 # End
+clear
 echo "=====================   [  SABU  ]   ====================="
 echo "-----------------   Setup completed !   ------------------"
 echo "   Open browser and visit : http://$ipaddress:8888/    "
