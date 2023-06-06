@@ -543,7 +543,11 @@ def first_connection():
 					file_w.close()
 					json_config.close()
 					first_con = False
-					subprocess.Popen("/sabu/config/install.sh")
+					installing = subprocess.Popen("/sabu/config/install.sh")
+					while 1:
+						end_install = installing.poll()
+						if end_install is not None:
+							return redirect(url_for("index"))
 				else:
 					flash("Some informations was incorrect")
 					return redirect(url_for("first_connection"))
