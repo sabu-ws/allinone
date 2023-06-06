@@ -30,7 +30,4 @@ sudo sh /sabu/scripts/network/network-nftables-prod.sh
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
 echo "$date [SABU] The installation script has been executed successfully" >> /sabu/logs/sabu.log
 
-# Reboot
-sudo reboot
-
 # --- Script By SABU --- #
