@@ -12,11 +12,11 @@ nameserver2=$(jq '.network | .dns2' /sabu/config/config.json  | tr -d '"')
 lignes=$(grep -n $interface /etc/network/interfaces | tail -n +2 | cut -d ':' -f1)
 
 # Change the network information in relation to the arguments
-sed -i "$(($lignes+1))c\address $address" /etc/network/interfaces
-sed -i "$(($lignes+2))c\netmask $netmask" /etc/network/interfaces
-sed -i "$(($lignes+3))c\gateway $gateway" /etc/network/interfaces
-sed -i "1c\nameserver $nameserver1" /etc/resolv.conf
-sed -i "2c\nameserver $nameserver2" /etc/resolv.conf
+sudo sed -i "$(($lignes+1))c\address $address" /etc/network/interfaces
+sudo sed -i "$(($lignes+2))c\netmask $netmask" /etc/network/interfaces
+sudo sed -i "$(($lignes+3))c\gateway $gateway" /etc/network/interfaces
+sudo sed -i "1c\nameserver $nameserver1" /etc/resolv.conf
+sudo sed -i "2c\nameserver $nameserver2" /etc/resolv.conf
 
 # Restart the network configuration
 sudo systemctl restart networking.service
