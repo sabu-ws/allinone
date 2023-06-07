@@ -35,11 +35,11 @@ chmod -R +x /sabu/scripts
 chmod -R +x /sabu/config
 
 # Install python requirements
-version=$(lsb_release -r | awk '{print $2}')
-if [ $version="11" ]
+version=$(lsb_release -r | grep "Release" | awk '{print $2}')
+if [ $version == "11" ]
 then
   pip3 install -r ./gui/requirements.txt
-elif [ $version="12"]
+elif [ $version == "12" ]
 then
   pip3 install -r ./gui/requirements.txt --break-system-packages
 else
