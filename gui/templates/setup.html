@@ -101,3 +101,12 @@
 }
 </style>
 {% endblock %}
+{% block script %}
+{% if during_connection %}
+<script type="text/javascript">
+setTimeout(() => {  
+	window.location = window.protocol + "//" + document.domain + ":" + window.port
+}, 2000);
+</script>
+{% endif %}
+{% endblock %}
