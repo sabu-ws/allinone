@@ -73,12 +73,12 @@ def ifscan(f):
 def first(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
-		# file = open("/sabu/gui/static/config.json")
-		# js = json.load(file)
-		# if "mdp" in js:
-		# 	if js["mdp"] == "":
-		# 		return redirect(url_for('first_connection'))
-		# global first_con
+		 file = open("/sabu/gui/static/config.json")
+		 js = json.load(file)
+		 if "mdp" in js:
+		 	if js["mdp"] == "":
+		 		return redirect(url_for('first_connection'))
+		 global first_con
 		first_con = True
 		return f(*args, **kwargs)
 	return decorated_function
