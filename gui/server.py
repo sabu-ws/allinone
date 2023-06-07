@@ -533,7 +533,7 @@ def first_connection():
 					flash("Please wait during installation")
 				else:
 					flash("The installation is end. The stations will be reboot")
-					os.popen("sleep 3 && sudo reboot")
+					os.popen("sleep 3 && reboot")
 					first_con = False
 
 		elif request.method=="POST" and during_connection != True:
