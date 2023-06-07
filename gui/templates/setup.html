@@ -105,7 +105,7 @@
 {% if during_connection %}
 <script type="text/javascript">
 setTimeout(() => {  
-	window.location = window.protocol + "//" + document.domain + ":" + window.port
+	window.location = location.protocol+'//' + document.domain + ':' + location.port
 }, 2000);
 </script>
 {% endif %}
