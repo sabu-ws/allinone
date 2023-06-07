@@ -18,6 +18,7 @@ import zipfile
 from functools import wraps
 import re
 import json
+import psutil
 
 eventlet.monkey_patch()
 app = Flask(__name__)
@@ -30,10 +31,14 @@ CONFIG_PATH = "/sabu/config"
 LOG_PATH = "/sabu/logs"
 app.config['SECRET_KEY'] = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
 app.config['UPLOAD_FOLDER'] = ROOT_PATH
+
+
 hasScan = False
 first_con = True
 nb_advanced_scan = 2
 is_scan=0
+during_connection = False
+pid = 0
 
 def login_required(f):
 	@wraps(f)
@@ -74,7 +79,7 @@ def first(f):
 			if js["mdp"] == "":
 				return redirect(url_for('first_connection'))
 		global first_con
-		first_con = False
+		first_con = True
 		return f(*args, **kwargs)
 	return decorated_function
 
@@ -142,6 +147,7 @@ def scan_advanced():
 def rec():
 	logging("Advanced scan(clamav) start")
 	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh".split())
+	# proc = subprocess.Popen(f"sleep 2".split())
 	global hasScan
 	global nb_advanced_scan
 	global is_scan
@@ -153,6 +159,7 @@ def rec():
 			is_scan+=1
 			if is_scan == nb_advanced_scan:
 				logging("Advanced scan(clamav) end")
+				is_scan = 0
 				emit("end")
 			break
 
@@ -160,6 +167,7 @@ def rec():
 def rec():
 	logging("Advanced scan(ole) start")
 	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan_ole.sh".split())
+	# proc = subprocess.Popen(f"sleep 5".split())
 	global is_scan
 	global nb_advanced_scan
 	while 1:
@@ -169,6 +177,7 @@ def rec():
 			is_scan+=1
 			if is_scan == nb_advanced_scan:
 				emit("end")
+				is_scan = 0
 				logging("Advanced scan(ole) end")
 			print("end olefile")
 			break
@@ -213,7 +222,8 @@ def format_simple():
 
 @socketio.on('formating')
 def rec():
-	proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
+	# proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
+	proc = subprocess.Popen(f"sleep 5".split(),stdout=subprocess.PIPE)
 	logging("standard format start")	
 	while 1:
 		poll = proc.poll()
@@ -507,9 +517,26 @@ def admin_config():
 @app.route("/setup",methods=["POST","GET"])
 def first_connection():
 	global first_con
+	global during_connection
+	global pid
 	if first_con == True:
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
-		if request.method=="POST":
+		if request.method=="GET":
+			interface=info_ip[0]
+			ip=info_ip[1]
+			netmask=info_ip[2]
+			gateway=info_ip[3]
+			dns1=info_ip[4]
+			dns2=info_ip[5]
+			if during_connection == True:
+				if  psutil.pid_exists(pid):
+					flash("Please wait during installation")
+				else:
+					flash("The installation is end. The stations will be reboot")
+					os.popen("sleep 3 && reboot")
+					first_con = False
+
+		elif request.method=="POST" and during_connection != True:
 			# return request.form
 
 			if ("interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" in request.form):
@@ -542,29 +569,19 @@ def first_connection():
 					json.dump(js, file_w)
 					file_w.close()
 					json_config.close()
-					first_con = False
+					during_connection = True
 					installing = subprocess.Popen("/sabu/config/install.sh")
-					while 1:
-						end_install = installing.poll()
-						if end_install is not None:
-							os.popen("sleep 5 && sudo reboot")
-							return redirect(url_for("index"))
+					pid = installing.pid
+					return redirect(url_for("first_connection"))
 				else:
 					flash("Some informations was incorrect")
 					return redirect(url_for("first_connection"))
 			else:
 				flash("Some informations missing !") 
 				return redirect(url_for("first_connection"))
-		elif request.method=="GET":
-			interface=info_ip[0]
-			ip=info_ip[1]
-			netmask=info_ip[2]
-			gateway=info_ip[3]
-			dns1=info_ip[4]
-			dns2=info_ip[5]
 		else:
 			return "404"
-		return render_template("setup.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2)
+		return render_template("setup.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2,during_connection=during_connection)
 	elif first_con == False:
 		return redirect("/")
 	else:
