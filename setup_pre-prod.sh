@@ -29,7 +29,7 @@ cp -r * /sabu
 echo '20' && sleep 1 # Progress
 
 # Install packages 
-apt install sudo python3 python3-pip jq -y
+apt install sudo python3 python3-pip jq -y > /dev/null
 echo '50' && sleep 3 # Progress
 
 # Adduser/permission SABU
@@ -53,7 +53,7 @@ echo '80' && sleep 3 # Progress
 # Start GUI
 mv ./service/sabu.service /etc/systemd/system/
 rm -r /sabu/service
-systemctl daemon-reload
+systemctl daemon-reload > /dev/null
 systemctl start sabu.service
 systemctl enable sabu.service
 echo '95' && sleep 2 # Progress
@@ -68,7 +68,7 @@ echo "$date [SABU] The setup script has been executed successfully" >> /sabu/log
 
 sleep 3 # Progress
 
-} | whiptail --title "SABU" --gauge "Installation in progress, please wait" 8 70 0
+} | whiptail --title "SABU" --gauge "Installation in progress, please wait..." 8 70 0
 
 # DISPLAY END
 whiptail --title "SABU" --msgbox 'Setup completed !\nOpen browser and visit : http://'$ipaddress:8888/'' 8 70 0
