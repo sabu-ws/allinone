@@ -52,7 +52,6 @@ echo '80' && sleep 3 # Progress
 
 # Start GUI
 mv ./service/sabu.service /etc/systemd/system/ > /dev/null 2>&1
-rm -r /sabu/service > /dev/null 2>&1
 systemctl daemon-reload > /dev/null 2>&1
 systemctl start sabu.service > /dev/null 2>&1
 systemctl enable sabu.service > /dev/null 2>&1
