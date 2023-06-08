@@ -3,7 +3,7 @@
 pathUSB='/mnt/usb'
 LOG_PATH='/sabu/logs/scan/ole'
 DATESTART=$(date +%s)
-
+touch $LOG_PATH/ole-$DATESTART.log
 for i in $(find $pathUSB -type f)
 do
         format=$(oleid $i | grep "Container format" | cut -d'|' -f2 | tr -d ' ')
