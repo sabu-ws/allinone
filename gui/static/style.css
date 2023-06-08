@@ -197,6 +197,7 @@ a{
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	border-radius: 20px;
 	height: 13em;
 	width: 25em;
 }

@@ -1,9 +1,6 @@
 {% extends 'base_mainpage.html' %}
 {% block styles %}
 <style type="text/css">
-.main_format{
-	margin-top: 5%;		
-}
 
 .fieldset_format{
 	padding: 5em;
@@ -34,10 +31,10 @@
 	{% endif %}
 	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
 {% endblock %}
-{% block browser %}
+{% block main_base %}
 <div class="main_format">
 	<fieldset class="fieldset_format">
-		<legend>Format key</legend>
+		<legend align="center">Format key</legend>
 		<p>La clé est branché !</p><br>
 		<button id="butt_format" class="butt_format">Démarré le formattage</button><br><br>
 		<span id="span_format"></span>
