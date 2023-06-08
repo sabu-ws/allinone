@@ -127,16 +127,18 @@ def scan_simple():
 @socketio.on('simple_scan')
 def rec():
 	logging("simple scan start")
-	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh".split())
+	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh && sleep 1".split())
+	# proc = subprocess.Popen(f"sleep 5".split())
 	global hasScan
-	while 1:
-		poll = proc.poll()
-		if poll is not None:
-			emit("simple_scan_end")
-			hasScan = True
-			emit("end")
-			logging("simple scan end")
-			break
+	# while 1:
+		# break
+		# poll = proc.poll()
+		# if poll is not None:
+			# break
+	emit("simple_scan_end")
+	hasScan = True
+	emit("end")
+	logging("simple scan end")
 
 @app.route("/scan/advanced")
 @first
@@ -148,41 +150,33 @@ def scan_advanced():
 @socketio.on('advanced_scan_clamav')
 def rec():
 	logging("Advanced scan(clamav) start")
-	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh".split())
+	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh && sleep 1".split())
 	# proc = subprocess.Popen(f"sleep 2".split())
 	global hasScan
 	global nb_advanced_scan
 	global is_scan
-	while 1:
-		poll2 = proc.poll()
-		if poll2 is not None:
-			emit("advanced_scan_end","clamav")
-			hasScan = True
-			is_scan+=1
-			if is_scan == nb_advanced_scan:
-				logging("Advanced scan(clamav) end")
-				is_scan = 0
-				emit("end")
-			break
+	emit("advanced_scan_end","clamav")
+	hasScan = True
+	is_scan+=1
+	if is_scan == nb_advanced_scan:
+		logging("Advanced scan(clamav) end")
+		is_scan = 0
+		emit("end")
+
 
 @socketio.on('advanced_scan_olefile')
 def rec():
 	logging("Advanced scan(ole) start")
-	proc = subprocess.Popen(f"{SCRIPT_PATH}/scan/scan_ole.sh".split())
+	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan_ole.sh && sleep 1".split())
 	# proc = subprocess.Popen(f"sleep 5".split())
 	global is_scan
 	global nb_advanced_scan
-	while 1:
-		poll2 = proc.poll()
-		if poll2 is not None:
-			emit("advanced_scan_end","olefile")
-			is_scan+=1
-			if is_scan == nb_advanced_scan:
-				emit("end")
-				is_scan = 0
-				logging("Advanced scan(ole) end")
-			print("end olefile")
-			break
+	emit("advanced_scan_end","olefile")
+	is_scan+=1
+	if is_scan == nb_advanced_scan:
+		emit("end")
+		is_scan = 0
+		logging("Advanced scan(ole) end")
 
 @app.route("/scan/result",methods=["POST","GET"])
 @detectUSB
