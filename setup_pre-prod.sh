@@ -19,13 +19,13 @@ ipaddress=$(ip -br a | tail -n 1 | awk '{print $3}' | cut -d '/' -f 1)
 {
 
 # Disable IPV6
-cp sysctl/70-disable-ipv6.conf /etc/sysctl.d/70-disable-ipv6.conf
-sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
+cp sysctl/70-disable-ipv6.conf /etc/sysctl.d/70-disable-ipv6.conf > /dev/null 2>&1
+sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf > /dev/null 2>&1
 echo '10' && sleep 1 # Progress
 
 # Setup workspace
-mkdir /sabu
-cp -r * /sabu
+mkdir /sabu > /dev/null 2>&1
+cp -r * /sabu > /dev/null 2>&1
 echo '20' && sleep 1 # Progress
 
 # Install packages 
@@ -33,33 +33,33 @@ apt install sudo python3 python3-pip jq -y > /dev/null 2>&1
 echo '50' && sleep 3 # Progress
 
 # Adduser/permission SABU
-adduser --disabled-password --shell=/bin/false --no-create-home --gecos "" sabu
+adduser --disabled-password --shell=/bin/false --no-create-home --gecos "" sabu > /dev/null 2>&1
 echo "sabu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-chown -R sabu:sabu /sabu
-chmod -R +x /sabu/scripts
-chmod -R +x /sabu/config
+chown -R sabu:sabu /sabu > /dev/null 2>&1
+chmod -R +x /sabu/scripts > /dev/null 2>&1
+chmod -R +x /sabu/config > /dev/null 2>&1
 echo '60' && sleep 2 # Progress
 
 # Install python requirements
 if [ $version == "11" ]
 then
-  pip3 install -r ./gui/requirements.txt
+  pip3 install -r ./gui/requirements.txt > /dev/null 2>&1
 elif [ $version == "12" ]
 then
-  pip3 install -r ./gui/requirements.txt --break-system-packages
+  pip3 install -r ./gui/requirements.txt --break-system-packages > /dev/null 2>&1
 fi
 echo '80' && sleep 3 # Progress
 
 # Start GUI
-mv ./service/sabu.service /etc/systemd/system/
-rm -r /sabu/service
+mv ./service/sabu.service /etc/systemd/system/ > /dev/null 2>&1
+rm -r /sabu/service > /dev/null 2>&1
 systemctl daemon-reload > /dev/null 2>&1
-systemctl start sabu.service
-systemctl enable sabu.service
+systemctl start sabu.service > /dev/null 2>&1
+systemctl enable sabu.service > /dev/null 2>&1
 echo '95' && sleep 2 # Progress
 
 # Remove tmp folder
-rm -rf ../SABU
+rm -rf ../SABU > /dev/null 2>&1
 echo '100' # Progress
 
 # Log Action
