@@ -76,7 +76,8 @@ def first(f):
 		file = open("/sabu/gui/static/config.json")
 		js = json.load(file)
 		if "mdp" in js:
-			if js["mdp"] == "":
+			global during_connection
+			if js["mdp"] == "" and during_connection == False:
 				return redirect(url_for('first_connection'))
 		global first_con
 		first_con = True
@@ -535,6 +536,7 @@ def first_connection():
 					flash("The installation is end. The stations will be reboot")
 					os.popen("sleep 3 && reboot")
 					first_con = False
+					during_connection = False
 
 		elif request.method=="POST" and during_connection != True:
 			# return request.form
