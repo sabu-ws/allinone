@@ -21,12 +21,12 @@ ipaddress=$(ip -br a | tail -n 1 | awk '{print $3}' | cut -d '/' -f 1)
 # Disable IPV6
 cp sysctl/70-disable-ipv6.conf /etc/sysctl.d/70-disable-ipv6.conf > /dev/null 2>&1
 sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf > /dev/null 2>&1
-echo '10' && sleep 1 # Progress
+echo '15' && sleep 1 # Progress
 
 # Setup workspace
 mkdir /sabu > /dev/null 2>&1
 cp -r * /sabu > /dev/null 2>&1
-echo '20' && sleep 1 # Progress
+echo '35' && sleep 1 # Progress
 
 # Install packages 
 apt install sudo python3 python3-pip jq -y > /dev/null 2>&1
