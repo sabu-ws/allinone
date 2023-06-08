@@ -5,9 +5,46 @@
 	<a class="button_for_listing_mainbox" href="/logout">Logout</a>
 {% endblock %}
 {% block main_base %}
+	<div class="sw_pwd">
+		<fieldset class="admin_section">
+			<legend align="center">Global settings</legend> 
+			<form method="POST">
+				<table>
+					<tr>
+						<td>
+							<p>Hostname : </p>
+						</td>
+						<td>	
+							<input type="text" name="hostname" placeholder="Hostname">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>New password : </p>
+						</td>
+						<td>	
+							<input type="text" name="password" placeholder="Password">
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<input type="submit" name="submit" value="Submit">
+						</td>
+					<tr>
+				</table>
+				{% if get_flashed_messages()[0] == "password" %}
+				<div>
+					<meta charset="utf-8">
+					<b style="color: red;">{{ get_flashed_messages()[1] }}</b>
+				</div>
+				{% endif %}
+			</form>
+		</fieldset>
+	</div>
 	<div class="net_param">
 		<fieldset class="admin_section">
-			<legend align="center">Network parameters</legend>
+			<legend align="center">Network settings</legend>
 			<form method="POST">
 				<table>
 					<tr>
@@ -74,38 +111,9 @@
 			</form>
 		</fieldset>				
 	</div>
-	<div class="sw_pwd">
-		<fieldset class="admin_section">
-			<legend align="center">Password setting</legend> 
-			<form method="POST">
-				<table>
-					<tr>
-						<td>
-							<p>New password : </p>
-						</td>
-						<td>	
-							<input type="text" name="password" placeholder="Password">
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>
-							<input type="submit" name="submit" value="Submit">
-						</td>
-					<tr>
-				</table>
-				{% if get_flashed_messages()[0] == "password" %}
-				<div>
-					<meta charset="utf-8">
-					<b style="color: red;">{{ get_flashed_messages()[1] }}</b>
-				</div>
-				{% endif %}
-			</form>
-		</fieldset>
-	</div>
 	<div class="dl_logs">
 		<fieldset class="admin_section">
-			<legend align="center">Logs</legend> 
+			<legend align="center">Device</legend> 
 			<table>
 				<tr>
 					<td>
