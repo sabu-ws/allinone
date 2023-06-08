@@ -26,7 +26,6 @@ echo '10' && sleep 1 # Progress
 # Setup workspace
 mkdir /sabu
 cp -r * /sabu
-cd ./..
 echo '20' && sleep 1 # Progress
 
 # Install packages 
