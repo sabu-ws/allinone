@@ -1,9 +1,6 @@
 {% extends 'base_mainpage.html' %}
 {% block styles %}
 <style type="text/css">
-.main_advanced_scan{
-/*	background-color: red;*/
-}
 
 .fieldset_advanced_scan{
 	padding: 5em;
@@ -45,7 +42,7 @@
 	{% endif %}
 	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
 {% endblock %}
-{% block browser %}
+{% block main_base %}
 <div class="main_advanced_scan">
 	<fieldset class="fieldset_advanced_scan">
 		<legend>Scan avancé</legend>
