@@ -1,75 +1,75 @@
 #!/bin/bash
 
-# Check OS
+# CHECK OS
 os=$(lsb_release -i | awk '{print $3}')
-if [ $os != "Debian" ]
+version=$(lsb_release -r | grep "Release" | awk '{print $2}')
+if [[ $os != "Debian" || ($version != "11" && $version != "12") ]]
 then
   clear
-  echo "=====================   [  SABU  ]   ====================="
-  echo "------------   ERROR, please use Debian OS   -------------"
-  echo "=========================================================="
+  echo "========================   [  SABU  ]   ========================"
+  echo "------------   ERROR, please use Debian 11 or 12   -------------"
+  echo "================================================================"
   exit 1
 fi
-
-# Disable IPV6
-cp sysctl/70-disable-ipv6.conf /etc/sysctl.d/70-disable-ipv6.conf
-sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 
 # RETRIEVE NETWORK IP
 ipaddress=$(ip -br a | tail -n 1 | awk '{print $3}' | cut -d '/' -f 1)
 
+# START WHIPTAIL PROGRESS
+{
+
+# Disable IPV6
+cp sysctl/70-disable-ipv6.conf /etc/sysctl.d/70-disable-ipv6.conf > /dev/null 2>&1
+sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf > /dev/null 2>&1
+echo '15' && sleep 1 # Progress
+
 # Setup workspace
-mkdir /sabu
-cp -r * /sabu
+mkdir /sabu > /dev/null 2>&1
+cp -r * /sabu > /dev/null 2>&1
+echo '35' && sleep 1 # Progress
 
 # Install packages 
-apt install sudo python3 python3-pip jq -y
-
-sleep 3
+apt install sudo python3 python3-pip jq -y > /dev/null 2>&1
+echo '50' && sleep 3 # Progress
 
 # Adduser/permission SABU
-adduser --disabled-password --shell=/bin/false --no-create-home --gecos "" sabu
+adduser --disabled-password --shell=/bin/false --no-create-home --gecos "" sabu > /dev/null 2>&1
 echo "sabu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-chown -R sabu:sabu /sabu
-chmod -R +x /sabu/scripts
-chmod -R +x /sabu/config
+chown -R sabu:sabu /sabu > /dev/null 2>&1
+chmod -R +x /sabu/scripts > /dev/null 2>&1
+chmod -R +x /sabu/config > /dev/null 2>&1
+echo '60' && sleep 2 # Progress
 
 # Install python requirements
-version=$(lsb_release -r | grep "Release" | awk '{print $2}')
 if [ $version == "11" ]
 then
-  pip3 install -r ./gui/requirements.txt
+  pip3 install -r ./gui/requirements.txt > /dev/null 2>&1
 elif [ $version == "12" ]
 then
-  pip3 install -r ./gui/requirements.txt --break-system-packages
-else
-  clear
-  echo "=====================   [  SABU  ]   ====================="
-  echo "---------   ERROR, please use Debian 11 or 12   ----------"
-  echo "=========================================================="
-  exit 1
+  pip3 install -r ./gui/requirements.txt --break-system-packages > /dev/null 2>&1
 fi
+echo '80' && sleep 3 # Progress
 
-sleep 3
-
-# Start gui
-mv ./service/sabu.service /etc/systemd/system/
-systemctl daemon-reload
-systemctl start sabu.service
-systemctl enable sabu.service
-
-# End
-clear
-echo "=====================   [  SABU  ]   ====================="
-echo "-----------------   Setup completed !   ------------------"
-echo "   Open browser and visit : http://$ipaddress:8888/    "
-echo "=========================================================="
+# Start GUI
+mv ./service/sabu.service /etc/systemd/system/ > /dev/null 2>&1
+systemctl daemon-reload > /dev/null 2>&1
+systemctl start sabu.service > /dev/null 2>&1
+systemctl enable sabu.service > /dev/null 2>&1
+echo '95' && sleep 2 # Progress
 
 # Remove tmp folder
-rm -rf ../SABU
+rm -rf ../SABU > /dev/null 2>&1
+echo '100' # Progress
 
-# LOG ACTION
+# Log Action
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
 echo "$date [SABU] The setup script has been executed successfully" >> /sabu/logs/sabu.log
+
+sleep 3 # Progress
+
+} | whiptail --title "SABU" --gauge "Installation in progress, please wait..." 8 70 0
+
+# DISPLAY END
+whiptail --title "SABU" --msgbox 'Setup completed !\nOpen browser and visit : http://'$ipaddress:8888/'' 8 70 0
 
 # --- Script By SABU --- #
