@@ -54,7 +54,6 @@ sleep 3
 
 # Start gui
 mv ./service/sabu.service /etc/systemd/system/
-rm -r /sabu/service
 systemctl daemon-reload
 systemctl start sabu.service
 systemctl enable sabu.service
