@@ -13,6 +13,8 @@ sudo systemctl enable usb-automount@.service
 
 sudo udevadm control --reload-rules
 
+rm -r /sabu/service
+
 
 # Create mountrypoint
 sudo mkdir /mnt/usb
