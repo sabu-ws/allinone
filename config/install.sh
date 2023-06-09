@@ -25,16 +25,16 @@ sudo sh /sabu/config/cron.sh
 # Install other package
 sudo apt install parted ntfs-3g yara clamav exiftool ipcalc nftables -y
 
-# Start and Enable nftables service
-sudo systemctl start nftables.service
-sudo systemctl enable nftables.service
-
 # Install oletools
 git clone https://github.com/decalage2/oletools.git
 cd oletools
 sudo python3 setup.py install
 cd ..
 sudo rm -rf oletools/
+
+# Start and Enable nftables service
+sudo systemctl start nftables.service
+sudo systemctl enable nftables.service
 
 # Start script iptables prod
 sudo sh /sabu/scripts/network/network-nftables-prod.sh
