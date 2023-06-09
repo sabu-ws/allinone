@@ -30,10 +30,10 @@ echo '20' && sleep 1 # Progress
 
 # Setup reverse proxy
 apt install nginx -y > /dev/null 2>&1
-rm /etc/nginx/sites-available/default > /dev/null 2>&1
-rm /etc/nginx/sites-enable/default > /dev/null 2>&1
-cp /sabu/nginx/sites-available/sabu-front.conf > /dev/null 2>&1
-ls -s /etc/nginx/sites-available/sabu-front.conf /etc/nginx/sites-enable/sabu-front.conf > /dev/null 2>&1
+rm /etc/nginx/sites-available/default 1>/dev/null 2>&1
+rm /etc/nginx/sites-enable/default 1>/dev/null 2>&1
+cp /sabu/nginx/sites-available/sabu-front.conf /etc/nginx/sites-available/sabu-front.conf > /dev/null 2>&1
+ln -s /etc/nginx/sites-available/sabu-front.conf /etc/nginx/sites-enable/sabu-front.conf > /dev/null 2>&1
 echo '35' && sleep 2 # Progress
 
 # Install packages 
