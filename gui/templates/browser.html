@@ -15,11 +15,11 @@
 		<form id="sendd" action="/sendd" method="POST" enctype="multipart/form-data">
 			<input type="text" name="linkd" id="linkd" style="display: none;" value="">
 			<div id="files2send" class="btn-wrapper cc">
-				<button id="prompt_btn" class="cc btn">Envoyé un fichier</button>
+				<button id="prompt_btn" class="cc btn">Upload file</button>
 				<input id="input_btn" name=up_f type=file class="cc"/>
 			</div>
 			<div id="files2send" class="btn-wrapper cc">
-				<button id="prompt_btn2" class="cc btn">Envoyé un dossier</button>
+				<button id="prompt_btn2" class="cc btn">Upload folder</button>
 				<input id="input_btn2" name=up_d type=file class="cc" accept=".zip"/>
 				{% if get_flashed_messages() %}
 				<meta charset="utf-8">
@@ -27,17 +27,17 @@
 				{% endif %}
 			</div>
 			<div class="btn-wrapper cc">
-				<input class="submit_menu_browser btn" type="submit" name="submit">
+				<input class="submit_menu_browser btn" type="submit" name="submit" value="Send">
 			</div>
 		</form>
 	</div>
 	<table id="table_browser" class="listing_file">
 		<tr class="main_items_directory">
-			<th>Nom</th>
+			<th>Name</th>
 			<th>Mode</th>
-			<th>Date de création</th>
-			<th>Date de modification</th>
-			<th>Taille</th>
+			<th>Creation date</th>
+			<th>Modification date</th>
+			<th>Size</th>
 			<th>Action</th>
 		</tr>
 		
@@ -53,9 +53,9 @@
 			<td>{{ mod_time }}</td>
 			<td>{{ size }}</td>
 			<td>
-				<a class="actiona" href="/delete/{{ cur_dir }}{{ name }}">Supprimer</a>
+				<a class="actiona" href="/delete/{{ cur_dir }}{{ name }}">Remove</a>
 				{% if g.hasScan %}
-					<a class="actiona" href="/download/{{ cur_dir }}{{ name }}">Télécharger</a>
+					<a class="actiona" href="/download/{{ cur_dir }}{{ name }}">Download</a>
 				{% endif %}
 				
 				
@@ -75,9 +75,9 @@
 			<td>{{ mod_time }}</td>
 			<td>{{ size }}</td>
 			<td>
-				<a class="actiona" href="/delete/{{ cur_dir }}{{ name }}">Supprimer</a>
+				<a class="actiona" href="/delete/{{ cur_dir }}{{ name }}">Remove</a>
 				{% if g.hasScan %}
-				<a class="actiona" href="/download/{{ cur_dir }}{{ name }}">Télécharger</a>
+				<a class="actiona" href="/download/{{ cur_dir }}{{ name }}">Download</a>
 				{% endif %}
 				<a class="actiona" href="/info/{{ cur_dir }}{{ name }}">Info</a>
 			</td>
