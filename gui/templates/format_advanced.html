@@ -47,12 +47,11 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$('#butt_format').click(function(){
-		console.log("enter")
-		var socket = io.connect(location.protocol'//' + document.domain + ':' + location.port);
+		var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
 		socket.emit("formating_advanced");
-		$("#span_format").text("Format in progress...<br>Format will take longer.")
+		$("#span_format").text("Format in progress...<br>Format will take longer.");
 		socket.on('end',function(){
-			$("#span_format").text("Format successful !")
+			$("#span_format").text("Format successful !");
 		  });
 	});
 });
