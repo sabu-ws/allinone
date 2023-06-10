@@ -34,6 +34,8 @@ rm /etc/nginx/sites-available/default 1>/dev/null 2>&1
 rm /etc/nginx/sites-enabled/default 1>/dev/null 2>&1
 cp /sabu/nginx/sabu-front.conf /etc/nginx/sites-available/sabu-front.conf > /dev/null 2>&1
 ln -s /etc/nginx/sites-available/sabu-front.conf /etc/nginx/sites-enabled/sabu-front.conf > /dev/null 2>&1
+systemctl enable nginx > /dev/null 2>&1
+systemctl restart nginx > /dev/null 2>&1
 echo '35' && sleep 2 # Progress
 
 # Install packages 
