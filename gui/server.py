@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 # --------------------Import module-------------------------
+# module for flask running
 from flask import Flask, jsonify, render_template, request, url_for , g , flash, redirect ,session ,send_file
-from werkzeug.utils import secure_filename
 from flask_socketio import SocketIO, emit
+from werkzeug.utils import secure_filename
+from eventlet import wsgi, wrap_ssl, spawn
 import eventlet
+import ssl
+import socket
 
+# module for good processing
 import hashlib
 import random
 import string
@@ -20,10 +25,10 @@ import re
 import json
 import psutil
 
-eventlet.monkey_patch()
+# master config
 app = Flask(__name__)
-# socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading', logger=True, engineio_logger=True, http_compression=True, cookie='auth', cookie_secure=True)
 socketio = SocketIO(app)
+
 # APP Config
 ROOT_PATH="/mnt/usb/"
 SCRIPT_PATH = "/sabu/scripts"
@@ -32,13 +37,15 @@ LOG_PATH = "/sabu/logs"
 app.config['SECRET_KEY'] = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
 app.config['UPLOAD_FOLDER'] = ROOT_PATH
 
-
+# Define variable
 hasScan = False
 first_con = True
 nb_advanced_scan = 2
 is_scan=0
 during_connection = False
 pid = 0
+
+# --------------------Wrapper function-------------------------
 
 def login_required(f):
 	@wraps(f)
@@ -85,6 +92,8 @@ def first(f):
 		return f(*args, **kwargs)
 	return decorated_function
 
+# --------------------Minor function-------------------------
+
 def ret_mode(mode_num):
 	return mode_num.replace("7","rwx").replace("6","rw-").replace("5","r-x").replace("4","r--").replace("3","-wx").replace("2","-w-").replace("1","--x").replace("0","---")
 
@@ -95,7 +104,7 @@ def sizeof_fmt(num, suffix="B"):
         num /= 1024.0
     return f"{num:.1f}Yi{suffix}"
 
-
+# --------------------logging processing-------------------------
 def logging(message):
 	file = open("/sabu/logs/gui.log","a")
 	date_format = datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
@@ -103,13 +112,19 @@ def logging(message):
 	file.write(prefetch)
 	file.close()
 
+
+# --------------------Start of sabu-------------------------
 logging("GUI of SABU is start")
 
+
+# --------------------Main page section-------------------------
 @app.route("/")
 @first
 def index():
 	return render_template("main.html")
 
+
+# --------------------Scan section-------------------------
 @app.route("/scan")
 @first
 @detectUSB
@@ -128,13 +143,7 @@ def scan_simple():
 def rec():
 	logging("simple scan start")
 	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh && sleep 1".split())
-	# proc = subprocess.Popen(f"sleep 5".split())
 	global hasScan
-	# while 1:
-		# break
-		# poll = proc.poll()
-		# if poll is not None:
-			# break
 	emit("simple_scan_end")
 	hasScan = True
 	emit("end")
@@ -151,7 +160,6 @@ def scan_advanced():
 def rec():
 	logging("Advanced scan(clamav) start")
 	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh && sleep 1".split())
-	# proc = subprocess.Popen(f"sleep 2".split())
 	global hasScan
 	global nb_advanced_scan
 	global is_scan
@@ -168,7 +176,6 @@ def rec():
 def rec():
 	logging("Advanced scan(ole) start")
 	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan_ole.sh && sleep 1".split())
-	# proc = subprocess.Popen(f"sleep 5".split())
 	global is_scan
 	global nb_advanced_scan
 	emit("advanced_scan_end","olefile")
@@ -204,6 +211,8 @@ def resultat():
 		return redirect(url_for("resultat"))
 	return redirect(url_for("nobody"))
 
+# --------------------Format section-------------------------
+
 @app.route("/format")
 @first
 @detectUSB
@@ -218,8 +227,7 @@ def format_simple():
 
 @socketio.on('formating')
 def rec():
-	# proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
-	proc = subprocess.Popen(f"sleep 5".split(),stdout=subprocess.PIPE)
+	proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
 	logging("standard format start")	
 	while 1:
 		poll = proc.poll()
@@ -246,6 +254,9 @@ def rec():
 			logging("standard format end")	
 			break
 
+# --------------------Browser section-------------------------
+
+# Browser page
 @app.route("/browser/<path:MasterListDir>")
 @app.route("/browser/")
 @app.route("/browser")
@@ -286,6 +297,7 @@ def browser(MasterListDir=""):
 	if os.path.isfile(joining):
 		return "file"
 
+# Donwload file page 
 @app.route("/download/<path:MasterListDir>")
 @app.route("/download")
 @first
@@ -314,6 +326,7 @@ def download(MasterListDir=""):
 	else:
 		return redirect(url_for("page_not_found")), 305
 
+# Delete file 
 @app.route("/delete/<path:MasterListDir>")
 @app.route("/delete")
 @first
@@ -341,6 +354,7 @@ def delete(MasterListDir=""):
 	else:
 		return redirect(url_for("page_not_found"),code=305)
 
+# get info of file with exiftool
 @app.route("/info/<path:MasterListDir>")
 @app.route("/info")
 @first
@@ -353,6 +367,7 @@ def info(MasterListDir=""):
 	logging(f"get info of [{path}]")
 	return render_template("sh_file.html",info=sub)
 
+# Upload file securly on server
 @app.route("/sendd",methods=['POST'])
 @first
 @ifscan
@@ -401,6 +416,9 @@ def sendd():
 	else:
 		return redirect(url_for("browser"))
 
+# --------------------Admin Section-------------------------
+
+# logging admin page
 @app.route("/admin",methods=('GET','POST'))
 @first
 def admin():
@@ -420,7 +438,7 @@ def admin():
 			return "bad password"
 	return render_template("admin_panel.html")
 
-
+# donwload logs page
 @app.route("/admin/download_logs")
 @first
 @login_required
@@ -439,6 +457,7 @@ def admin_downloadLogs():
 		return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
 	return "error"
 
+# connfig device, network ... page
 @app.route("/admin/config",methods=['GET', 'POST'])
 @first
 @login_required
@@ -475,6 +494,7 @@ def admin_config():
 					flash("Some informations was incorrect")
 					return redirect(url_for("admin_config"))
 			elif "password" in request.form:
+			# change password
 				if re.search(must_match_pwd, request.form["password"]):
 					file_r=open("static/config.json","r")
 					js = json.load(file_r)
@@ -509,7 +529,7 @@ def admin_config():
 	else:
 		return redirect(url_for('admin_config'))
 
-
+# setup page
 @app.route("/setup",methods=["POST","GET"])
 def first_connection():
 	global first_con
@@ -537,6 +557,8 @@ def first_connection():
 			# return request.form
 
 			if ("interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" in request.form):
+				
+				# regex for good ip
 				must_match_ip = r"^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
 
 				# Min 12 char, 1 number, 1 uppercase, 1 lowercase,1 spécial char
@@ -586,6 +608,7 @@ def first_connection():
 
 	return ""
 
+# logout page
 @app.route("/logout")
 @first
 @login_required
@@ -594,6 +617,7 @@ def logout():
 	logging("admin was log out")
 	return redirect(url_for('index'))
 
+# return "no key found" page 
 @app.route("/nobody")
 @first
 def nobody():
@@ -601,6 +625,7 @@ def nobody():
 	logging(f"someone access {request.url}, no key found")
 	return render_template("nobody.html",value=value)		
 
+# detect before each request if someone is logged
 @app.before_request
 def load_logged_in_user():
 	global hasScan
@@ -615,13 +640,24 @@ def load_logged_in_user():
 		g.log = True
 
 
+# Error when receive 404 error
 @app.errorhandler(404)
 def page_not_found(error):
 	logging(f"someone access {request.url}")
 	return render_template("error/404.html")
 
 
-
+# Start application with tls
 if __name__ == '__main__':
-	socketio.run(app,host='0.0.0.0', port=8888, debug=True)
-	# socketio.run(app,host='127.0.0.1', port=8888, debug=True)
+	eventlet.monkey_patch()
+	certfile = "/sabu/nginx/certificates/sabu-gui.crt"
+	keyfile = "/sabu/nginx/certificates/sabu-gui.key"
+	ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+	ssl_context.load_cert_chain(certfile, keyfile)
+	wsgi.server(
+		eventlet.wrap_ssl(
+			eventlet.listen(('127.0.0.1', 8888)),
+				certfile=certfile,
+				keyfile=keyfile,
+				server_side=True),
+	app)
