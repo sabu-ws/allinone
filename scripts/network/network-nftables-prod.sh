@@ -24,7 +24,7 @@ sudo nft add chain inet filter output { type filter hook output priority 0\; }
 ## Allow SSH
 sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 22 accept
 ## Allow HTTP
-sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 80 accept
+# sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 80 accept
 ## Allow HTTPS
 sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 443 accept
 ## DROP ALL
@@ -34,7 +34,7 @@ sudo nft add rule inet filter input iif $interface ip saddr 0.0.0.0/0 ip daddr $
 ## Allow SSH
 sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 22 ip daddr $network accept
 ## Allow HTTP
-sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 80 ip daddr 0.0.0.0/0 accept
+# sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 80 ip daddr 0.0.0.0/0 accept
 ## Allow HTTPS
 sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 443 ip daddr 0.0.0.0/0 accept
 ## DROP ALL
