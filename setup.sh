@@ -80,6 +80,6 @@ sleep 3 # Progress
 } | whiptail --title "SABU" --gauge "Installation in progress, please wait..." 8 70 0
 
 # DISPLAY END
-whiptail --title "SABU" --msgbox 'Setup completed !\nOpen browser and visit : http://'$ipaddress:8888/'' 8 70 0
+whiptail --title "SABU" --msgbox 'Setup completed !\nOpen browser and visit : https://'$ipaddress/'' 8 70 0
 
 # --- Script By SABU --- #
