@@ -38,7 +38,7 @@ sudo nft add rule inet filter output oif $interface ip saddr $address tcp sport 
 sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr $nameserver1 udp dport 53 accept
 sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr $nameserver2 udp dport 53 accept
 ## connexion_http
-# sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 80 accept
+sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 80 accept
 ## connexion_https
 sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 443 accept
 ## drop_all
