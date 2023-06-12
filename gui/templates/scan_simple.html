@@ -37,9 +37,9 @@
 {% block main_base %}
 <div class="main_simple_scan">
 	<fieldset class="fieldset_simple_scan">
-		<legend align="center">Scan simple</legend>
-		<p>La clé est branché !</p><br>
-		<button id="butt_simple_scan" class="butt_simple_scan">Démarré le scan simple</button><br><br>
+		<legend align="center">Simple Scan</legend>
+		<p>Key plugged !</p><br>
+		<button id="butt_simple_scan" class="butt_simple_scan">Start simple scan</button><br><br>
 		<span id="span_simple_scan"></span>
 	</fieldset>
 </div>
@@ -53,9 +53,9 @@ $(document).ready(function(){
 	$('#butt_simple_scan').click(function(){
 		// var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
 		socket.emit("simple_scan");
-		$("#span_simple_scan").text("Le scanning est en cours...")
+		$("#span_simple_scan").text("Scan in progress...")
 		socket.on('simple_scan_end',function(){
-			$("#span_simple_scan").text("Le scannaing de la clé est terminé !!")
+			$("#span_simple_scan").text("Scan successful !")
 		});
 	});
 	socket.on("end",function(){
