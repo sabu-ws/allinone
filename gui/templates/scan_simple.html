@@ -1,10 +1,6 @@
 {% extends 'base_mainpage.html' %}
 {% block styles %}
 <style type="text/css">
-.main_simple_scan{
-	margin-top: 5%;		
-/*	background-color: red;*/
-}
 
 .fieldset_simple_scan{
 	padding: 5em;
@@ -38,7 +34,7 @@
 	<a class="button_for_listing_mainbox" href="/scan/result">Result scan</a>
 	{% endif %}
 {% endblock %}
-{% block browser %}
+{% block main_base %}
 <div class="main_simple_scan">
 	<fieldset class="fieldset_simple_scan">
 		<legend align="center">Scan simple</legend>
