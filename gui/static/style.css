@@ -166,9 +166,19 @@
 	  flex-wrap: wrap;
   }
   
+  .main_logo_sabu{
+	  width: 100px;
+	  height: 100px; 
+	  border-radius: 50%;
+	  overflow: hidden;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+  }
+  
   .content .master_mainbox .main_title_sabu{
 	  width: 100%;
-	  height: 5em;
+	  height: 8em;
 	  display: flex;
 	  align-items: center;
 	  justify-content: center;
