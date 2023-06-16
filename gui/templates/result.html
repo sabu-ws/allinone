@@ -18,23 +18,26 @@
 		<div class="out_file_result_scan">
 			<table  class="table_result">
 				<thead>
-					<tr>
-						<th><input title="Select all" type="checkbox" onclick="selectall()" id="selectedall" ></th>
-						<th>Files</th>
+					<tr class="row_header_del">
+						<th class="box_check_del checbox_del_header"><input class="" title="Select all" type="checkbox" onclick="selectall()" id="selectedall" ></th>
+						<th class="file_del">Files</th>
+						<th class="file_del">Type</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% if lenght > 0 %}
 						{% for file in files %}
 							<tr>
-								<td class="box_check_del"><input title="Select" type="checkbox" id="checking" name="{{ file }}"></td>
-								<td><p>{{ file }}</p></td>
+								<td class="box_check_del"><input class="" title="Select" type="checkbox" id="checking" name="{{ file }}"></td>
+								<td class="file_del"><p>{{ file[0] }}</p></td>
+								<td class="file_del"><p>{{ file[1] }}</p></td>
 							</tr>
 						{% endfor %}
 					{% else %}
 					<tr>
 						<td></td>
 						<td>No file is suspicious</td>
+						<td></td>
 					</tr>
 					{% endif %}
 				</tbody>
@@ -75,7 +78,7 @@
 }
 
 .table_result{
-	background-color: purple;
+	background-color: black;
 	width:70em	;
 	height:80px;
 	border: 1px solid black;
@@ -85,8 +88,27 @@
 .box_check_del{
 	display: flex;
 	justify-content: center;
-	margin-top: 10%;
-	width: 2em;
+	align-items: center;
+	height: 3em;
+}
+
+.row_header_del{
+	border-bottom: 1px solid black;
+}
+
+.file_del{
+	text-align: center;
+}
+
+
+.checbox_del_header{
+	height: 2em;
+}
+
+.checkbox_resultat{
+	width: 100%;
+	height: 100;
+	background-color: green;
 }
 
 .table_result th{
