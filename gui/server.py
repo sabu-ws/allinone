@@ -191,15 +191,20 @@ def rec():
 @first
 def resultat():
 	if request.method == "GET":
+		resultat_scan = {}
 		clam_av = [i[0][:-1] for i in [i.split() for i in open("/sabu/logs/scan/clamav/"+open("/sabu/logs/scan/clamav/last-scan.log").read().replace("\n","")).read().split("\n")] if len(i) > 0 if i[-1] == "FOUND" ]
+		resultat_scan = {i:"clamav" for i in clam_av}
 		ole = []
 		if open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","") != "":
 			ole = [i.split()[0] for i in open("/sabu/logs/scan/ole/"+open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","")).readlines()]
-		scan = ole+clam_av
-		resultat = list(set(scan))
-		resultat = [i for i in resultat if os.path.isfile(i)]
-		lenght = len(resultat)
-		return render_template("result.html",files=resultat,lenght=lenght)
+		for i in ole:
+			if i in resultat_scan:
+				resultat_scan[i]+=" ole"
+			else:
+				resultat_scan[i]="ole"
+		fileResScan = [[i,resultat_scan[i]] for i in resultat_scan if os.path.isfile(i)]
+		lenght = len(fileResScan)
+		return render_template("result.html",files=fileResScan,lenght=lenght)
 	elif request.method == "POST":
 		if request.form["validate_res"] == "Delete":
 			files = request.form.to_dict()
@@ -209,7 +214,7 @@ def resultat():
 					logging(f"[{file}] has been delete")
 					os.remove(file)
 		return redirect(url_for("resultat"))
-	return redirect(url_for("nobody"))
+	return redirect("/404")
 
 # --------------------Format section-------------------------
 
