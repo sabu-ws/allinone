@@ -471,9 +471,7 @@ def admin_config():
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
 		if request.method=="POST":
 			must_match_ip = r"^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
-			# Min 12 char, 1 number, 1 uppercase, 1 lowercase,1 spécial char
-			must_match_pwd = r"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.!@$%^\&\(\)\{\}\[\]:;<>,\.\?\/~_\+-=\|]).{12,}$"
-			if "interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" not in request.form:
+			if "interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" not in request.form and "hostname" not in request.form:
 				if request.form["dns2"] != "":
 					dns2 = request.form["dns2"]
 				else:
@@ -498,26 +496,50 @@ def admin_config():
 					flash("net_adm")
 					flash("Some informations was incorrect")
 					return redirect(url_for("admin_config"))
-			elif "password" in request.form:
-			# change password
-				if re.search(must_match_pwd, request.form["password"]):
-					file_r=open("static/config.json","r")
-					js = json.load(file_r)
-					file_r.close()
-					file_w=open("static/config.json","w")
-					mdp=request.form['password']
-					encrypt=hashlib.sha512(mdp.encode()).hexdigest()
-					js['mdp']=encrypt
-					json.dump(js, file_w)
-					flash("password")
-					flash("Password was change")
-					logging("adming has change password")
-					return redirect(url_for("admin_config"))
+			elif "password" in request.form and "hostname" in request.form:
+				good_password=""
+				good_hostname=""
+				flash("password")
+				if request.form["password"] != "":
+					# change password
+					# Min 12 char, 1 number, 1 uppercase, 1 lowercase,1 spécial char
+					must_match_pwd = r"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.!@$%^\&\(\)\{\}\[\]:;<>,\.\?\/~_\+-=\|]).{12,}$"
+					if re.search(must_match_pwd, request.form["password"]):
+						file_r=open("static/config.json","r")
+						js = json.load(file_r)
+						file_r.close()
+						file_w=open("static/config.json","w")
+						mdp=request.form['password']
+						encrypt=hashlib.sha512(mdp.encode()).hexdigest()
+						js['mdp']=encrypt
+						json.dump(js, file_w)
+						good_password = "Password was change"
+						logging("admin has change password")
+					else:
+						flash("Bad padding password")
+						logging(f"admin try tro change password [{request.form.to_dict()}]")
+				if request.form["hostname"] != "":
+					# change hostname
+					# between 3 and 20 char,min 
+					must_match_hostname = r"^[a-zA-Z0-9-_]{3,20}$"
+					if re.search(must_match_hostname,request.form["hostname"]):
+						print("change password")
+						good_hostname = "Hostname was change"
+						logging("admin has change hostname")
+					else:
+						logging(f"admin try tro change hostname [{request.form.to_dict()}]")
+						flash("Bad padding hostname")
+
+				if good_password !="" and good_hostname!="":
+					flash("All informations was change")
+				elif good_hostname!="" :
+					flash(good_hostname)
+				elif good_password!="":
+					flash(good_password)
 				else:
-					flash("password")
-					flash("Bad padding password")
-					logging(f"admin try tro change password [{request.form.to_dict()}]")
-					return redirect(url_for("admin_config"))	
+					flash("ERROR !!!")
+
+				return redirect(url_for("admin_config"))
 			else:
 				g.log = 0
 				return redirect(url_for("index"))
