@@ -523,7 +523,7 @@ def admin_config():
 					# between 3 and 20 char,min 
 					must_match_hostname = r"^[a-zA-Z0-9-_]{3,20}$"
 					if re.search(must_match_hostname,request.form["hostname"]):
-						print("change password")
+						subprocess.run(f"sudo  hostnamectl set-hostname {hostname}")
 						good_hostname = "Hostname was change"
 						logging("admin has change hostname")
 					else:
