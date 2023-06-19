@@ -209,6 +209,7 @@ def resultat():
 			files = request.form.to_dict()
 			del files["validate_res"]
 			for file in files.keys():
+				file = json.loads(file.replace("'",'"'))[0]
 				if os.path.isfile(file):
 					logging(f"[{file}] has been delete")
 					os.remove(file)
