@@ -84,7 +84,6 @@ def first(f):
 		js = json.load(file)
 		if "mdp" in js:
 			global during_connection
-			logging(psutil.pid_exists(pid))
 			if js["mdp"] == "" and during_connection == False:
 				return redirect(url_for('first_connection'))
 		global first_con
