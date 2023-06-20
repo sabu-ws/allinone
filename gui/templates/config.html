@@ -114,13 +114,8 @@
 	<div class="dl_logs">
 		<fieldset class="admin_section">
 			<legend align="center">Device</legend> 
-			<table>
-				<tr>
-					<td>
-						<a href="{{ url_for('admin_downloadLogs') }}" class="but_down_logs">Download logs</a>
-					</td>
-				</tr>
-			</table>
+			<a href="{{ url_for('admin_downloadLogs') }}" class="but_down_logs">Download logs</a>
+			<a href="{{ url_for('admin_reboot') }}" class="but_down_logs">Reboot</a>
 		</fieldset>
 	</div>
 {% endblock %}
@@ -132,24 +127,11 @@
 	padding: 1px;
 	border-radius: 10px;
 	padding: 0.5em;
-	margin: 0.5em;
+	margin-left: 1em;
 	transition: 0.2s;
 }
 .but_down_logs:hover{
 	background-color: #eeddff;
 }
-/* .btn_submit{
-	background-color: #e2e2e2;
-	border: 1px solid black;
-	padding: 1px;
-	border-radius: 5px;
-	padding: 0.25em;
-	width: 5em;
-	margin: 0.5em;
-	transition: 0.2s;
-}
-.btn_submit:hover{
-	background-color: #eeddff;
-} */
 </style>
 {% endblock %}
