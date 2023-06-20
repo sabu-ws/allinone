@@ -4,19 +4,24 @@
 device='/dev/sd[a-z]'
 
 # Delete all partitions on the USB key
-echo 'yes' | parted -s $device mklabel msdos
+echo 'yes' | sudo parted -s $device mklabel msdos
 
 # Create a new primary partition occupying all available space
-echo 'yes' | parted -s -a optimal $device mkpart primary ntfs 0% 100%
+echo 'yes' | sudo parted -s -a optimal $device mkpart primary ntfs 0% 100%
 
 # Update partition table
-partprobe $device
+sudo partprobe $device
 
 # Wait for changes to take effect
-sleep 1
+sleep 2
+sudo sh /sabu/scripts/usb/usb-unmount.sh
 
 # Format partition to NTFS
-mkfs.ntfs -f ${device}1
+sudo mkfs.ntfs -f ${device}1
+
+# Mount partition
+sleep 2
+sudo bash /sabu/scripts/usb/usb-mount.sh
 
 # LOG ACTION
 date=$(date +"[%Y-%m-%d %H:%M:%S]")
