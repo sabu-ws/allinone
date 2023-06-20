@@ -443,6 +443,13 @@ def admin():
 			return "bad password"
 	return render_template("admin_panel.html")
 
+@app.route("/admin/reboot")
+@first
+@login_required
+def admin_reboot():
+	subprocess.run("sudo reboot".split())
+	return ""
+
 # donwload logs page
 @app.route("/admin/download_logs")
 @first
@@ -523,8 +530,10 @@ def admin_config():
 					# between 3 and 20 char,min 
 					must_match_hostname = r"^[a-zA-Z0-9-_]{3,20}$"
 					if re.search(must_match_hostname,request.form["hostname"]):
-						subprocess.run(f"sudo  hostnamectl set-hostname {hostname}")
-						good_hostname = "Hostname was change"
+						hostname = request.form["hostname"]
+						subprocess.run(f"sudo hostnamectl set-hostname {hostname}".split())
+						subprocess.run(f"/sabu/scripts/network/network-hostname.sh".split())
+						good_hostname = "The hostname will change at next reboot"
 						logging("admin has change hostname")
 					else:
 						logging(f"admin try tro change hostname [{request.form.to_dict()}]")
@@ -561,7 +570,7 @@ def admin_config():
 def first_connection():
 	global first_con
 	global during_connection
-	global pid
+	first_con = True
 	if first_con == True:
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
 		if request.method=="GET":
@@ -571,14 +580,6 @@ def first_connection():
 			gateway=info_ip[3]
 			dns1=info_ip[4]
 			dns2=info_ip[5]
-			if during_connection == True:
-				if  psutil.pid_exists(pid):
-					flash("Please wait during installation")
-				else:
-					flash("The installation is end. The stations will be reboot")
-					os.popen("sleep 3 && reboot")
-					first_con = False
-					during_connection = False
 
 		elif request.method=="POST" and during_connection != True:
 			# return request.form
@@ -590,11 +591,15 @@ def first_connection():
 
 				# Min 12 char, 1 number, 1 uppercase, 1 lowercase,1 spécial char
 				must_match_pwd = r"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.!@$%^\&\(\)\{\}\[\]:;<>,\.\?\/~_\+-=\|]).{12,}$"
+ 
+				# between 3 and 20 char,min 
+				must_match_hostname = r"^[a-zA-Z0-9-_]{3,20}$"
+
 				if request.form["dns2"] != "":
 					dns2 = request.form["dns2"]
 				else:
 					dns2 = "9.9.9.9"
-				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]):
+				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]) and re.search(must_match_hostname, request.form["hostname"]):
 					interface = request.form["interface"]
 					ip = request.form["ip"]
 					netmask = request.form["netmask"]
@@ -616,8 +621,8 @@ def first_connection():
 					file_w.close()
 					json_config.close()
 					during_connection = True
-					installing = subprocess.Popen("/sabu/config/install.sh")
-					pid = installing.pid
+					logging(request.form)
+					subprocess.run("/sabu/config/install.sh")
 					return redirect(url_for("first_connection"))
 				else:
 					flash("Some informations was incorrect")
