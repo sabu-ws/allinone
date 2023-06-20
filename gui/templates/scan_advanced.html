@@ -1,63 +1,50 @@
-{% extends 'base_mainpage.html' %}
-{% block styles %}
-<style type="text/css">
-
-.fieldset_advanced_scan{
-	padding: 5em;
-	border-radius: 10px;
-}
-
-.butt_advanced_scan{
-	border: 2px solid gray;
-	color: gray;
-	background-color: white;
-	padding: 8px 20px;
-	border-radius: 10px;
-	font-size: 1em;
-	font-weight: bold;
-	cursor: pointer;
-}
-
-#span_advanced_scan{
-	color:red;
-}
-
-.has_not_end{
-	color:red;
-}
-
-.has_end{
-	color:green;
-}
-
-.info_scan{
-	color:red;
-}
-</style>
-{% endblock %}
-{% block menu %}
-	<a class="button_for_listing_mainbox" href="/">Home</a>
-	{% if g.log %}
-	<a class="button_for_listing_mainbox" href="/admin">Admin pannel</a>
-	{% endif %}
-	<a class="button_for_listing_mainbox" href="/browser">List USB contents</a>
-	{% if hasScan %}
-	<a class="button_for_listing_mainbox" href="/scan/result">Result scan</a>
-	{% endif %}
-{% endblock %}
-{% block main_base %}
-<div class="main_advanced_scan">
-	<fieldset class="fieldset_advanced_scan">
-		<legend align="center">Advanced Scan</legend>
-		<p>Key plugged !</p><br>
-		<button id="butt_advanced_scan" class="butt_advanced_scan">Start avanced scan</button><br><br>
-		<div id="time_wait" hidden>
-			<p class="info_scan">Scan in progress...</p>
-			<p class="info_scan">Scan may take a few minutes...</p><br>
-			<p id="col_validate_clamav"  class="has_not_end">clamav : <span id="validate_clamav">x<span></p>
-			<p id="col_validate_olefile" class="has_not_end">olefile : <span id="validate_olefile">x<span></p>
-		</div>
-	</fieldset>
+{% extends 'menu.html' %}
+{% block box %}
+<!-- BOX -->
+<div class="col-start-4 row-start-2 row-end-3"> 
+    <div class="px-8 py-4 text-center bg-gray-50 dark:bg-gray-600 lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center lg:p-12 shadow-lg rounded-2xl">
+        <div class="text-5xl dark:text-white">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+        <p class="mt-4 text-xl font-bold text-gray-800 dark:text-gray-200 py-4">
+            Advanced Scan
+        </p>
+        <li class="flex items-start lg:col-span-1 justify-center">
+            <div class="flex-shrink-0">
+                <svg class="w-6 h-6 mr-2" xmlns="http://www.w3.org/2000/svg" width="6" height="6" stroke="currentColor" fill="#10b981" viewBox="0 0 1792 1792">
+                    <path d="M1412 734q0-28-18-46l-91-90q-19-19-45-19t-45 19l-408 407-226-226q-19-19-45-19t-45 19l-91 90q-18 18-18 46 0 27 18 45l362 362q19 19 45 19 27 0 46-19l543-543q18-18 18-45zm252 162q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z">
+                    </path>
+                </svg>
+            </div>
+            <p class="ml-3 text-sm leading-5 text-gray-700 dark:text-gray-200">
+                Key plugged !
+            </p>
+        </li>
+        <li class="flex items-start lg:col-span-1 justify-center">
+            <div class="flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" class="w-6 h-6 mr-2" fill="red" viewBox="0 0 1792 1792">
+                    <path d="M1277 1122q0-26-19-45l-181-181 181-181q19-19 19-45 0-27-19-46l-90-90q-19-19-46-19-26 0-45 19l-181 181-181-181q-19-19-45-19-27 0-46 19l-90 90q-19 19-19 46 0 26 19 45l181 181-181 181q-19 19-19 45 0 27 19 46l90 90q19 19 46 19 26 0 45-19l181-181 181 181q19 19 45 19 27 0 46-19l90-90q19-19 19-46zm387-226q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z">
+                    </path>
+                </svg>
+            </div>
+            <p class="ml-3 text-sm leading-5 text-gray-700 dark:text-gray-200">
+                No Key plugged !
+            </p>
+        </li>
+        <div class="mt-6">
+            <div class="rounded-md shadow">
+                <button type="button" id="butt_advanced_scan" class="py-2 px-4 bg-blue-500 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+                    Start advanced scan
+                </button>
+                <div id="time_wait" hidden>
+                    <p class="text-sm dark:text-white">Scan in progress...</p>
+                    <p class="text-sm dark:text-white">Scan may take a few minutes...</p><br>
+                    <p id="col_validate_clamav"  class="text-sm text-red-600">clamav : <span id="validate_clamav">x<span></p>
+                    <p id="col_validate_olefile" class="text-sm text-red-600">olefile : <span id="validate_olefile">x<span></p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 {% block script %}
@@ -74,13 +61,15 @@ $(document).ready(function(){
 			var build_id = "validate_"+data;
 			$("#"+build_id).text("v");
 			var build_col_p = "col_"+build_id
-			document.getElementById(build_col_p).className = " has_end";
+			document.getElementById(build_col_p).className = "text-sm text-green-600";
 		});
 	});
 	socket.on("end",function(){
 		console.log("rest");
-		window.location = location.protocol+"//"+document.domain+":"+location.port+"/scan/result" ;
+		window.location = location.protocol+"//"+document.domain+":"+location.port+"/result" ;
 	});
 });
+document.getElementById("scan").classList.remove("text-gray-500","dark:text-gray-200","hover:text-blue-500","dark:hover:text-blue-500");
+document.getElementById("scan").classList.add("text-blue-500","border-r-4","border-blue-500","bg-gradient-to-r","from-white","to-blue-100","dark:from-gray-700","dark:to-gray-800");
 </script>
 {% endblock %}
