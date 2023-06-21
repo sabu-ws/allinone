@@ -72,22 +72,22 @@
                                     <table id="table_browser" class="min-w-full leading-normal">
                                         <thead>
                                             <tr>
-                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
+                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 dark:bg-gray-800 dark:text-white border-b border-gray-400">
                                                     Name
                                                 </th>
                                                 <!-- <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
                                                     Mode
                                                 </th> -->
-                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
+                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 dark:bg-gray-800 dark:text-white  border-b border-gray-400">
                                                     Creation date
                                                 </th>
-                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
+                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 dark:bg-gray-800 dark:text-white  border-b border-gray-400">
                                                     Modification date
                                                 </th>
-                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
+                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 dark:bg-gray-800 dark:text-white  border-b border-gray-400">
                                                     Size
                                                 </th>
-                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
+                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 dark:bg-gray-800 dark:text-white  border-b border-gray-400">
                                                     Action
                                                 </th>
                                             </tr>
@@ -95,14 +95,14 @@
                                         <tbody>
                                             {% for name,mode,cre_time,mod_time,size in items_dir %}
                                             <tr class="cursor-pointer">
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
                                                     <div class="flex items-center">
                                                         <div class="flex-shrink-0">
                                                             <a href="/browser{{ cur_dir }}{{ name }}"></a>
                                                             <img src="{{ url_for('static',filename='/assets/icons/icon_folder.png') }}" height="20px" width="20px">
                                                         </div>
                                                         <div class="ml-3">
-                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                            <p class="text-gray-900 dark:text-white whitespace-no-wrap">
                                                                 {{ name }}
                                                             </p>
                                                         </div>
@@ -113,20 +113,22 @@
                                                         {{ mode }}
                                                     </p>
                                                 </td> -->
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
+                                                    <p class="text-gray-900 dark:text-white whitespace-no-wrap">
                                                         {{ cre_time }}
                                                     </p>
                                                 </td>
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
+                                                    <p class="text-gray-900 dark:text-white whitespace-no-wrap">
                                                         {{ mod_time }}
                                                     </p>
                                                 </td>
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
-                                                    {{ size }}
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
+                                                    <p class="text-gray-900 dark:text-white whitespace-no-wrap">
+                                                        {{ size }}
+                                                    </p>
                                                 </td>
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 dark:text-white border-b border-gray-400">
                                                     <a href="/info{{ cur_dir }}{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
                                                     {% if g.hasScan %}
                                                         <a href="/download{{ cur_dir }}{{ name }}"><i class="fa-solid fa-download"></i></a>
@@ -137,7 +139,7 @@
                                             {% endfor %}
                                             {% for name,mode,cre_time,mod_time,size in items_file %}
                                             <tr>
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
                                                     <div class="flex items-center">
                                                         <div class="flex-shrink-0">
                                                             <img src="{{ url_for('static', filename='/assets/icons/icon_file.png') }}" height="20px" width="20px">
@@ -147,7 +149,7 @@
                                                         <a></a>
                                                         <!-- Don't delete this -->
                                                         <div class="ml-3">
-                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                            <p class="text-gray-900 dark:text-white whitespace-no-wrap">
                                                                 {{ name }}
                                                             </p>
                                                         </div>
@@ -158,20 +160,22 @@
                                                         {{ mode }}
                                                     </p>
                                                 </td> -->
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
+                                                    <p class="text-gray-900 dark:text-white whitespace-no-wrap">
                                                         {{ cre_time }}
                                                     </p>
                                                 </td>
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
+                                                    <p class="text-gray-900 dark:text-white whitespace-no-wrap">
                                                         {{ mod_time }}
                                                     </p>
                                                 </td>
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
-                                                    {{ size }}
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
+                                                    <p class="text-gray-900 dark:text-white whitespace-no-wrap">
+                                                        {{ size }}
+                                                    </p>
                                                 </td>
-                                                <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
+                                                <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 dark:text-white border-b border-gray-400">
                                                     <a href="/info{{ cur_dir }}{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
                                                     {% if g.hasScan %}
                                                     <a href="/download{{ cur_dir }}{{ name }}"><i class="fa-solid fa-download"></i></a>
@@ -183,7 +187,7 @@
                                         </tbody>
                                     </table>
                                     <div id="div_ef">
-                                        <span id="empty_folder" class="flex justify-center bg-white"></span>
+                                        <span id="empty_folder" class="flex justify-center bg-white dark:bg-gray-700 dark:text-white"></span>
                                     </div>
                                 </div>
                             </div>
