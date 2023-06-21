@@ -109,11 +109,11 @@
                                                 {{ size }}
                                             </td>
                                             <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
-                                                <a href="/info/{{ cur_dir }}{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
+                                                <a href="/info{{ cur_dir }}{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
                                                 {% if g.hasScan %}
-                                                    <a href="/download/{{ cur_dir }}{{ name }}"><i class="fa-solid fa-download"></i></a>
+                                                    <a href="/download{{ cur_dir }}{{ name }}"><i class="fa-solid fa-download"></i></a>
                                                 {% endif %}
-                                                <a href="/delete/{{ cur_dir }}{{ name }}"><i class="fa-solid fa-trash"></i></a>
+                                                <a href="/delete{{ cur_dir }}{{ name }}"><i class="fa-solid fa-trash"></i></a>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -154,11 +154,11 @@
                                                 {{ size }}
                                             </td>
                                             <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
-                                                <a href="/info/{{ cur_dir }}{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
+                                                <a href="/info{{ cur_dir }}{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
                                                 {% if g.hasScan %}
-                                                <a href="/download/{{ cur_dir }}{{ name }}"><i class="fa-solid fa-download"></i></a>
+                                                <a href="/download{{ cur_dir }}{{ name }}"><i class="fa-solid fa-download"></i></a>
                                                 {% endif %}
-                                                <a href="/delete/{{ cur_dir }}{{ name }}"><i class="fa-solid fa-trash"></i></a>
+                                                <a href="/delete{{ cur_dir }}{{ name }}"><i class="fa-solid fa-trash"></i></a>
                                             </td>
                                         </tr>
                                         {% endfor %}
