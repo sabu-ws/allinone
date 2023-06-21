@@ -62,9 +62,12 @@ echo '80' && sleep 3 # Progress
 
 # Start GUI
 mv ./service/sabu.service /etc/systemd/system/ > /dev/null 2>&1
+mv ./service/sabu-ux.service /etc/systemd/system/ > /dev/null 2>&1
 systemctl daemon-reload > /dev/null 2>&1
 systemctl start sabu.service > /dev/null 2>&1
+systemctl start sabu-ux.service > /dev/null 2>&1
 systemctl enable sabu.service > /dev/null 2>&1
+systemctl enable sabu-ux.service > /dev/null 2>&1
 echo '95' && sleep 2 # Progress
 
 # Remove tmp folder
