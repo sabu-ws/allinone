@@ -28,6 +28,11 @@ $(function(){
     }); 
 });
 
+$(function(){
+    if(window.location.pathname == "/browser"){
+        $("#returnButton").attr('hidden','true');
+    }
+});
 
 function ret() {
     var url = window.parent.location.href;

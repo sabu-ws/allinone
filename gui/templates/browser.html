@@ -15,7 +15,7 @@
                 <div class="py-8">
                     <div class="flex flex-row justify-between w-full mb-1 sm:mb-0">
                         <h2 class="text-2xl leading-tight">
-                            <button onclick="ret()" class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" type="submit">
+                            <button onclick="ret()" id="returnButton" class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" type="submit">
                                 <i class="fa-solid fa-arrow-left"></i>
                             </button>
                         </h2>
@@ -80,7 +80,7 @@
                                             <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
                                                 <div class="flex items-center">
                                                     <div class="flex-shrink-0">
-                                                        <a href="/browser/{{ cur_dir }}{{ name }}"></a>
+                                                        <a href="/browser{{ cur_dir }}{{ name }}"></a>
                                                         <img src="{{ url_for('static',filename='icon_folder.png') }}" height="20px" width="20px">
                                                     </div>
                                                     <div class="ml-3">
