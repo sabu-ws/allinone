@@ -2,7 +2,7 @@
 {% block admin %}
 <div class="bg-gray-200 dark:bg-gray-800 h-screen">
     <div class="grid grid-cols-6 grid-rows-3 h-full">
-        <div class="col-start-1 col-end-7 row-start-1 row-end-4 gray-200 dark:bg-gray-800 rounded-2xl mx-4 my-2">
+        <div class="col-start-1 col-end-7 row-start-1 row-end-4 gray-200 dark:bg-gray-800 rounded-2xl mx-4">
             <div class="flex col-start-1 col-end-7 bg-white dark:bg-gray-700 rounded-2xl my-4 mx-4 h-16">
                 <div class="flex items-center justify-start pr-4 space-x-4 h-16 mx-4">
                     <a href="/">
@@ -41,12 +41,12 @@
                                 <h2 class="text-lg dark:text-white font-semibold">Global Settings</h2>
                             <div class="mt-4">
                                 <label class="block mb-2 dark:text-white">Hostname :</label>
-                                <input type="text" name="hostname" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ hostname }}">
+                                <input type="text" name="hostname" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent rounded px-3 py-2" placeholder="{{ hostname }}">
                             </div>    
                             <div class="mt-4">
                                 <label class="block mb-2 dark:text-white">Password :</label>
                                 <div class="relative">
-                                    <input id="passwordInput" type="password" name="password" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="Your Password">
+                                    <input id="passwordInput" type="password" name="password" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent rounded px-3 py-2" placeholder="Your Password">
                                     <button id="toggleButton" type="button" class="absolute inset-y-0 right-0 px-3 py-2 bg-transparent">
                                         <div class="dark:text-white">
                                             <i id="toggleview" class="fa-solid fa-eye"></i>
@@ -56,7 +56,7 @@
 
                             </div>
                             <div class="mt-6">
-                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold dark:bg-white dark:text-black px-4 py-2 rounded">
+                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">
                                     Submit
                                 </button>
                                 {% if get_flashed_messages()[0] == "password" %}
@@ -73,30 +73,30 @@
                                 <h2 class="text-lg font-semibold dark:text-white">Network Settings</h2>
                             <div class="mt-4">
                                 <label class="block mb-2 dark:text-white" >Interface :</label>
-                                <input type="text" name="interface" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ interface }}">
+                                <input type="text" name="interface" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent rounded px-3 py-2" placeholder="{{ interface }}">
                             </div>    
                             <div class="mt-4">
                                 <label class="block mb-2 dark:text-white">IP Address :</label>
-                                <input type="text" name="ip" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ ip }}">
+                                <input type="text" name="ip" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent rounded px-3 py-2" placeholder="{{ ip }}">
                             </div>
                             <div class="mt-4">
                                 <label class="block mb-2 dark:text-white">Netmask :</label>
-                                <input type="text" name="netmask" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ netmask }}">
+                                <input type="text" name="netmask" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent rounded px-3 py-2" placeholder="{{ netmask }}">
                             </div>
                             <div class="mt-4">
                                 <label class="block mb-2 dark:text-white">Gateway :</label>
-                                <input type="text" name="gateway" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ gateway }}">
+                                <input type="text" name="gateway" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent rounded px-3 py-2" placeholder="{{ gateway }}">
                             </div>
                             <div class="mt-4">
                                 <label class="block mb-2 dark:text-white">DNS 1 :</label>
-                                <input type="text" name="dns1" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ dns1 }}">
+                                <input type="text" name="dns1" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent rounded px-3 py-2" placeholder="{{ dns1 }}">
                             </div>
                             <div class="mt-4">
                                 <label class="block mb-2 dark:text-white">DNS 2 (Not required) :</label>
-                                <input type="text" name="dns2" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ dns2 }}">
+                                <input type="text" name="dns2" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent rounded px-3 py-2" placeholder="{{ dns2 }}">
                             </div>
                             <div class="mt-6">
-                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-white dark:text-black font-semibold px-4 py-2 rounded">
+                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">
                                     Submit
                                 </button>
                                 {% if get_flashed_messages()[0] == "net_adm" %}
@@ -112,7 +112,7 @@
                             <h2 class="text-lg font-semibold dark:text-white">Device</h2>
                             <div class="mt-4">
                                 <a href="{{ url_for('admin_downloadLogs') }}">
-                                    <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold dark:bg-white dark:text-black px-4 py-2 rounded w-full">
+                                    <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded w-full">
                                         Download Logs
                                     </button>
                                 </a>
