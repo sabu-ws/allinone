@@ -24,31 +24,22 @@
                                 <input type="text" name="linkd" id="linkd" style="display: none;" value="">
                                 <div class=" relative ">
                                     </div>
-                                    <div id="files2send">
-                                        <button id="prompt_btn" class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" type="submit">
-                                            <div class="space-x-4">
-                                                <i class="fa-solid fa-upload"></i>
-                                                Upload File
-                                            </div>
-                                        </button>
-                                        <input id="input_btn" name=up_f type=file class="cc"/>
-                                    </div>
-                                    <div id="files2send">
-                                        <button id="prompt_btn2" class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" type="submit">
-                                            <div class="space-x-4">
-                                                <i class="fa-solid fa-upload"></i>
-                                                Upload Folder
-                                            </div>
-                                        </button>
-                                        <input id="input_btn2" name=up_d type=file class="cc" accept=".zip"/>
-                                        {% if get_flashed_messages() %}
+                                    <label for="fileInput" class="flex items-center justify-center flex-shrink-0 px-4 py-1 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer">
+                                        <span><i class="fa-solid fa-file"></i> Upload File</span>
+                                    </label>
+                                    <input id="fileInput" type="file" name="up_f" class="hidden">
+
+                                    <label for="folderInput" class="flex items-center justify-center flex-shrink-0 px-4 py-1 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer">
+                                    <span><i class="fa-solid fa-folder"></i> Upload Folder</span>
+                                    </label>
+                                    <input id="folderInput" type="file" name="up_d" class="hidden" accept=".zip">
+                                    {% if get_flashed_messages() %}
                                         <meta charset="utf-8">
                                         <script type="text/javascript">alert("{{ get_flashed_messages()[0] }}");</script>
-                                        {% endif %}
-                                    </div>
-                                    <button type="submit" name="submit" class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" type="submit">
+                                    {% endif %}
+                                    <button type="submit" name="submit" class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" type="submit">
                                         <div class="space-x-4">
-                                            <i class="fa-solid fa-file-import"></i>
+                                            <i class="fa-solid fa-upload"></i>
                                             Send
                                         </div>
                                     </button>
