@@ -1,0 +1,110 @@
+{% extends "base_index.html" %}
+{% block browser %}
+<div class="grid grid-cols-6 grid-rows-3 h-full">
+            
+    <!-- BOX -->
+    <div class="col-start-1 col-end-7 row-start-1 row-end-4 bg-white dark:bg-gray-700 rounded-2xl mx-4 my-4">
+        <div class="w-full">
+            <a href="/">
+                <button class="my-4 mx-4 flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" type="submit">
+                    <i class="fa-solid fa-house"></i>
+                </button>
+            </a>
+    
+            <div class="container max-w-6xl px-4 mx-auto sm:px-8">
+                <div class="py-8">
+                    <div class="flex flex-row justify-between w-full mb-1 sm:mb-0">
+                        <form method="POST">
+                            <h2 class="text-2xl leading-tight">
+                                {% if lenght > 0 %}
+                                <button name="validate_res" class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" type="submit" value="Delete">
+                                    Delete
+                                </button>
+                                {% endif %}
+                            </h2>
+                            <div class="text-end">
+                                    <div class=" relative ">
+                                    </div>
+                                        <div class="flex justify-end space-x-2">
+                                            
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="px-4 py-4 -mx-4 overflow-x-auto sm:-mx-8 sm:px-8">
+                                <div class="inline-block min-w-full overflow-hidden rounded-lg shadow w-full">
+                                    <table id="table_browser" class="min-w-full leading-normal">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
+                                                    <input type="checkbox" onclick="selectall()" id="selectedall" class="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out">
+                                                </th>
+                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
+                                                    Files
+                                                </th>
+                                                <th scope="col" class="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-gray-300 border-b border-gray-400">
+                                                    Type
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if lenght > 0 %}
+                                                {% for file in files %}
+                                                    <tr>
+                                                        <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
+                                                            <div class="flex items-center">
+                                                                <div class="ml-3">
+                                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                                        <input type="checkbox" id="checking" name="{{ file }}" class="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out">
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
+                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                                {{ file[0] }}
+                                                            </p>
+                                                        </td>
+                                                        <td class="px-5 py-5 text-sm bg-gray-200 border-b border-gray-400">
+                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                                {{ file[1] }}
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                            <tr>
+                                                <td></td>
+                                                <td>No file is suspicious</td>
+                                                <td></td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+function selectall(){
+	var elem = document.getElementById("selectedall");
+	if(elem.checked){
+		var getchecked = document.querySelectorAll('#checking');
+		getchecked.forEach(function(checkbox){
+			checkbox.checked = true;
+		});
+	}else{
+		var getchecked = document.querySelectorAll('#checking');
+		getchecked.forEach(function(checkbox){
+			checkbox.checked = false;
+		});
+	}
+}
+</script>
+{% endblock %}
