@@ -18,6 +18,7 @@ rm -r /sabu/service
 
 # Create mountrypoint
 sudo mkdir /mnt/usb
+sudo chown sabu:sabu /mnt/usb
 
 # Crontab script
 sudo sh /sabu/config/cron.sh
