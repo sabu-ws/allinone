@@ -17,7 +17,10 @@
                                     </path>
                                 </svg>
                             </span>
-                            <input name="mdp" type="password" class="rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent" placeholder="Your password"/>
+                            <input id="passwordInput" name="mdp" type="password" class="rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent" placeholder="Your password"/>
+                            <button id="toggleButton" type="button" class="absolute inset-y-0 right-0 px-3 py-2 bg-transparent">
+                                <i id="toggleview" class="fa-solid fa-eye"></i>
+                            </button>
                             </div>
                         </div>
                         <div class="flex w-full">
@@ -31,4 +34,22 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+    const toggleButton = document.getElementById('toggleButton');
+    const passwordInput = document.getElementById('passwordInput');
+    
+    toggleButton.addEventListener('click', function() {
+        if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        document.getElementById("toggleview").classList.remove("fa-eye");
+        document.getElementById("toggleview").classList.add("fa-eye-slash");
+        } else {
+        passwordInput.type = 'password';
+        document.getElementById("toggleview").classList.remove("fa-eye-slash");
+        document.getElementById("toggleview").classList.add("fa-eye");
+        }
+    });
+</script>
 {% endblock %}
