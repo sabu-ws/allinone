@@ -1,0 +1,127 @@
+{% extends 'base_index.html' %}
+{% block admin %}
+<div class="bg-gray-200 dark:bg-gray-800 h-screen">
+    <div class="grid grid-cols-6 grid-rows-3 h-full">
+        <div class="col-start-1 col-end-7 row-start-1 row-end-4 gray-200 dark:bg-gray-800 rounded-2xl mx-4 my-2">
+            <div class="flex col-start-1 col-end-7 bg-white dark:bg-gray-700 rounded-2xl my-4 mx-4 h-16">
+                <div class="flex items-center justify-start pr-4 space-x-4 h-16 mx-4">
+                    <a href="/">
+                        <button class="my-4 flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 ml-auto" type="submit">
+                            <i class="fa-solid fa-house"></i>
+                        </button>
+                    </a>
+                    <a href="/logout">
+                        <button class="my-4 flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" type="submit">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </a>
+                </div>
+                <div class="flex items-center justify-end pr-4 space-x-4 h-16 w-full">
+                    <a href="#" class="relative block">
+                        <img alt="flag" src="{{ url_for('static',filename='assets/icons/royaume-uni.png') }}" class="mx-auto object-cover h-10 w-10 "/>
+                    </a>
+                    <!-- Dark mode button -->
+                    <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm p-2.5">
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <a href="/admin" class="relative block">
+                        <img alt="profil" src="{{ url_for('static',filename='assets/icons/profil.png') }}" class="mx-auto object-cover rounded-full h-10 w-10 "/>
+                    </a>
+                </div>
+            </div>
+            <div class="flex flex-col items-center justify-center">
+                <div class="container bg-white dark:bg-gray-700 mx-auto rounded-2xl py-6 px-10">
+                    <div class="container bg-blue-700 mx-auto rounded-2xl py-2">
+                        <p class="font-semibold text-white text-2xl flex justify-center">SABU - Admin Page</p>
+                    </div>
+                    <div class="mt-8 flex justify-center items-center">
+                        <div class="bg-gray-200 p-6 rounded-lg w-80 mx-20">
+                            <form method="POST">
+                                <h2 class="text-lg font-semibold">Global Settings</h2>
+                            <div class="mt-4">
+                                <label class="block mb-2">Hostname :</label>
+                                <input type="text" name="hostname" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ hostname }}">
+                            </div>    
+                            <div class="mt-4">
+                                <label class="block mb-2">Password :</label>
+                                <input type="text" name="password" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Your Password">
+                            </div>
+                            <div class="mt-6">
+                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">
+                                    Submit
+                                </button>
+                                {% if get_flashed_messages()[0] == "password" %}
+                                <div>
+                                    <meta charset="utf-8">
+                                    <b style="color: red;">{{ get_flashed_messages()[1] }}</b>
+                                </div>
+                                {% endif %}
+                            </div>
+                            </form>
+                        </div>
+                        <div class="bg-gray-200  p-6 rounded-lg w-80 mx-20">
+                            <form method="POST">
+                                <h2 class="text-lg font-semibold">Network Settings</h2>
+                            <div class="mt-4">
+                                <label class="block mb-2">Interface :</label>
+                                <input type="text" name="interface" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ interface }}">
+                            </div>    
+                            <div class="mt-4">
+                                <label class="block mb-2">IP Address :</label>
+                                <input type="text" name="ip" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ ip }}">
+                            </div>
+                            <div class="mt-4">
+                                <label class="block mb-2">Netmask :</label>
+                                <input type="text" name="netmask" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ netmask }}">
+                            </div>
+                            <div class="mt-4">
+                                <label class="block mb-2">Gateway :</label>
+                                <input type="text" name="gateway" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ gateway }}">
+                            </div>
+                            <div class="mt-4">
+                                <label class="block mb-2">DNS 1 :</label>
+                                <input type="text" name="dns1" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ dns1 }}">
+                            </div>
+                            <div class="mt-4">
+                                <label class="block mb-2">DNS 2 (Not required) :</label>
+                                <input type="text" name="dns2" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ dns2 }}">
+                            </div>
+                            <div class="mt-6">
+                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">
+                                    Submit
+                                </button>
+                                {% if get_flashed_messages()[0] == "net_adm" %}
+                                <div>
+                                    <meta charset="utf-8">
+                                    <b style="color: red;">{{ get_flashed_messages()[1] }}</b>
+                                </div>
+                                {% endif %}
+                            </div>
+                            </form>
+                        </div>
+                        <div class="bg-gray-200  p-6 rounded-lg w-80 mx-20">
+                            <h2 class="text-lg font-semibold">Device</h2>
+                            <div class="mt-4">
+                                <a href="{{ url_for('admin_downloadLogs') }}">
+                                    <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded w-full">
+                                        Download Logs
+                                    </button>
+                                </a>
+                            </div>    
+                            <div class="mt-4">
+                                <a href="{{ url_for('admin_reboot') }}">
+                                    <button type="submit" name="submit" onclick="confirm('Do you want to reboot ?')" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded w-full">
+                                        Reboot
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
