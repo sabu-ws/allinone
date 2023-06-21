@@ -31,30 +31,32 @@
                 </div>
             </div>
             <div class="flex flex-col items-center justify-center">
-                <div class="container bg-white dark:bg-gray-700 mx-auto rounded-2xl py-6 px-10">
-                    <div class="container bg-gray-200 dark:bg-gray-800 mx-auto rounded-2xl py-2">
+                <div class="container bg-white dark:bg-gray-600 mx-auto rounded-2xl py-6 px-10">
+                    <div class="container bg-gray-200 dark:bg-gray-700 mx-auto rounded-2xl py-2">
                         <p class="font-semibold dark:text-white text-2xl flex justify-center">SABU - Admin Page</p>
                     </div>
                     <div class="mt-8 flex justify-center items-center">
-                        <div class="bg-gray-200 p-6 rounded-lg w-80 mx-20">
+                        <div class="bg-gray-200 dark:bg-gray-700 p-6 rounded-lg w-80 mx-20">
                             <form method="POST">
-                                <h2 class="text-lg font-semibold">Global Settings</h2>
+                                <h2 class="text-lg dark:text-white font-semibold">Global Settings</h2>
                             <div class="mt-4">
-                                <label class="block mb-2">Hostname :</label>
-                                <input type="text" name="hostname" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ hostname }}">
+                                <label class="block mb-2 dark:text-white">Hostname :</label>
+                                <input type="text" name="hostname" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ hostname }}">
                             </div>    
                             <div class="mt-4">
-                                <label class="block mb-2">Password :</label>
+                                <label class="block mb-2 dark:text-white">Password :</label>
                                 <div class="relative">
-                                    <input id="passwordInput" type="password" name="password" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Your Password">
+                                    <input id="passwordInput" type="password" name="password" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="Your Password">
                                     <button id="toggleButton" type="button" class="absolute inset-y-0 right-0 px-3 py-2 bg-transparent">
-                                        <i id="toggleview" class="fa-solid fa-eye"></i>
+                                        <div class="dark:text-white">
+                                            <i id="toggleview" class="fa-solid fa-eye"></i>
+                                        </div>
                                     </button>
                                 </div>
 
                             </div>
                             <div class="mt-6">
-                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">
+                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold dark:bg-white dark:text-black px-4 py-2 rounded">
                                     Submit
                                 </button>
                                 {% if get_flashed_messages()[0] == "password" %}
@@ -66,35 +68,35 @@
                             </div>
                             </form>
                         </div>
-                        <div class="bg-gray-200  p-6 rounded-lg w-80 mx-20">
+                        <div class="bg-gray-200 dark:bg-gray-700 p-6 rounded-lg w-80 mx-20">
                             <form method="POST">
-                                <h2 class="text-lg font-semibold">Network Settings</h2>
+                                <h2 class="text-lg font-semibold dark:text-white">Network Settings</h2>
                             <div class="mt-4">
-                                <label class="block mb-2">Interface :</label>
-                                <input type="text" name="interface" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ interface }}">
+                                <label class="block mb-2 dark:text-white" >Interface :</label>
+                                <input type="text" name="interface" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ interface }}">
                             </div>    
                             <div class="mt-4">
-                                <label class="block mb-2">IP Address :</label>
-                                <input type="text" name="ip" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ ip }}">
+                                <label class="block mb-2 dark:text-white">IP Address :</label>
+                                <input type="text" name="ip" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ ip }}">
                             </div>
                             <div class="mt-4">
-                                <label class="block mb-2">Netmask :</label>
-                                <input type="text" name="netmask" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ netmask }}">
+                                <label class="block mb-2 dark:text-white">Netmask :</label>
+                                <input type="text" name="netmask" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ netmask }}">
                             </div>
                             <div class="mt-4">
-                                <label class="block mb-2">Gateway :</label>
-                                <input type="text" name="gateway" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ gateway }}">
+                                <label class="block mb-2 dark:text-white">Gateway :</label>
+                                <input type="text" name="gateway" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ gateway }}">
                             </div>
                             <div class="mt-4">
-                                <label class="block mb-2">DNS 1 :</label>
-                                <input type="text" name="dns1" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ dns1 }}">
+                                <label class="block mb-2 dark:text-white">DNS 1 :</label>
+                                <input type="text" name="dns1" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ dns1 }}">
                             </div>
                             <div class="mt-4">
-                                <label class="block mb-2">DNS 2 (Not required) :</label>
-                                <input type="text" name="dns2" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ dns2 }}">
+                                <label class="block mb-2 dark:text-white">DNS 2 (Not required) :</label>
+                                <input type="text" name="dns2" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 rounded px-3 py-2" placeholder="{{ dns2 }}">
                             </div>
                             <div class="mt-6">
-                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">
+                                <button type="submit" name="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-white dark:text-black font-semibold px-4 py-2 rounded">
                                     Submit
                                 </button>
                                 {% if get_flashed_messages()[0] == "net_adm" %}
@@ -106,11 +108,11 @@
                             </div>
                             </form>
                         </div>
-                        <div class="bg-gray-200  p-6 rounded-lg w-80 mx-20">
-                            <h2 class="text-lg font-semibold">Device</h2>
+                        <div class="bg-gray-200 dark:bg-gray-700 p-6 rounded-lg w-80 mx-20">
+                            <h2 class="text-lg font-semibold dark:text-white">Device</h2>
                             <div class="mt-4">
                                 <a href="{{ url_for('admin_downloadLogs') }}">
-                                    <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded w-full">
+                                    <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold dark:bg-white dark:text-black px-4 py-2 rounded w-full">
                                         Download Logs
                                     </button>
                                 </a>

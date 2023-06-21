@@ -11,15 +11,17 @@
                 <div class="flex flex-col mb-2">
                     <div class="flex flex-col mb-6">
                         <div class="flex relative ">
-                            <span class="rounded-l-md inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 shadow-sm text-sm">
+                            <span class="rounded-l-md inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 dark:bg-gray-600 dark:border-white dark:text-white shadow-sm text-sm">
                                 <svg width="15" height="15" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M1376 768q40 0 68 28t28 68v576q0 40-28 68t-68 28h-960q-40 0-68-28t-28-68v-576q0-40 28-68t68-28h32v-320q0-185 131.5-316.5t316.5-131.5 316.5 131.5 131.5 316.5q0 26-19 45t-45 19h-64q-26 0-45-19t-19-45q0-106-75-181t-181-75-181 75-75 181v320h736z">
                                     </path>
                                 </svg>
                             </span>
-                            <input id="passwordInput" name="mdp" type="password" class="rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent" placeholder="Your password"/>
+                            <input id="passwordInput" name="mdp" type="password" class="rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 dark:bg-gray-600 dark:border-white placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent" placeholder="Your password"/>
                             <button id="toggleButton" type="button" class="absolute inset-y-0 right-0 px-3 py-2 bg-transparent">
-                                <i id="toggleview" class="fa-solid fa-eye"></i>
+                                <div class="dark:text-white">
+                                    <i id="toggleview" class="fa-solid fa-eye"></i>
+                                </div>
                             </button>
                             </div>
                         </div>
