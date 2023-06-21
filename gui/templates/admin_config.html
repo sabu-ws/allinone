@@ -110,11 +110,9 @@
                                 </a>
                             </div>    
                             <div class="mt-4">
-                                <a href="{{ url_for('admin_reboot') }}">
-                                    <button type="submit" name="submit" onclick="confirm('Do you want to reboot ?')" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded w-full">
-                                        Reboot
-                                    </button>
-                                </a>
+                                <button type="submit" name="submit" onclick="reboot_confirme();" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded w-full">
+                                    Reboot
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -124,4 +122,15 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+    function reboot_confirme(){
+        if (confirm('Do you want to reboot ?')){
+            window.location = location.protocol+"//"+document.domain+":"+location.port+"/admin/reboot";
+        }else{
+            window.location = location.protocol+"//"+document.domain+":"+location.port+"/admin/config";
+        }
+    }
+</script>
 {% endblock %}
