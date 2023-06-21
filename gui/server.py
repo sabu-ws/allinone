@@ -41,6 +41,7 @@ app.config['UPLOAD_FOLDER'] = ROOT_PATH
 hasScan = False
 first_con = True
 nb_advanced_scan = 2
+detectusb_g = False
 is_scan=0
 during_connection = False
 pid = 0
@@ -58,14 +59,20 @@ def login_required(f):
 def detectUSB(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
+		global detectusb_g
 		pattern = re.compile("sd[a-z]")
 		dir = "/dev/"
 		for filepath in os.listdir(dir):
 			if pattern.match(filepath):
+				g.detectusb = True
+				detectusb_g = True
 				return f(*args, **kwargs)
 		global hasScan
 		hasScan = False
-		return redirect(url_for('nobody', next=request.url))
+		g.detectusb = False
+		detectusb_g = False
+		return f(*args, **kwargs)
+		# return redirect(url_for('nobody', next=request.url))
 	return decorated_function
 
 def ifscan(f):
@@ -83,11 +90,11 @@ def first(f):
 		file = open("/sabu/gui/static/config.json")
 		js = json.load(file)
 		if "mdp" in js:
-			global during_connection
-			if js["mdp"] == "" and during_connection == False:
+			if js["mdp"] == "":
+
 				return redirect(url_for('first_connection'))
 		global first_con
-		first_con = True
+		first_con = False
 		return f(*args, **kwargs)
 	return decorated_function
 
@@ -120,7 +127,7 @@ logging("GUI of SABU is start")
 @app.route("/")
 @first
 def index():
-	return render_template("main.html")
+	return render_template("index.html")
 
 
 # --------------------Scan section-------------------------
@@ -129,7 +136,7 @@ def index():
 @detectUSB
 def scan_page():
 	global hasScan
-	return render_template("scan_page.html",hasScan=hasScan)
+	return render_template("scan_index.html",hasScan=hasScan)
 
 @app.route("/scan/simple")
 @first
@@ -140,13 +147,15 @@ def scan_simple():
 
 @socketio.on('simple_scan')
 def rec():
-	logging("simple scan start")
-	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh && sleep 1".split())
-	global hasScan
-	emit("simple_scan_end")
-	hasScan = True
-	emit("end")
-	logging("simple scan end")
+	global detectusb_g
+	if detectusb_g:
+		logging("simple scan start")
+		proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh && sleep 1".split())
+		global hasScan
+		emit("simple_scan_end")
+		hasScan = True
+		emit("end")
+		logging("simple scan end")
 
 @app.route("/scan/advanced")
 @first
@@ -157,32 +166,36 @@ def scan_advanced():
 
 @socketio.on('advanced_scan_clamav')
 def rec():
-	logging("Advanced scan(clamav) start")
-	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh && sleep 1".split())
-	global hasScan
-	global nb_advanced_scan
-	global is_scan
-	emit("advanced_scan_end","clamav")
-	hasScan = True
-	is_scan+=1
-	if is_scan == nb_advanced_scan:
-		logging("Advanced scan(clamav) end")
-		is_scan = 0
-		emit("end")
+	global detectusb_g
+	if detectusb_g:
+		logging("Advanced scan(clamav) start")
+		proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-clamav-detect.sh && sleep 1".split())
+		global hasScan
+		global nb_advanced_scan
+		global is_scan
+		emit("advanced_scan_end","clamav")
+		hasScan = True
+		is_scan+=1
+		if is_scan == nb_advanced_scan:
+			logging("Advanced scan(clamav) end")
+			is_scan = 0
+			emit("end")
 
 
 @socketio.on('advanced_scan_olefile')
 def rec():
-	logging("Advanced scan(ole) start")
-	proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan_ole.sh && sleep 1".split())
-	global is_scan
-	global nb_advanced_scan
-	emit("advanced_scan_end","olefile")
-	is_scan+=1
-	if is_scan == nb_advanced_scan:
-		emit("end")
-		is_scan = 0
-		logging("Advanced scan(ole) end")
+	global detectusb_g
+	if detectusb_g:
+		logging("Advanced scan(ole) start")
+		proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan_ole.sh && sleep 1".split())
+		global is_scan
+		global nb_advanced_scan
+		emit("advanced_scan_end","olefile")
+		is_scan+=1
+		if is_scan == nb_advanced_scan:
+			emit("end")
+			is_scan = 0
+			logging("Advanced scan(ole) end")
 
 @app.route("/scan/result",methods=["POST","GET"])
 @detectUSB
@@ -222,7 +235,7 @@ def resultat():
 @first
 @detectUSB
 def format():
-	return render_template("format_page.html")
+	return render_template("format_index.html")
 
 @app.route("/format/simple")
 @first
@@ -231,15 +244,18 @@ def format_simple():
 	return render_template("format_simple.html")
 
 @socketio.on('formating')
+@detectUSB
 def rec():
-	proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
-	logging("standard format start")	
-	while 1:
-		poll = proc.poll()
-		if poll is not None:
-			logging("standard format end")	
-			emit("end")
-			break
+	global detectusb_g
+	if detectusb_g:
+		proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-standard.sh".split(),stdout=subprocess.PIPE)
+		logging("standard format start")	
+		while 1:
+			poll = proc.poll()
+			if poll is not None:
+				logging("standard format end")	
+				emit("end")
+				break
 
 @app.route("/format/advanced")
 @first
@@ -250,14 +266,16 @@ def format_advanced():
 
 @socketio.on('formating_advanced')
 def rec():
-	proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-avanced.sh".split(),stdout=subprocess.PIPE)
-	logging("standard format start")	
-	while 1:
-		poll = proc.poll()
-		if poll is not None:
-			emit("end")
-			logging("standard format end")	
-			break
+	global detectusb_g
+	if detectusb_g:
+		proc = subprocess.Popen(f"{SCRIPT_PATH}/format/format-avanced.sh".split(),stdout=subprocess.PIPE)
+		logging("standard format start")	
+		while 1:
+			poll = proc.poll()
+			if poll is not None:
+				emit("end")
+				logging("standard format end")	
+				break
 
 # --------------------Browser section-------------------------
 
@@ -266,7 +284,7 @@ def rec():
 @app.route("/browser/")
 @app.route("/browser")
 @first
-@detectUSB
+# @detectUSB
 def browser(MasterListDir=""):
 	joining = os.path.join(ROOT_PATH,MasterListDir)
 	logging(f"accessing to {joining}")
@@ -375,7 +393,6 @@ def info(MasterListDir=""):
 # Upload file securly on server
 @app.route("/sendd",methods=['POST'])
 @first
-@ifscan
 @detectUSB
 def sendd():
 	last = "/".join(request.form["linkd"].split("/")[2:])
@@ -441,7 +458,7 @@ def admin():
 			return redirect(url_for('admin_config'))
 		else:
 			return "bad password"
-	return render_template("admin_panel.html")
+	return render_template("login.html")
 
 @app.route("/admin/reboot")
 @first
@@ -450,7 +467,7 @@ def admin_reboot():
 	subprocess.run("sudo reboot".split())
 	return ""
 
-# donwload logs page
+# download logs page
 @app.route("/admin/download_logs")
 @first
 @login_required
@@ -570,7 +587,7 @@ def admin_config():
 def first_connection():
 	global first_con
 	global during_connection
-	first_con = True
+	# first_con = True
 	if first_con == True:
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
 		if request.method=="GET":
