@@ -221,8 +221,10 @@ def resultat():
 		if request.form["validate_res"] == "Delete":
 			files = request.form.to_dict()
 			del files["validate_res"]
+			logging(f"{files}")
 			for file in files.keys():
 				file = json.loads(file.replace("'",'"'))[0]
+				logging(f"{file}")
 				if os.path.isfile(file):
 					logging(f"[{file}] has been delete")
 					os.remove(file)
@@ -369,13 +371,13 @@ def delete(MasterListDir=""):
 					os.rmdir(os.path.join(root, name))
 			os.rmdir(last)
 			logging(f"deleting folder of [{path}]")
-			return redirect(to_return,code=305)
+			return redirect(to_return)
 		elif os.path.isfile(path):
 			os.remove(last) 
 			logging(f"deleting file of [{path}]")
-			return redirect(to_return,code=305)
+			return redirect(to_return)
 	else:
-		return redirect(url_for("page_not_found"),code=305)
+		return redirect(url_for("page_not_found"))
 
 # get info of file with exiftool
 @app.route("/info/<path:MasterListDir>")
@@ -395,48 +397,49 @@ def info(MasterListDir=""):
 @first
 @detectUSB
 def sendd():
-	last = "/".join(request.form["linkd"].split("/")[2:])
-	master_path = ROOT_PATH+last
-	if os.path.exists(master_path):
-		if request.method == "POST" and "up_f" in request.files and request.files['up_d'].filename == "":
-			if "up_f" not in request.files:
-				flash('No file part')
-				return redirect(url_for("browser"))
-			file = request.files['up_f']
-			if file.filename == '':
-				flash('No selected file')
-				return redirect(url_for("browser"))
-			if file:
-				filename = secure_filename(file.filename)
-				file.save(os.path.join(master_path, filename))
-				logging(f"file [{master_path}] is upload")
-				return redirect(url_for("browser"))
-		if request.method == "POST" and "up_d" in request.files and request.files['up_f'].filename == "":
-			if "up_d" not in request.files:
-				return 'No folder part'
-			file = request.files['up_d']
-			if file.filename == '':
-				return 'No selected file'
-			if file:
-				filename = secure_filename(file.filename)
-				path = os.path.join(master_path, filename)
-				file.save(path)
-				try:
-					the_zip_file = zipfile.ZipFile(path)
-					ret = the_zip_file.testzip()
-					if ret == None:
-						the_zip_file.extractall(master_path)
-						os.remove(path)
-						logging(f"folder [{path}] is upload")
-						return redirect(url_for("browser"))
-				except:
-					flash("Error file")
-					os.remove(path)
+	if g.detectusb:
+		last = "/".join(request.form["linkd"].split("/")[2:])
+		master_path = ROOT_PATH+last
+		if os.path.exists(master_path):
+			if request.method == "POST" and "up_f" in request.files and request.files['up_d'].filename == "":
+				if "up_f" not in request.files:
+					flash('No file part')
 					return redirect(url_for("browser"))
-					
-		return ""
-	else:
-		return redirect(url_for("browser"))
+				file = request.files['up_f']
+				if file.filename == '':
+					flash('No selected file')
+					return redirect(url_for("browser"))
+				if file:
+					filename = secure_filename(file.filename)
+					file.save(os.path.join(master_path, filename))
+					logging(f"file [{master_path}] is upload")
+					return redirect(url_for("browser"))
+			if request.method == "POST" and "up_d" in request.files and request.files['up_f'].filename == "":
+				if "up_d" not in request.files:
+					return 'No folder part'
+				file = request.files['up_d']
+				if file.filename == '':
+					return 'No selected file'
+				if file:
+					filename = secure_filename(file.filename)
+					path = os.path.join(master_path, filename)
+					file.save(path)
+					try:
+						the_zip_file = zipfile.ZipFile(path)
+						ret = the_zip_file.testzip()
+						if ret == None:
+							the_zip_file.extractall(master_path)
+							os.remove(path)
+							logging(f"folder [{path}] is upload")
+							return redirect(url_for("browser"))
+					except:
+						flash("Error file")
+						os.remove(path)
+						return redirect(url_for("browser"))
+						
+			return ""
+		else:
+			return redirect(url_for("browser"))
 
 # --------------------Admin Section-------------------------
 
@@ -493,6 +496,7 @@ def admin_downloadLogs():
 def admin_config():
 	if session.get('loggedin') == True:
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
+		get_hostname = subprocess.Popen("hostname".split(),stdout=subprocess.PIPE).communicate()[0].decode()
 		if request.method=="POST":
 			must_match_ip = r"^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
 			if "interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" not in request.form and "hostname" not in request.form:
@@ -545,7 +549,7 @@ def admin_config():
 				if request.form["hostname"] != "":
 					# change hostname
 					# between 3 and 20 char,min 
-					must_match_hostname = r"^[a-zA-Z0-9-_]{3,20}$"
+					must_match_hostname = r"^[a-zA-Z0-9-]{3,20}$"
 					if re.search(must_match_hostname,request.form["hostname"]):
 						hostname = request.form["hostname"]
 						subprocess.run(f"sudo hostnamectl set-hostname {hostname}".split())
@@ -578,7 +582,7 @@ def admin_config():
 			dns2=info_ip[5]
 		else:
 			return "404"
-		return render_template("admin_config.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2)
+		return render_template("admin_config.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2,hostname=get_hostname)
 	else:
 		return redirect(url_for('admin_config'))
 
