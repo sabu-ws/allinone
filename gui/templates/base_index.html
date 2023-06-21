@@ -19,6 +19,9 @@
 <body>
     <div class="bg-gray-200 dark:bg-gray-800 h-screen">
         {% block menu %}{% endblock %}
+        {% block browser %}{% endblock %}
+        {% block inbrowser %}{% endblock %}
+        {% block errorpage %}{% endblock %}
     </div>
     <script src="{{ url_for('static',filename='app.js') }}"></script>
     {% block script %}{% endblock %}
