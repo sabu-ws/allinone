@@ -28,3 +28,4 @@ date=$(date +"[%Y-%m-%d %H:%M:%S]")
 echo "$date [FORMAT][Standard] USB key formatted in NTFS" >> /sabu/logs/format.log
 
 # --- Script By SABU --- #
+
