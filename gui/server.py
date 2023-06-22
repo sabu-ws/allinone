@@ -21,6 +21,7 @@ import time
 from io import BytesIO
 import zipfile
 from functools import wraps
+from urllib.parse import unquote
 import re
 import json
 import psutil
@@ -118,9 +119,6 @@ def logging(message):
 	file.write(prefetch)
 	file.close()
 
-
-# --------------------Start of sabu-------------------------
-logging("GUI of SABU is start")
 
 
 # --------------------Main page section-------------------------
@@ -290,14 +288,16 @@ def rec():
 def browser(MasterListDir=""):
 	joining = os.path.join(ROOT_PATH,MasterListDir)
 	logging(f"accessing to {joining}")
-	cur_dir = MasterListDir+"/"
+	cur_dir = "/"+MasterListDir
+	if cur_dir=="/":
+		cur_dir=""
 	if os.path.isdir(joining):
 		new_path = os.listdir(joining)
 		list_items = [i for i in os.walk(joining)][0]
 		items_dir=[]
 		items_file=[]
 		for i in list_items[1]:
-			j=joining+"/"+i
+			j=os.path.join(joining,i)
 			mode_user = ret_mode(str(oct(os.lstat(j).st_mode))[-3])
 			mode_group = ret_mode(str(oct(os.lstat(j).st_mode))[-2])
 			mode_other = ret_mode(str(oct(os.lstat(j).st_mode))[-1])
@@ -308,7 +308,7 @@ def browser(MasterListDir=""):
 			make = [i,mode_user+mode_group+mode_other,creation_date,modification_date,size]
 			items_dir.append(make)
 		for i in list_items[2]:
-			j=joining+"/"+i
+			j=os.path.join(joining,i)
 			mode_user = ret_mode(str(oct(os.lstat(j).st_mode))[-3])
 			mode_group = ret_mode(str(oct(os.lstat(j).st_mode))[-2])
 			mode_other = ret_mode(str(oct(os.lstat(j).st_mode))[-1])
@@ -357,27 +357,28 @@ def download(MasterListDir=""):
 @first
 @detectUSB
 def delete(MasterListDir=""):
-	path=ROOT_PATH+"/"+MasterListDir
-	master_path="/".join(path.split("/")[:-1])
-	last=MasterListDir.split("/")[-1]
-	to_return = request.referrer
-	os.chdir(master_path)
-	if os.path.exists(path):
-		if os.path.isdir(path):
-			for root, dirs, files in os.walk(last, topdown=False):
-				for name in files:
-					os.remove(os.path.join(root, name))
-				for name in dirs:
-					os.rmdir(os.path.join(root, name))
-			os.rmdir(last)
-			logging(f"deleting folder of [{path}]")
-			return redirect(to_return)
-		elif os.path.isfile(path):
-			os.remove(last) 
-			logging(f"deleting file of [{path}]")
-			return redirect(to_return)
-	else:
-		return redirect(url_for("page_not_found"))
+	if g.detectusb:
+		path=ROOT_PATH+"/"+MasterListDir
+		master_path="/".join(path.split("/")[:-1])
+		last=MasterListDir.split("/")[-1]
+		to_return = request.referrer
+		os.chdir(master_path)
+		if os.path.exists(path):
+			if os.path.isdir(path):
+				for root, dirs, files in os.walk(last, topdown=False):
+					for name in files:
+						os.remove(os.path.join(root, name))
+					for name in dirs:
+						os.rmdir(os.path.join(root, name))
+				os.rmdir(last)
+				logging(f"deleting folder of [{path}]")
+				return redirect(to_return)
+			elif os.path.isfile(path):
+				os.remove(last) 
+				logging(f"deleting file of [{path}]")
+				return redirect(to_return)
+		else:
+			return redirect(url_for("page_not_found"))
 
 # get info of file with exiftool
 @app.route("/info/<path:MasterListDir>")
@@ -385,12 +386,13 @@ def delete(MasterListDir=""):
 @first
 @detectUSB
 def info(MasterListDir=""):
-	path=ROOT_PATH+"/"+MasterListDir
-	master_path="/".join(path.split("/")[:-1])
-	last=MasterListDir.split("/")[-1]
-	sub = subprocess.Popen(f"exiftool {path}".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
-	logging(f"get info of [{path}]")
-	return render_template("sh_file.html",info=sub)
+	if g.detectusb:
+		path=ROOT_PATH+MasterListDir
+		path = os.path.join(ROOT_PATH+MasterListDir)
+		path = unquote(path)
+		sub = subprocess.Popen(["exiftool",path],stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
+		logging(f"get info of [{path}]")
+		return render_template("sh_file.html",info=sub)
 
 # Upload file securly on server
 @app.route("/sendd",methods=['POST'])
@@ -399,7 +401,9 @@ def info(MasterListDir=""):
 def sendd():
 	if g.detectusb:
 		last = "/".join(request.form["linkd"].split("/")[2:])
-		master_path = ROOT_PATH+last
+		master_path = os.path.join(ROOT_PATH,last)
+		master_path = unquote(master_path)
+		logging(master_path)
 		if os.path.exists(master_path):
 			if request.method == "POST" and "up_f" in request.files and request.files['up_d'].filename == "":
 				if "up_f" not in request.files:
@@ -620,7 +624,7 @@ def first_connection():
 					dns2 = request.form["dns2"]
 				else:
 					dns2 = "9.9.9.9"
-				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]):
+				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]) and re.search(must_match_hostname, request.form["hostname"]):
 					interface = request.form["interface"]
 					ip = request.form["ip"]
 					netmask = request.form["netmask"]
@@ -707,6 +711,9 @@ if __name__ == '__main__':
 	keyfile = "/sabu/nginx/certificates/sabu-gui.key"
 	ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 	ssl_context.load_cert_chain(certfile, keyfile)
+	# --------------------Start of sabu-------------------------
+	logging("GUI of SABU is start")
+	
 	wsgi.server(
 		eventlet.wrap_ssl(
 			eventlet.listen(('127.0.0.1', 8888)),
