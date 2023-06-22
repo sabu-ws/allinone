@@ -7,8 +7,9 @@ User=sabu
 Group=sabu
 WorkingDirectory=/sabu/gui/
 ExecStart=python3 server.py
-StandardOutput=append:/sabu/logs/gui.log
-StandardError=append:/sabu/logs/gui.log
+StandardOutput=append:/sabu/logs/flask.log
+StandardError=append:/sabu/logs/flask.log
 
 [Install]
 WantedBy=multi-user.target
+

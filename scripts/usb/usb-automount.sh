@@ -6,6 +6,8 @@ DEVICE="/dev/${DEVBASE}"
 MOUNT_POINT="/mnt/usb"
 CHECK_MOUNT_POINT=$(/bin/mount | /bin/grep ${DEVICE} | /usr/bin/awk '{ print $3 }')
 DATE=$(date +"[%Y-%m-%d %H:%M:%S]")
+CHECK_UID=$(id sabu | awk {'print $1'} | cut -d'=' -f2 | cut -d'(' -f1)
+CHECK_GID=$(id sabu | awk {'print $2'} | cut -d'=' -f2 | cut -d'(' -f1)
 
 # MOUNT KEY
 mount_key()
@@ -30,7 +32,7 @@ mount_key()
     fi
 
     # GLOBAL
-    OPTS="rw,relatime"
+    OPTS="rw,relatime,nosuid,nodev,noexec,gid=${CHECK_GID},uid=${CHECK_UID}"
 
     # MOUNT
     /bin/mount -o ${OPTS} ${DEVICE} ${MOUNT_POINT}

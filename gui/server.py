@@ -21,6 +21,7 @@ import time
 from io import BytesIO
 import zipfile
 from functools import wraps
+from urllib.parse import unquote
 import re
 import json
 import psutil
@@ -60,6 +61,7 @@ def detectUSB(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
 		global detectusb_g
+		global hasScan
 		pattern = re.compile("sd[a-z]")
 		dir = "/dev/"
 		for filepath in os.listdir(dir):
@@ -67,12 +69,10 @@ def detectUSB(f):
 				g.detectusb = True
 				detectusb_g = True
 				return f(*args, **kwargs)
-		global hasScan
 		hasScan = False
 		g.detectusb = False
 		detectusb_g = False
 		return f(*args, **kwargs)
-		# return redirect(url_for('nobody', next=request.url))
 	return decorated_function
 
 def ifscan(f):
@@ -119,9 +119,6 @@ def logging(message):
 	file.close()
 
 
-# --------------------Start of sabu-------------------------
-logging("GUI of SABU is start")
-
 
 # --------------------Main page section-------------------------
 @app.route("/")
@@ -133,17 +130,14 @@ def index():
 # --------------------Scan section-------------------------
 @app.route("/scan")
 @first
-@detectUSB
 def scan_page():
-	global hasScan
-	return render_template("scan_index.html",hasScan=hasScan)
+	return render_template("scan_index.html")
 
 @app.route("/scan/simple")
 @first
 @detectUSB
 def scan_simple():
-	global hasScan
-	return render_template("scan_simple.html",hasScan=hasScan)
+	return render_template("scan_simple.html")
 
 @socketio.on('simple_scan')
 def rec():
@@ -161,8 +155,7 @@ def rec():
 @first
 @detectUSB
 def scan_advanced():
-	global hasScan
-	return render_template("scan_advanced.html",hasScan=hasScan)
+	return render_template("scan_advanced.html")
 
 @socketio.on('advanced_scan_clamav')
 def rec():
@@ -235,7 +228,6 @@ def resultat():
 
 @app.route("/format")
 @first
-@detectUSB
 def format():
 	return render_template("format_index.html")
 
@@ -286,18 +278,19 @@ def rec():
 @app.route("/browser/")
 @app.route("/browser")
 @first
-# @detectUSB
 def browser(MasterListDir=""):
 	joining = os.path.join(ROOT_PATH,MasterListDir)
 	logging(f"accessing to {joining}")
-	cur_dir = MasterListDir+"/"
+	cur_dir = "/"+MasterListDir
+	if cur_dir=="/":
+		cur_dir=""
 	if os.path.isdir(joining):
 		new_path = os.listdir(joining)
 		list_items = [i for i in os.walk(joining)][0]
 		items_dir=[]
 		items_file=[]
 		for i in list_items[1]:
-			j=joining+"/"+i
+			j=os.path.join(joining,i)
 			mode_user = ret_mode(str(oct(os.lstat(j).st_mode))[-3])
 			mode_group = ret_mode(str(oct(os.lstat(j).st_mode))[-2])
 			mode_other = ret_mode(str(oct(os.lstat(j).st_mode))[-1])
@@ -308,7 +301,7 @@ def browser(MasterListDir=""):
 			make = [i,mode_user+mode_group+mode_other,creation_date,modification_date,size]
 			items_dir.append(make)
 		for i in list_items[2]:
-			j=joining+"/"+i
+			j=os.path.join(joining,i)
 			mode_user = ret_mode(str(oct(os.lstat(j).st_mode))[-3])
 			mode_group = ret_mode(str(oct(os.lstat(j).st_mode))[-2])
 			mode_other = ret_mode(str(oct(os.lstat(j).st_mode))[-1])
@@ -319,87 +312,91 @@ def browser(MasterListDir=""):
 			make = [i,mode_user+mode_group+mode_other,creation_date,modification_date,size]
 			items_file.append(make)
 		return render_template("browser.html",items_file=items_file,items_dir=items_dir,cur_dir=cur_dir)
-	if os.path.isfile(joining):
-		return "file"
+	return redirect("/browser")
 
 # Donwload file page 
 @app.route("/download/<path:MasterListDir>")
-@app.route("/download")
 @first
 @ifscan
 @detectUSB
 def download(MasterListDir=""):
-	path=ROOT_PATH+"/"+MasterListDir
-	master_path="/".join(path.split("/")[:-1])
-	last=MasterListDir.split("/")[-1]
-	os.chdir(master_path)
-	if os.path.exists(path):
-		if os.path.isdir(path):
-			timestr = time.strftime("%Y%m%d-%H%M%S")
-			fileName = f"{last}_{timestr}.zip".format(timestr)
-			memory_file = BytesIO()
-			with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
-				for root, dirs, files in os.walk(last):
-					for file in files:
-						zipf.write(os.path.join(root, file))
-			memory_file.seek(0)
-			logging(f"downloading folder of [{path}]")
-			return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
-		elif os.path.isfile(path): 
-			logging(f"downloading file of [{path}]")
-			return send_file(path,as_attachment=True)
-	else:
-		return redirect(url_for("page_not_found")), 305
+	if g.detectusb:
+		path=ROOT_PATH+"/"+MasterListDir
+		master_path="/".join(path.split("/")[:-1])
+		last=MasterListDir.split("/")[-1]
+		os.chdir(master_path)
+		if os.path.exists(path):
+			if os.path.isdir(path):
+				timestr = time.strftime("%Y%m%d-%H%M%S")
+				fileName = f"{last}_{timestr}.zip".format(timestr)
+				memory_file = BytesIO()
+				with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+					for root, dirs, files in os.walk(last):
+						for file in files:
+							zipf.write(os.path.join(root, file))
+				memory_file.seek(0)
+				logging(f"downloading folder of [{path}]")
+				return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
+			elif os.path.isfile(path): 
+				logging(f"downloading file of [{path}]")
+				return send_file(path,as_attachment=True)
+		else:
+			return redirect("/404")
 
 # Delete file 
 @app.route("/delete/<path:MasterListDir>")
-@app.route("/delete")
 @first
 @detectUSB
 def delete(MasterListDir=""):
-	path=ROOT_PATH+"/"+MasterListDir
-	master_path="/".join(path.split("/")[:-1])
-	last=MasterListDir.split("/")[-1]
-	to_return = request.referrer
-	os.chdir(master_path)
-	if os.path.exists(path):
-		if os.path.isdir(path):
-			for root, dirs, files in os.walk(last, topdown=False):
-				for name in files:
-					os.remove(os.path.join(root, name))
-				for name in dirs:
-					os.rmdir(os.path.join(root, name))
-			os.rmdir(last)
-			logging(f"deleting folder of [{path}]")
-			return redirect(to_return)
-		elif os.path.isfile(path):
-			os.remove(last) 
-			logging(f"deleting file of [{path}]")
-			return redirect(to_return)
+	if g.detectusb:
+		path=os.path.join(ROOT_PATH,MasterListDir)
+		master_path="/".join(path.split("/")[:-1])
+		last=MasterListDir.split("/")[-1]
+		to_return = request.referrer
+		os.chdir(master_path)
+		if os.path.exists(path):
+			if os.path.isdir(path):
+				for root, dirs, files in os.walk(last, topdown=False):
+					for name in files:
+						os.remove(os.path.join(root, name))
+					for name in dirs:
+						os.rmdir(os.path.join(root, name))
+				os.rmdir(last)
+				logging(f"deleting folder of [{path}]")
+				return redirect(to_return)
+			elif os.path.isfile(path):
+				os.remove(last) 
+				logging(f"deleting file of [{path}]")
+				return redirect(to_return)
+		else:
+			return redirect("/404")
 	else:
-		return redirect(url_for("page_not_found"))
+		return redirect("/")
 
 # get info of file with exiftool
 @app.route("/info/<path:MasterListDir>")
-@app.route("/info")
 @first
 @detectUSB
 def info(MasterListDir=""):
-	path=ROOT_PATH+"/"+MasterListDir
-	master_path="/".join(path.split("/")[:-1])
-	last=MasterListDir.split("/")[-1]
-	sub = subprocess.Popen(f"exiftool {path}".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
-	logging(f"get info of [{path}]")
-	return render_template("sh_file.html",info=sub)
+	if g.detectusb:
+		path=ROOT_PATH+MasterListDir
+		path = os.path.join(ROOT_PATH+MasterListDir)
+		path = unquote(path)
+		sub = subprocess.Popen(["exiftool",path],stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
+		logging(f"get info of [{path}]")
+		return render_template("sh_file.html",info=sub)
+	else:
+		return redirect("/")
 
 # Upload file securly on server
-@app.route("/sendd",methods=['POST'])
+@app.route("/upload",methods=['POST'])
 @first
 @detectUSB
-def sendd():
+def upload():
 	if g.detectusb:
 		last = "/".join(request.form["linkd"].split("/")[2:])
-		master_path = ROOT_PATH+last
+		master_path = os.path.join(ROOT_PATH,last)
+		master_path = unquote(master_path)
 		if os.path.exists(master_path):
 			if request.method == "POST" and "up_f" in request.files and request.files['up_d'].filename == "":
 				if "up_f" not in request.files:
@@ -440,6 +437,8 @@ def sendd():
 			return ""
 		else:
 			return redirect(url_for("browser"))
+	else:
+		return redirect("/")
 
 # --------------------Admin Section-------------------------
 
@@ -460,7 +459,9 @@ def admin():
 			logging("admin has logged")
 			return redirect(url_for('admin_config'))
 		else:
-			return "bad password"
+			flash("Bad password")
+			logging(f"someone try admin password : {req}")
+			return redirect(url_for('admin_config'))
 	return render_template("login.html")
 
 @app.route("/admin/reboot")
@@ -487,7 +488,7 @@ def admin_downloadLogs():
 		memory_file.seek(0)
 		logging("admin downloading log")
 		return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
-	return "error"
+	return redirect("/404")
 
 # connfig device, network ... page
 @app.route("/admin/config",methods=['GET', 'POST'])
@@ -581,7 +582,7 @@ def admin_config():
 			dns1=info_ip[4]
 			dns2=info_ip[5]
 		else:
-			return "404"
+			return redirect("/404")
 		return render_template("admin_config.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2,hostname=get_hostname)
 	else:
 		return redirect(url_for('admin_config'))
@@ -590,8 +591,6 @@ def admin_config():
 @app.route("/setup",methods=["POST","GET"])
 def first_connection():
 	global first_con
-	global during_connection
-	# first_con = True
 	if first_con == True:
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
 		if request.method=="GET":
@@ -602,9 +601,7 @@ def first_connection():
 			dns1=info_ip[4]
 			dns2=info_ip[5]
 
-		elif request.method=="POST" and during_connection != True:
-			# return request.form
-
+		elif request.method=="POST":
 			if ("interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" in request.form):
 				
 				# regex for good ip
@@ -613,14 +610,11 @@ def first_connection():
 				# Min 12 char, 1 number, 1 uppercase, 1 lowercase,1 spécial char
 				must_match_pwd = r"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.!@$%^\&\(\)\{\}\[\]:;<>,\.\?\/~_\+-=\|]).{12,}$"
  
-				# between 3 and 20 char,min 
-				must_match_hostname = r"^[a-zA-Z0-9-_]{3,20}$"
-
 				if request.form["dns2"] != "":
 					dns2 = request.form["dns2"]
 				else:
 					dns2 = "9.9.9.9"
-				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]):
+				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]) and re.search(must_match_hostname, request.form["hostname"]):
 					interface = request.form["interface"]
 					ip = request.form["ip"]
 					netmask = request.form["netmask"]
@@ -641,7 +635,6 @@ def first_connection():
 					json.dump(js, file_w)
 					file_w.close()
 					json_config.close()
-					during_connection = True
 					logging(request.form)
 					subprocess.run("/sabu/config/install.sh")
 					return redirect(url_for("first_connection"))
@@ -652,14 +645,14 @@ def first_connection():
 				flash("Some informations missing !") 
 				return redirect(url_for("first_connection"))
 		else:
-			return "404"
-		return render_template("setup.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2,during_connection=during_connection)
+			return redirect("/404")
+		return render_template("setup.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2,)
 	elif first_con == False:
 		return redirect("/")
 	else:
 		return redirect("/404")
 
-	return ""
+	return redirect("/404")
 
 # logout page
 @app.route("/logout")
@@ -669,14 +662,6 @@ def logout():
 	session["loggedin"]=False
 	logging("admin was log out")
 	return redirect(url_for('index'))
-
-# return "no key found" page 
-@app.route("/nobody")
-@first
-def nobody():
-	value = "No key found"
-	logging(f"someone access {request.url}, no key found")
-	return render_template("nobody.html",value=value)		
 
 # detect before each request if someone is logged
 @app.before_request
@@ -707,6 +692,8 @@ if __name__ == '__main__':
 	keyfile = "/sabu/nginx/certificates/sabu-gui.key"
 	ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 	ssl_context.load_cert_chain(certfile, keyfile)
+	# --------------------Start of sabu-------------------------
+	logging("GUI of SABU is start")
 	wsgi.server(
 		eventlet.wrap_ssl(
 			eventlet.listen(('127.0.0.1', 8888)),
