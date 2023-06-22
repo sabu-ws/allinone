@@ -614,7 +614,7 @@ def first_connection():
 					dns2 = request.form["dns2"]
 				else:
 					dns2 = "9.9.9.9"
-				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]) and re.search(must_match_hostname, request.form["hostname"]):
+				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2) and re.search(must_match_pwd, request.form["password"]):
 					interface = request.form["interface"]
 					ip = request.form["ip"]
 					netmask = request.form["netmask"]
