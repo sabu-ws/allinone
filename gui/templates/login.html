@@ -30,6 +30,10 @@
                             Login
                             </button>
                         </div>
+                        {% if get_flashed_messages() %}
+                            <meta charset="utf-8">
+                            <b style="color: red;">{{ get_flashed_messages()[0] }}</b>
+                        {% endif %}
                     </div>
                 </div>
             </form>
