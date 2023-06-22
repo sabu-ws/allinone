@@ -55,9 +55,9 @@ $(document).ready(function(){
     $('#butt_format').click(function(){
         var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
         socket.emit("formating");
-        $("#span_format").text("Format in progress...")
+        $("#span_format").text("Format in progress...").addClass("dark:text-white");
         socket.on('end',function(){
-            $("#span_format").text("Format successful !")
+            $("#span_format").text("Format successful !").addClass("dark:text-white");
             });
     });
     {% endif %}

@@ -56,9 +56,9 @@ $(document).ready(function(){
 	$('#butt_simple_scan').click(function(){
 		// var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
 		socket.emit("simple_scan");
-		$("#span_simple_scan").text("Scan in progress...")
+		$("#span_simple_scan").text("Scan in progress...").addClass("dark:text-white");
 		socket.on('simple_scan_end',function(){
-			$("#span_simple_scan").text("Scan successful !")
+			$("#span_simple_scan").text("Scan successful !").addClass("dark:text-white");
 		});
 	});
 	socket.on("end",function(){
