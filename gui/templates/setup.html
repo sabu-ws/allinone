@@ -33,7 +33,14 @@
                         <h2 class="text-lg font-semibold">Password - Admin Page</h2>
                         <div class="mt-7">
                             <label class="block mb-4">Syntax requirement : <br>- 12 upper/lower case characters <br>- 1 digit minimum <br>- 1 special characters minimum</label>
-                            <input type="text" name="password" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Your Password">
+                            <div class="relative">                                
+                                <input id="passwordInput" type="password" name="password" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Your Password">
+                                <button id="toggleButton" type="button" class="absolute inset-y-0 right-0 px-3 py-2 bg-transparent">
+                                <div class="dark:text-white">
+                                    <i id="toggleview" class="fa-solid fa-eye"></i>
+                                </div>
+                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -81,5 +88,21 @@
             {% endif %}
         </div>
     </form>
+    <script>
+    const toggleButton = document.getElementById('toggleButton');
+    const passwordInput = document.getElementById('passwordInput');
+    
+    toggleButton.addEventListener('click', function() {
+        if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        document.getElementById("toggleview").classList.remove("fa-eye");
+        document.getElementById("toggleview").classList.add("fa-eye-slash");
+        } else {
+        passwordInput.type = 'password';
+        document.getElementById("toggleview").classList.remove("fa-eye-slash");
+        document.getElementById("toggleview").classList.add("fa-eye");
+        }
+    });
+    </script>
 </body>
 </html>
