@@ -329,27 +329,28 @@ def browser(MasterListDir=""):
 @ifscan
 @detectUSB
 def download(MasterListDir=""):
-	path=ROOT_PATH+"/"+MasterListDir
-	master_path="/".join(path.split("/")[:-1])
-	last=MasterListDir.split("/")[-1]
-	os.chdir(master_path)
-	if os.path.exists(path):
-		if os.path.isdir(path):
-			timestr = time.strftime("%Y%m%d-%H%M%S")
-			fileName = f"{last}_{timestr}.zip".format(timestr)
-			memory_file = BytesIO()
-			with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
-				for root, dirs, files in os.walk(last):
-					for file in files:
-						zipf.write(os.path.join(root, file))
-			memory_file.seek(0)
-			logging(f"downloading folder of [{path}]")
-			return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
-		elif os.path.isfile(path): 
-			logging(f"downloading file of [{path}]")
-			return send_file(path,as_attachment=True)
-	else:
-		return redirect(url_for("page_not_found")), 305
+	if g.detectusb:
+		path=ROOT_PATH+"/"+MasterListDir
+		master_path="/".join(path.split("/")[:-1])
+		last=MasterListDir.split("/")[-1]
+		os.chdir(master_path)
+		if os.path.exists(path):
+			if os.path.isdir(path):
+				timestr = time.strftime("%Y%m%d-%H%M%S")
+				fileName = f"{last}_{timestr}.zip".format(timestr)
+				memory_file = BytesIO()
+				with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+					for root, dirs, files in os.walk(last):
+						for file in files:
+							zipf.write(os.path.join(root, file))
+				memory_file.seek(0)
+				logging(f"downloading folder of [{path}]")
+				return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
+			elif os.path.isfile(path): 
+				logging(f"downloading file of [{path}]")
+				return send_file(path,as_attachment=True)
+		else:
+			return redirect(url_for("page_not_found"))
 
 # Delete file 
 @app.route("/delete/<path:MasterListDir>")
