@@ -359,7 +359,7 @@ def download(MasterListDir=""):
 @detectUSB
 def delete(MasterListDir=""):
 	if g.detectusb:
-		path=ROOT_PATH+"/"+MasterListDir
+		path=os.path.join(ROOT_PATH,MasterListDir)
 		master_path="/".join(path.split("/")[:-1])
 		last=MasterListDir.split("/")[-1]
 		to_return = request.referrer
@@ -404,7 +404,6 @@ def sendd():
 		last = "/".join(request.form["linkd"].split("/")[2:])
 		master_path = os.path.join(ROOT_PATH,last)
 		master_path = unquote(master_path)
-		logging(master_path)
 		if os.path.exists(master_path):
 			if request.method == "POST" and "up_f" in request.files and request.files['up_d'].filename == "":
 				if "up_f" not in request.files:
