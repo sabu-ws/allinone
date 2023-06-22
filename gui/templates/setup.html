@@ -6,66 +6,80 @@
     <title>Setup</title>
     <link rel="stylesheet" href="{{ url_for('static',filename='public/output.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static',filename='assets/fontawesome/css/all.css') }}" />
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='/assets/icons/sabu.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='assets/icons/sabu.ico') }}">
 </head>
 <body>
-    <div class="grid grid-cols-6 grid-rows-3 h-full">
-        <div class="col-start-1 col-end-7 row-start-1 row-end-4 bg-white dark:bg-gray-700 rounded-2xl mx-4 my-2">
-            <div class="flex flex-col items-center justify-center h-full">
-                <div class="container bg-blue-700 mx-auto rounded-2xl py-2">
-                    <p class="font-semibold text-white text-2xl flex justify-center">SABU - Setup</p>
-                </div>
-                <div class="mt-8">
-                    <div class="bg-gray-200 p-6 rounded-lg w-90 mx-20">
-                        <form method="POST">
-                            <h2 class="text-lg font-semibold">Network Settings</h2>
-                            <div class="mt-4">
-                                <label class="block mb-2">Interface :</label>
-                                <input type="text" name="interface" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ interface }}">
-                            </div>    
-                            <div class="mt-4">
-                                <label class="block mb-2">IP Address :</label>
-                                <input type="text" name="ip" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ ip }}">
-                            </div>
-                            <div class="mt-4">
-                                <label class="block mb-2">Netmask :</label>
-                                <input type="text" name="netmask" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ netmask }}">
-                            </div>
-                            <div class="mt-4">
-                                <label class="block mb-2">Gateway :</label>
-                                <input type="text" name="gateway" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ gateway }}">
-                            </div>
-                            <div class="mt-4">
-                                <label class="block mb-2">DNS 1 :</label>
-                                <input type="text" name="dns1" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ dns1 }}">
-                            </div>
-                            <div class="mt-4">
-                                <label class="block mb-2">DNS 2 (Not required) :</label>
-                                <input type="text" name="dns2" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ dns2 }}">
-                            </div>
-                            <h2 class="text-lg font-semibold mt-6">Admin Page</h2>
-                            <div class="mt-4">
-                                <label class="block mb-0,5">Admin Password :</label>
-                                <label class="block mb-2">(Syntax : 12 upper/lower case characters and numbers and special characters)</label>
-                                <input type="text" name="password" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Your Password">
-                            </div>
-                            <div class="mt-6">
-                                <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded">
-                                    Submit
-                                </button>
-                            </div>
-                            {% if get_flashed_messages() %}
-                            <div>
-                                <br>
-                                <meta charset="utf-8">
-                                <b style="color: red;">{{ get_flashed_messages()[0] }}</b>
-                            </div>
-                            {% endif %}
-                        </form>
+    <header class="bg-blue-600 text-white p-4">
+        <h1 class="text-2xl font-bold flex justify-center">SABU - Setup</h1>
+    </header>
+    
+    <form method="POST">
+        <div class="container mx-auto mt-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="container mx-auto">
+                    <div class="bg-gray-200 p-4 shadow rounded-lg">
+                        <h2 class="text-lg font-semibold mb-2">Readme !</h2>
+                        <div class="mt-4">
+                            <p>You are currently on the installation page.</p>
+                            <p>To configure the whitestation, please fill in the following fields :</p>
+                            <p>- Password for the admin page following the required syntax.</p>
+                            <p>- Network configuration of the device by assigning a valid fixed IP as well as the other fields requested.</p>
+                            <p>Once finished you can click on submit and wait for the device to restart.</p>
+                        </div>
                     </div>
                 </div>
+                <div class="container mx-auto">
+                    <div class="bg-gray-200 p-4 shadow rounded-lg">
+                        <h2 class="text-lg font-semibold">Password - Admin Page</h2>
+                        <div class="mt-7">
+                            <label class="block mb-4">Syntax requirement : <br>- 12 upper/lower case characters <br>- 1 number minimum <br>- 1 special characters minimum</label>
+                            <input type="text" name="password" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Your Password">
+                        </div>
+                    </div>
+                </div>
+                <div class="container mx-auto">
+                    <div class="bg-gray-200 p-4 shadow rounded-lg">
+                        <h2 class="text-lg font-semibold">Network Settings</h2>
+                        <div class="mt-4">
+                            <label class="block mb-2">Interface :</label>
+                            <input type="text" name="interface" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ interface }}">
+                        </div>    
+                        <div class="mt-4">
+                            <label class="block mb-2">IP Address :</label>
+                            <input type="text" name="ip" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ ip }}">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block mb-2">Netmask :</label>
+                            <input type="text" name="netmask" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ netmask }}">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block mb-2">Gateway :</label>
+                            <input type="text" name="gateway" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ gateway }}">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block mb-2">DNS 1 :</label>
+                            <input type="text" name="dns1" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ dns1 }}">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block mb-2">DNS 2 (Not required) :</label>
+                            <input type="text" name="dns2" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="{{ dns2 }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Submit
+                    </button>
+                </div>
             </div>
+            {% if get_flashed_messages() %}
+            <div>
+                <br>
+                <meta charset="utf-8">
+                <b style="color: red;">{{ get_flashed_messages()[0] }}</b>
+            </div>
+            {% endif %}
         </div>
-    </div>
+    </form>
 </body>
 </html>
