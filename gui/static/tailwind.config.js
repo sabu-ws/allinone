@@ -1,5 +1,5 @@
 module.exports = {
-    content: ["../templates/*html"],
+    content: ["/sabu/gui/templates/*html"],
     darkMode: 'class',
     theme: {
         extend: {},
