@@ -38,7 +38,7 @@
                                 </button>
                             </h2>
                             <div class="text-end">
-                                <form id="sendd" action="/sendd" method="POST" enctype="multipart/form-data" class="flex flex-col justify-center w-3/4 max-w-sm space-y-3 md:flex-row md:w-full md:space-x-3 md:space-y-0">
+                                <form id="sendd" action="/upload" method="POST" enctype="multipart/form-data" class="flex flex-col justify-center w-3/4 max-w-sm space-y-3 md:flex-row md:w-full md:space-x-3 md:space-y-0">
                                     <input type="text" name="linkd" id="linkd" style="display: none;" value="">
                                     <div class=" relative ">
                                         </div>
@@ -98,7 +98,7 @@
                                                 <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
                                                     <div class="flex items-center">
                                                         <div class="flex-shrink-0">
-                                                            <a href="/browser{{ cur_dir }}{{ name }}"></a>
+                                                            <a href="/browser{{ cur_dir }}/{{ name }}"></a>
                                                             <img src="{{ url_for('static',filename='assets/icons/icon_folder.png') }}" height="20px" width="20px">
                                                         </div>
                                                         <div class="ml-3">
@@ -129,11 +129,11 @@
                                                     </p>
                                                 </td>
                                                 <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 dark:text-white border-b border-gray-400">
-                                                    <a href="/info{{ cur_dir }}{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
+                                                    <a href="/info{{ cur_dir }}/{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
                                                     {% if g.hasScan %}
-                                                        <a href="/download{{ cur_dir }}{{ name }}"><i class="fa-solid fa-download"></i></a>
+                                                        <a href="/download{{ cur_dir }}/{{ name }}"><i class="fa-solid fa-download"></i></a>
                                                     {% endif %}
-                                                    <a href="/delete{{ cur_dir }}{{ name }}"><i class="fa-solid fa-trash"></i></a>
+                                                    <a href="/delete{{ cur_dir }}/{{ name }}"><i class="fa-solid fa-trash"></i></a>
                                                 </td>
                                             </tr>
                                             {% endfor %}
@@ -176,11 +176,11 @@
                                                     </p>
                                                 </td>
                                                 <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 dark:text-white border-b border-gray-400">
-                                                    <a href="/info{{ cur_dir }}{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
+                                                    <a href="/info{{ cur_dir }}/{{ name }}"><i class="fa-solid fa-circle-info"></i></a>
                                                     {% if g.hasScan %}
-                                                    <a href="/download{{ cur_dir }}{{ name }}"><i class="fa-solid fa-download"></i></a>
+                                                    <a href="/download{{ cur_dir }}/{{ name }}"><i class="fa-solid fa-download"></i></a>
                                                     {% endif %}
-                                                    <a href="/delete{{ cur_dir }}{{ name }}"><i class="fa-solid fa-trash"></i></a>
+                                                    <a href="/delete{{ cur_dir }}/{{ name }}"><i class="fa-solid fa-trash"></i></a>
                                                 </td>
                                             </tr>
                                             {% endfor %}
