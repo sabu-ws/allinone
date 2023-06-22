@@ -12,3 +12,4 @@ StandardError=append:/sabu/logs/gui.log
 
 [Install]
 WantedBy=multi-user.target
+
