@@ -12,4 +12,4 @@ SABU is a student project. We offer a whitestation for USB key with several opti
 To access the whitestation, simply connect to the web page. From this interface you can see files, download and delete them if needed. There is also an administration page, allowing you to configure the whitestation and see the different logs.
 
 ## 📄 Documentation
-To install the whitestation on your system, please [read the documentation](https://github.com/SABU-WS/SABU/wiki).
+To install the whitestation on your system, please [read the documentation](https://github.com/SABU-WS/SABU/wiki)..
