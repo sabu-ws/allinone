@@ -180,7 +180,7 @@ def rec():
 	global detectusb_g
 	if detectusb_g:
 		logging("Advanced scan(ole) start")
-		proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan_ole.sh && sleep 1".split())
+		proc = subprocess.run(f"{SCRIPT_PATH}/scan/scan-ole.sh && sleep 1".split())
 		global is_scan
 		global nb_advanced_scan
 		emit("advanced_scan_end","olefile")
