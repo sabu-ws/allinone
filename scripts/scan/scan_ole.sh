@@ -3,6 +3,7 @@
 pathUSB='/mnt/usb'
 LOG_PATH='/sabu/logs/scan/ole'
 DATESTART=$(date +%s)
+DATE=$(date +"[%Y-%m-%d %H:%M:%S]")
 
 touch $LOG_PATH/ole-$DATESTART.log
 
@@ -18,8 +19,9 @@ do
                 fi;
         fi;
 done
-date=$(date +"[%Y-%m-%d %H:%M:%S]")
-echo "$date [SCAN][OLE] New scan available ole-$DATESTART.log" >> $LOG_PATH/../../scan.log
+
+# LOG ACTION
+echo "$DATE [SCAN][OLE] New scan available ole-$DATESTART.log" >> $LOG_PATH/../../scan.log
 echo "ole-$DATESTART.log" > $LOG_PATH/last-scan.log
 
 # --- Script By SABU --- #
