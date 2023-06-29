@@ -1,0 +1,17 @@
+{% extends 'base_index.html' %}
+{% block errorpage %}
+<div class="bg-gray-200 dark:bg-gray-800 h-screen">
+    <div class="grid grid-cols-6 grid-rows-3 h-full">
+        <!-- BOX -->
+        <div class="col-start-1 col-end-7 row-start-1 row-end-4 bg-white dark:bg-gray-700 rounded-2xl mx-4 my-4">
+            <a href="/">
+                <button class="my-4 mx-4 flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" type="submit">
+                    <i class="fa-solid fa-house"></i>
+                </button>
+            </a>
+            <h1 class="flex justify-center items-center text-5xl font-semibold py-8 dark:text-white">404 Fot found !</h1>
+            <img src="{{ url_for('static',filename='/assets/icons/bonhomme-usb-error.png') }}" class="flex justify-center items-center mx-auto px-10">
+        </div>
+    </div>
+</div>
+{% endblock %}

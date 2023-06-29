@@ -1,0 +1,25 @@
+{% extends "base_index.html" %}
+<!-- EXIF TOOL BROWSER -->
+{% block inbrowser %}
+<div class="grid grid-cols-6 grid-rows-3 h-full">
+            
+    <!-- BOX -->
+    <div class="col-start-1 col-end-7 row-start-1 row-end-4 bg-white dark:bg-gray-700 rounded-2xl mx-4 my-4">
+        <div class="w-full">
+            <a href="/browser">
+                <button class="my-4 mx-4 flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" type="submit">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </a>
+        </div>
+        <div class="container bg-blue-700 mx-auto rounded-2xl py-2">
+            <p class="flex justify-center font-semibold text-white text-2xl">File Information</p>
+        </div>
+        <br>
+        <div class="container bg-gray-200 mx-auto rounded-2xl py-4">
+            {% for i in info %}
+            <p class="flex justify-center">{{ i }}</p>
+            {% endfor %}
+        </div>
+	<div>
+{% endblock %}
