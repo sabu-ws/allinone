@@ -82,16 +82,18 @@
                                                                 </p>
                                                             </td>
                                                             <td class="px-5 py-5 text-sm bg-white dark:bg-gray-700 border-b border-gray-400">
-                                                                <p class="text-gray-900 dark:text-white whitespace-no-wrap">
-                                                                    {{ file[1] }}
+                                                                {% for scan_name,ico_path in file[1] %}
+                                                                <p class="flex items-center text-gray-900 font-semibold dark:text-white whitespace-no-wrap p-2">
+                                                                    <img class="w-6 h-6 mr-2" src="{{ ico_path }}" alt="ico_scan">{{ scan_name }}
                                                                 </p>
+                                                                {% endfor %}
                                                             </td>
                                                         </tr>
                                                     {% endfor %}
                                                 {% else %}
                                                 <tr>
                                                     <td></td>
-                                                    <td class="flex justify-center bg-white dark:bg-gray-700 dark:text-white">No file is suspicious</td>
+                                                    <td>No file is suspicious</td>
                                                     <td></td>
                                                 </tr>
                                                 {% endif %}

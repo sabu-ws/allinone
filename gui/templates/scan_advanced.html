@@ -43,8 +43,8 @@
                 <div id="time_wait" hidden>
                     <p class="text-sm dark:text-white">Scan in progress...</p>
                     <p class="text-sm dark:text-white">Scan may take a few minutes...</p><br>
-                    <p id="col_validate_clamav"  class="text-semibold text-red-600">clamav : <span id="validate_clamav">x<span></p>
-                    <p id="col_validate_olefile" class="text-semibold text-red-600">olefile : <span id="validate_olefile">x<span></p>
+                    <p id="col_validate_clamav"  class="text-semibold text-red-600">ClamAV : <span id="validate_clamav">❌<span></p>
+                    <p id="col_validate_olefile" class="text-semibold text-red-600">OLE Tools : <span id="validate_olefile">❌<span></p>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@ $(document).ready(function(){
 		socket.emit("advanced_scan_olefile");
 		socket.on('advanced_scan_end',function(data){
 			var build_id = "validate_"+data;
-			$("#"+build_id).text("v");
+			$("#"+build_id).text("✅");
 			var build_col_p = "col_"+build_id
 			document.getElementById(build_col_p).className = "text-semibold text-green-600";
 		});

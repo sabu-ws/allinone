@@ -26,6 +26,8 @@ sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $a
 ## connexion_dns
 sudo nft add rule inet filter input iif $interface ip saddr $nameserver1 ip daddr $address udp dport 53 accept
 sudo nft add rule inet filter input iif $interface ip saddr $nameserver2 ip daddr $address udp dport 53 accept
+## Allow HTTPS
+sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 443 accept
 ## connexion_tcp_established
 sudo nft add rule inet filter input iif $interface ip saddr 0.0.0.0/0 ip daddr $address ct state established accept
 ## drop_all
@@ -41,6 +43,10 @@ sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr $
 sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 80 accept
 ## connexion_https
 sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 tcp dport 443 accept
+## Allow HTTPS reverse proxy (Rules IN)
+sudo nft add rule inet filter input iif $interface ip saddr $network ip daddr $address tcp dport 443 accept
+## ntp
+sudo nft add rule inet filter output oif $interface ip saddr $address udp sport 123 ip daddr 0.0.0.0/0 udp dport 123 accept
 ## drop_all
 sudo nft add rule inet filter output oif $interface ip saddr $address ip daddr 0.0.0.0/0 drop
 

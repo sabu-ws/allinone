@@ -22,9 +22,8 @@ from io import BytesIO
 import zipfile
 from functools import wraps
 from urllib.parse import unquote
-import re
 import json
-import psutil
+import shutil
 
 # master config
 app = Flask(__name__)
@@ -99,10 +98,6 @@ def first(f):
 	return decorated_function
 
 # --------------------Minor function-------------------------
-
-def ret_mode(mode_num):
-	return mode_num.replace("7","rwx").replace("6","rw-").replace("5","r-x").replace("4","r--").replace("3","-wx").replace("2","-w-").replace("1","--x").replace("0","---")
-
 def sizeof_fmt(num, suffix="B"):
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
@@ -198,15 +193,15 @@ def resultat():
 	if request.method == "GET":
 		resultat_scan = {}
 		clam_av = [i[0][:-1] for i in [i.split() for i in open("/sabu/logs/scan/clamav/"+open("/sabu/logs/scan/clamav/last-scan.log").read().replace("\n","")).read().split("\n")] if len(i) > 0 if i[-1] == "FOUND" ]
-		resultat_scan = {i:"clamav" for i in clam_av}
+		resultat_scan = {i:[["ClamAV",url_for("static",filename="assets/icons/clamav.ico")]] for i in clam_av}
 		ole = []
 		if open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","") != "":
 			ole = [i.split()[0] for i in open("/sabu/logs/scan/ole/"+open("/sabu/logs/scan/ole/last-scan.log").read().replace("\n","")).readlines()]
 		for i in ole:
 			if i in resultat_scan:
-				resultat_scan[i]+=" ole"
+				resultat_scan[i].append(["OLE Tools",url_for("static",filename="assets/icons/oletools.ico")])
 			else:
-				resultat_scan[i]="ole"
+				resultat_scan[i]=[["OLE Tools",url_for("static",filename="assets/icons/oletools.ico")]]
 		fileResScan = [[i,resultat_scan[i]] for i in resultat_scan if os.path.isfile(i)]
 		lenght = len(fileResScan)
 		return render_template("result.html",files=fileResScan,lenght=lenght)
@@ -291,25 +286,19 @@ def browser(MasterListDir=""):
 		items_file=[]
 		for i in list_items[1]:
 			j=os.path.join(joining,i)
-			mode_user = ret_mode(str(oct(os.lstat(j).st_mode))[-3])
-			mode_group = ret_mode(str(oct(os.lstat(j).st_mode))[-2])
-			mode_other = ret_mode(str(oct(os.lstat(j).st_mode))[-1])
 			creation_date = str(datetime.fromtimestamp(os.lstat(j).st_ctime)).split(".")[0]
 			modification_date = str(datetime.fromtimestamp(os.lstat(j).st_mtime)).split(".")[0]
 			size = sizeof_fmt(os.lstat(j).st_size)
-			# make [nom_fichier,mode,date_de_creation,date_modifer,taille_fichier]
-			make = [i,mode_user+mode_group+mode_other,creation_date,modification_date,size]
+			# make [nom_fichier,date_de_creation,date_modifer,taille_fichier]
+			make = [i,creation_date,modification_date,size]
 			items_dir.append(make)
 		for i in list_items[2]:
 			j=os.path.join(joining,i)
-			mode_user = ret_mode(str(oct(os.lstat(j).st_mode))[-3])
-			mode_group = ret_mode(str(oct(os.lstat(j).st_mode))[-2])
-			mode_other = ret_mode(str(oct(os.lstat(j).st_mode))[-1])
 			creation_date = str(datetime.fromtimestamp(os.lstat(j).st_ctime)).split(".")[0]
 			modification_date = str(datetime.fromtimestamp(os.lstat(j).st_mtime)).split(".")[0]
 			size = sizeof_fmt(os.lstat(j).st_size)
-			# make [nom_fichier,mode,date_de_creation,date_modifer,taille_fichier]
-			make = [i,mode_user+mode_group+mode_other,creation_date,modification_date,size]
+			# make [nom_fichier,date_de_creation,date_modifer,taille_fichier]
+			make = [i,creation_date,modification_date,size]
 			items_file.append(make)
 		return render_template("browser.html",items_file=items_file,items_dir=items_dir,cur_dir=cur_dir)
 	return redirect("/browser")
@@ -394,6 +383,8 @@ def info(MasterListDir=""):
 @detectUSB
 def upload():
 	if g.detectusb:
+		p = request.form["linkd"]
+		logging(f"{p}")
 		last = "/".join(request.form["linkd"].split("/")[2:])
 		master_path = os.path.join(ROOT_PATH,last)
 		master_path = unquote(master_path)
@@ -447,9 +438,9 @@ def upload():
 @first
 def admin():
 	if session.get('loggedin') == True:
-		return redirect(url_for("admin_config"))
+		return redirect(url_for("admin_dashbord"))
 	if request.method=="POST" and "mdp" in request.form:
-		file=open("static/config.json","r")
+		file=open("/sabu/gui/static/config.json","r")
 		js = json.load(file)
 		mdp=js['mdp']
 		req=request.form['mdp']
@@ -457,11 +448,11 @@ def admin():
 		if encrypt == mdp:
 			session['loggedin'] = True
 			logging("admin has logged")
-			return redirect(url_for('admin_config'))
+			return redirect(url_for('admin_dashbord'))
 		else:
 			flash("Bad password")
 			logging(f"someone try admin password : {req}")
-			return redirect(url_for('admin_config'))
+			return redirect(url_for('admin'))
 	return render_template("login.html")
 
 @app.route("/admin/reboot")
@@ -490,45 +481,46 @@ def admin_downloadLogs():
 		return send_file(memory_file,as_attachment=True,mimetype="application/zip",download_name=fileName)
 	return redirect("/404")
 
-# connfig device, network ... page
-@app.route("/admin/config",methods=['GET', 'POST'])
+# @socketio.on("dash_up")
+
+
+@app.route("/admin/dashboard",methods=['GET'])
 @first
 @login_required
-def admin_config():
+def admin_dashbord():
+	if session.get("loggedin") == True:
+		info_system = subprocess.Popen(f"{SCRIPT_PATH}/system/system_info.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
+		uptime = info_system[3]
+		date_translate = datetime.fromisoformat(uptime)
+		date_now = datetime.now()
+		hour_minute = date_now - date_translate
+		hour_minute = datetime.strptime(str(hour_minute),"%H:%M:%S.%f").strftime("%H hours, %M minutes, %S secondes")
+		uptime=f"{hour_minute}"
+		info={
+			"hostname":info_system[0],
+			"systemtime":info_system[1],
+			"timezone":info_system[2],
+			"uptime":uptime,
+			"disk":info_system[4],
+		}
+		return render_template("admin_dashboard.html",info=info)
+	else:
+		return redirect(url_for("/admin"))
+	return "toto"
+
+
+# connfig device, network ... page
+@app.route("/admin/global",methods=['GET', 'POST'])
+@first
+@login_required
+def admin_global():
 	if session.get('loggedin') == True:
-		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
+		info_system = subprocess.Popen(f"{SCRIPT_PATH}/system/system_info.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
 		get_hostname = subprocess.Popen("hostname".split(),stdout=subprocess.PIPE).communicate()[0].decode()
 		if request.method=="POST":
-			must_match_ip = r"^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
-			if "interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" not in request.form and "hostname" not in request.form:
-				if request.form["dns2"] != "":
-					dns2 = request.form["dns2"]
-				else:
-					dns2 = "9.9.9.9"
-				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2):
-					interface = request.form["interface"]
-					ip = request.form["ip"]
-					netmask = request.form["netmask"]
-					gateway = request.form["gateway"]
-					dns1 = request.form["dns1"]
-					dico_network = {"interface": interface, "ip": ip, "netmask": netmask, "gateway": gateway, "dns1": dns1, "dns2": dns2}
-					dico_category_network = {"network": dico_network}
-					json_config = open(CONFIG_PATH+"/config.json", "w")
-					json.dump(dico_category_network, json_config)
-					subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
-					flash("net_adm")
-					flash("The network was configure !")
-					logging(f"admin has change network config [{dico_network}]")
-					return redirect(url_for("admin_config"))
-				else:
-					logging(f"admin try tro change network [{request.form.to_dict()}]")
-					flash("net_adm")
-					flash("Some informations was incorrect")
-					return redirect(url_for("admin_config"))
-			elif "password" in request.form and "hostname" in request.form:
+			if "password" in request.form and "hostname" in request.form:
 				good_password=""
 				good_hostname=""
-				flash("password")
 				if request.form["password"] != "":
 					# change password
 					# Min 12 char, 1 number, 1 uppercase, 1 lowercase,1 spécial char
@@ -553,10 +545,11 @@ def admin_config():
 					must_match_hostname = r"^[a-zA-Z0-9-]{3,20}$"
 					if re.search(must_match_hostname,request.form["hostname"]):
 						hostname = request.form["hostname"]
+						old_hostname = socket.gethostname()
 						subprocess.run(f"sudo hostnamectl set-hostname {hostname}".split())
-						subprocess.run(f"/sabu/scripts/network/network-hostname.sh".split())
+						subprocess.run(f"/sabu/scripts/network/network-hostname.sh {old_hostname}".split())
 						good_hostname = "The hostname will change at next reboot"
-						logging("admin has change hostname")
+						logging(f"admin has change hostname to {str(hostname)}")
 					else:
 						logging(f"admin try tro change hostname [{request.form.to_dict()}]")
 						flash("Bad padding hostname")
@@ -564,28 +557,104 @@ def admin_config():
 				if good_password !="" and good_hostname!="":
 					flash("All informations was change")
 				elif good_hostname!="" :
+					logging(good_hostname)
 					flash(good_hostname)
 				elif good_password!="":
 					flash(good_password)
 				else:
 					flash("ERROR !!!")
 
-				return redirect(url_for("admin_config"))
+				return redirect(url_for("admin_global"))
 			else:
 				g.log = 0
 				return redirect(url_for("index"))
 		elif request.method=="GET":
-			interface=info_ip[0]
-			ip=info_ip[1]
-			netmask=info_ip[2]
-			gateway=info_ip[3]
-			dns1=info_ip[4]
-			dns2=info_ip[5]
+			hostname = info_system[0]
 		else:
 			return redirect("/404")
-		return render_template("admin_config.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2,hostname=get_hostname)
+		return render_template("admin_global_settings.html",hostname=hostname)
 	else:
 		return redirect(url_for('admin_config'))
+
+# network
+@app.route("/admin/network",methods=['GET', 'POST'])
+@first
+@login_required
+def admin_network():
+	if session.get('loggedin') == True:
+		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
+		must_match_ip = r"^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
+		if request.method=="POST":
+			must_match_ip = r"^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
+			if "interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form:
+				if request.form["dns2"] != "":
+					dns2 = request.form["dns2"]
+				else:
+					dns2 = "9.9.9.9"
+				if re.search(must_match_ip, request.form["ip"]) and re.search(must_match_ip, request.form["netmask"]) and re.search(must_match_ip, request.form["gateway"]) and re.search(must_match_ip, request.form["dns1"]) and re.search(must_match_ip, dns2):
+					interface = request.form["interface"]
+					ip = request.form["ip"]
+					netmask = request.form["netmask"]
+					gateway = request.form["gateway"]
+					dns1 = request.form["dns1"]
+					dico_network = {"interface": interface, "ip": ip, "netmask": netmask, "gateway": gateway, "dns1": dns1, "dns2": dns2}
+					dico_category_network = {"network": dico_network}
+					json_config = open(CONFIG_PATH+"/config.json", "w")
+					json.dump(dico_category_network, json_config)
+					subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
+					flash("The network was configure !")
+					logging(f"admin has change network config [{dico_network}]")
+					return redirect(url_for("admin_network"))
+				else:
+					logging(f"admin try tro change network [{request.form.to_dict()}]")
+					flash("Some informations was incorrect")
+					return redirect(url_for("admin_network"))
+		elif request.method=="GET":
+			info = {"interface":info_ip[0],
+					"ip":info_ip[1],
+					"netmask":info_ip[2],
+					"gateway":info_ip[3],
+					"dns1":info_ip[4],
+					"dns2":info_ip[5],
+					}	
+		else:
+			return redirect("/404")
+		return render_template("admin_network_settings.html",info=info)
+	else:
+		return redirect(url_for('admin_network'))
+
+
+# global
+@app.route("/admin/certif",methods=["GET","POST"])
+@first
+@login_required
+def admin_certif():
+	if session.get('loggedin') == True:
+		if request.method == "POST":
+			if "filepub" not in request.files or "filepriv" not in request.files:
+				flash('No file part')
+				return redirect(url_for("admin_certif"))
+			file_priv = request.files['filepriv']
+			file_pub = request.files['filepub']
+			if file_priv.filename == '' or file_pub.filename == '':
+				flash('No selected file')
+				return redirect(url_for("admin_certif"))
+			if file_priv.mimetype == "application/octet-stream" and file_pub.mimetype == "application/x-x509-ca-cert" and file_pub.filename[-4:] == ".crt" and file_priv.filename[-4:] == ".key" :
+				shutil.move("/sabu/nginx/certificates/sabu-gui.crt", "/sabu/nginx/certificates/sabu-gui.crt.old")				
+				shutil.move("/sabu/nginx/certificates/sabu-gui.key", "/sabu/nginx/certificates/sabu-gui.key.old")
+				path = "/sabu/nginx/certificates"
+				file_pub.save(os.path.join(path, "sabu-gui.crt"))
+				file_priv.save(os.path.join(path, "sabu-gui.key"))
+				os.popen("sleep 5 && sudo systemctl restart nginx && sleep 3 && sudo systemctl restart sabu")
+				flash("Certificate was change")
+				return redirect(url_for("admin_certif"))
+			else:
+				flash('Bad file')
+				return redirect(url_for("admin_certif"))
+		return render_template("admin_certificate_settings.html")
+	else:
+		return redirect(url_for("admin"))
+	return redirect("/404")
 
 # setup page
 @app.route("/setup",methods=["POST","GET"])
@@ -595,11 +664,6 @@ def first_connection():
 		info_ip = subprocess.Popen(f"{SCRIPT_PATH}/network/network-read.sh".split(),stdout=subprocess.PIPE).communicate()[0].decode().split("\n")
 		if request.method=="GET":
 			interface=info_ip[0]
-			ip=info_ip[1]
-			netmask=info_ip[2]
-			gateway=info_ip[3]
-			dns1=info_ip[4]
-			dns2=info_ip[5]
 
 		elif request.method=="POST":
 			if ("interface" in request.form and "ip" in request.form and "netmask" in request.form and "gateway" in request.form and "dns1" in request.form and "password" in request.form):
@@ -621,11 +685,15 @@ def first_connection():
 					gateway = request.form["gateway"]
 					dns1 = request.form["dns1"]
 					mdp=request.form["password"]
+
+					# network
 					dico_network = {"interface": interface, "ip": ip, "netmask": netmask, "gateway": gateway, "dns1": dns1, "dns2": dns2}
 					dico_category_network = {"network": dico_network}
 					json_config = open(CONFIG_PATH+"/config.json", "w")
 					json.dump(dico_category_network, json_config)
-					subprocess.Popen(f"{SCRIPT_PATH}/network/network-config.sh".split())
+					subprocess.Popen(f"{SCRIPT_PATH}/network/network-config-setup.sh".split())
+
+					# Password
 					file_r = open("static/config.json","r")
 					js = json.load(file_r)
 					file_r.close()
@@ -646,7 +714,7 @@ def first_connection():
 				return redirect(url_for("first_connection"))
 		else:
 			return redirect("/404")
-		return render_template("setup.html",interface=interface,ip=ip,netmask=netmask,gateway=gateway,dns1=dns1,dns2=dns2,)
+		return render_template("setup.html",interface=interface)
 	elif first_con == False:
 		return redirect("/")
 	else:

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SABU</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='public/output.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static',filename='assets/fontawesome/css/all.css') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='assets/icons/sabu.ico') }}">
+    <!-- Dark Mode Module -->
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+</head>
+<body>
+    <div class="dark:bg-gray-800 h-screen">
+        <header class="bg-blue-600 dark:bg-gray-700 text-white p-4">
+            <h1 class="text-2xl font-bold flex justify-center">SABU - Admin Page</h1>
+            <nav>
+                <ul class="flex justify-center mt-6 mb-2">
+                  <li><a href="/" class="mx-4 hover:bg-blue-700 rounded-lg py-3 px-3 font-semibold">Home</a></li>
+                  <li><a href="/admin/dashboard" class="mx-4 hover:bg-blue-700 rounded-lg py-3 px-3 font-semibold">Dashboard</a></li>
+                  <li><a href="/admin/global" class="mx-4 hover:bg-blue-700 rounded-lg py-3 px-3 font-semibold">Global Settings</a></li>
+                  <li><a href="/admin/network" class="mx-4 hover:bg-blue-700 rounded-lg py-3 px-3 font-semibold">Network Settings</a></li>
+                  <li><a href="/admin/certif" class="mx-4 bg-blue-700 rounded-lg py-3 px-3 font-semibold">Certificate Settings</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <form method="POST" enctype="multipart/form-data">
+            <div class="container mx-auto mt-10">
+                <h1 class="flex justify-center text-xl font-semibold dark:text-white mb-10">Certificate Settings</h1>
+                <div class="flex justify-center">
+                    <div class="bg-gray-200 dark:bg-gray-700 p-6 shadow rounded-lg space-y-4">
+                        <label class="block mb-2 dark:text-white">Certificate :</label>
+                        <div class="flex items-center">
+                            <p class="mr-2 p-2 border border-gray-300 dark:bg-gray-600 rounded-lg bg-white w-40"><span id="filepub" class="dark:text-white">certificate.crt</span></p>
+                            <label for="pub_cert" class="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg cursor-pointer">
+                                <span><i class="fa-solid fa-file"></i> Upload File</span>
+                            </label>
+                            <input type="file" name="filepub" accept="*" id="pub_cert" onchange="view_file_pub()" class="hidden">
+                        </div>
+                        <label class="block mb-2 dark:text-white">Private Key :</label>
+                        <div class="flex items-center">
+                            <p class="mr-2 p-2 border border-gray-300 dark:bg-gray-600 rounded-lg bg-white w-40"><span id="filepriv" class="dark:text-white">private.key</span></p>
+                            <label for="priv_cert" class="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg cursor-pointer">
+                                <span><i class="fa-solid fa-file"></i> Upload File</span>
+                            </label>
+                            <input type="file" name="filepriv" accept="*" id="priv_cert" onchange="view_file_priv()" class="hidden">
+                        </div>
+                        <div>
+                            <div class="flex justify-center mt-8">
+                                <button type="submit" name="submit" class="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg"><i class="fa-solid fa-upload"></i> Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              {% if get_flashed_messages() %}
+              <div class="flex justify-center">
+                  <meta charset="utf-8">
+                  <b style="color: red;">{{ get_flashed_messages()[0] }}</b>
+              </div>
+              {% endif %}
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        function view_file_pub(){
+            var fileInput = document.getElementById('pub_cert');
+            var filename = fileInput.files[0].name;
+            document.getElementById('filepub').innerText = filename;
+        }
+        function view_file_priv(){
+            var fileInput = document.getElementById('priv_cert');
+            var filename = fileInput.files[0].name;
+            document.getElementById('filepriv').innerText = filename;
+        }
+    </script>
+</body>
+</html>

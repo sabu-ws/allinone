@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SABU</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='public/output.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static',filename='assets/fontawesome/css/all.css') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='assets/icons/sabu.ico') }}">
+    <!-- Dark Mode Module -->
+    <script>
+      if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+      } else {
+          document.documentElement.classList.remove('dark')
+      }
+  </script>
+</head>
+<body>
+  <div class="dark:bg-gray-800 h-screen">
+    <header class="bg-blue-600 dark:bg-gray-700 text-white p-4">
+      <h1 class="text-2xl font-bold flex justify-center">SABU - Admin Page</h1>
+      <nav>
+        <ul class="flex justify-center mt-6 mb-2">
+          <li><a href="/" class="mx-4 hover:bg-blue-700 rounded-lg py-3 px-3 font-semibold">Home</a></li>
+          <li><a href="/admin/dashboard" class="mx-4 hover:bg-blue-700 rounded-lg py-3 px-3 font-semibold">Dashboard</a></li>
+          <li><a href="/admin/global" class="mx-4 hover:bg-blue-700 rounded-lg py-3 px-3 font-semibold">Global Settings</a></li>
+          <li><a href="/admin/network" class="mx-4 bg-blue-700 rounded-lg py-3 px-3 font-semibold">Network Settings</a></li>
+          <li><a href="/admin/certif" class="mx-4 hover:bg-blue-700 rounded-lg py-3 px-3 font-semibold">Certificate Settings</a></li>
+        </ul>
+      </nav>
+  </header>
+  
+  <form method="POST">
+      <div class="container mx-auto mt-10">
+          <h1 class="flex justify-center text-xl font-semibold dark:text-white mb-10">Network Settings</h1>
+          <div class="flex justify-center">
+              <div class="bg-gray-200 dark:bg-gray-700 p-6 shadow rounded-lg">
+                  <!-- <h2 class="text-lg font-semibold">Network</h2> -->
+                  <div class="grid grid-cols-2 gap-6 mt-0">
+                      <div>
+                      <label class="block mb-2 dark:text-white">Interface :</label>
+                      <input type="text" name="interface" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent dark:text-white rounded px-3 py-2" placeholder="{{ info['interface'] }}">
+                      </div>
+                      <div>
+                      <label class="block mb-2 dark:text-white">IP Address :</label>
+                      <input type="text" name="ip" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent dark:text-white rounded px-3 py-2" placeholder="{{ info['ip'] }}">
+                      </div>
+                      <div>
+                      <label class="block mb-2 dark:text-white">Netmask :</label>
+                      <input type="text" name="netmask" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent dark:text-white rounded px-3 py-2" placeholder="{{ info['netmask'] }}">
+                      </div>
+                      <div>
+                      <label class="block mb-2 dark:text-white">Gateway :</label>
+                      <input type="text" name="gateway" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent dark:text-white rounded px-3 py-2" placeholder="{{ info['gateway'] }}">
+                      </div>
+                      <div>
+                      <label class="block mb-2 dark:text-white">DNS 1 :</label>
+                      <input type="text" name="dns1" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent dark:text-white rounded px-3 py-2" placeholder="{{ info['dns1'] }}">
+                      </div>
+                      <div>
+                      <label class="block mb-2 dark:text-white">DNS 2 (Not required) :</label>
+                      <input type="text" name="dns2" class="w-full border border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-white dark:focus:border-transparent dark:text-white rounded px-3 py-2" placeholder="{{ info['dns2'] }}">
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="container mx-auto flex justify-center mt-10">
+          <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Submit
+          </button>
+        </div>
+      </div>
+      {% if get_flashed_messages() %}
+      <div class="flex justify-center">
+        <br>
+        <meta charset="utf-8">
+        <b style="color: red;">{{ get_flashed_messages()[0] }}</b>
+      </div>
+      {% endif %}
+  </form>
+  </div>
+
+    <script>
+        const toggleButton = document.getElementById('toggleButton');
+        const passwordInput = document.getElementById('passwordInput');
+        
+        toggleButton.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            document.getElementById("toggleview").classList.remove("fa-eye");
+            document.getElementById("toggleview").classList.add("fa-eye-slash");
+            } else {
+            passwordInput.type = 'password';
+            document.getElementById("toggleview").classList.remove("fa-eye-slash");
+            document.getElementById("toggleview").classList.add("fa-eye");
+            }
+        });
+    </script>
+</body>
+</html>
